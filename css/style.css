@@ -54,23 +54,28 @@ nav ul li a {
 }
 
 .sub-menu-wrap {
-    position: absolute;
-    top: 100%;
-    right: 10%;
-    width: 320px;
-    max-height: 0px;
-    overflow: hidden;
-    transition: max-height 0.5s;
+  position: absolute;
+  top: 100%;
+  right: 10%;
+  width: 320px;
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.5s;
+  z-index: 9999;          
+  pointer-events: none;   
 }
 
 .sub-menu-wrap.open-menu {
-    max-height: 400px;
+  max-height: 400px;
+  pointer-events: auto;   
 }
 
 .sub-menu {
     background: white;
     padding: 20px;
     margin: 10px;
+    border-radius: 10px;
+    box-shadow: 0 5px 10px rgba(0,0,0,0.1); 
 }
 
 .user-info {
