@@ -16,20 +16,81 @@ h1 {
   /* background-color: blueviolet; */
   text-align: center;
 }
- 
-.search-bar input {
-  height: 40px;
-  width: 400px;
-  border-radius: 20px;
-  padding: 0 15px;
+
+.search-bar form {
+  display: inline-flex;        
+  align-items: center;         
+  gap: 5px; 
 }
 
 .search-bar button {
+  background: none;
+  border: none;
+  cursor: pointer;
+  height: 30px;
+  width: 30px;
+  background-color: #f6c1d5;
+  display: flex;               
+  justify-content: center;
+  align-items: center;
+}
+
+.search-bar button img {
+  display: block; 
+  width: 18px;
+  height: 18px;
+  object-fit: contain;
+  margin: 0 auto; 
+}
+ 
+.search-container {
+  position: relative;
+  display: inline-block;
+}
+
+.search-container input {
+  height: 40px;
+  width: 400px;
+  border-radius: 20px;
+  padding: 0 45px 0 15px; 
+  border: 1px solid #ccc;
+  font-size: 16px;
+}
+
+.search-container button {
+  position: absolute;
+  right: 10px; 
+  top: 50%;
+  transform: translateY(-50%);
+  border-radius: 50%;
+  color: white;
+  height: 30px;
+  width: 30px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+#filter {
   height: 40px;
   width: 40px;
-  font-size: 15px;
+  background-color: #f6c1d5;
   border-radius: 5px;
+  border: none;
+  cursor: pointer;
+  display: flex;  
+  justify-content: center;
+  align-items: center;
+  padding: 0; 
 }
+
+#filter img {
+  display: block;
+  width: 70%; 
+  height: 70%;
+  object-fit: contain;
+}
+
 
 /* ===== RIDES ===== */
 
@@ -88,7 +149,7 @@ h1 {
   margin-left: 15px;    
 }
 
-/* rate button */
+/* Rate button */
 .ride-review button {
   width: 130px;
   height: 40px;
@@ -102,5 +163,6 @@ h1 {
 }
 
 .ride-review button:hover {
-  background-color: #45a049;
+  background-color: #f6c1d5;
+  color: #000;
 }
