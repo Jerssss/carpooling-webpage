@@ -1,0 +1,109 @@
+/* notifications.css */
+.nav-bell {
+    position: relative;
+    list-style: none;
+    overflow: visible; /* ensure panel isn't clipped */
+}
+
+/* container is just a hook; no animation here */
+#notificationsContainer {
+    position: relative;
+    top: auto;
+    right: auto;
+    width: auto;
+    max-height: none;
+    overflow: visible;
+    opacity: 1;
+    transform: none;
+    transition: none;
+    background: transparent; /* avoid pink line when closed */
+    box-shadow: none;
+    z-index: auto;
+    pointer-events: auto;
+}
+
+/* the actual dropdown panel */
+.notifications-dropdown {
+    position: absolute;
+    top: 44px;
+    right: 0;
+    width: 350px;
+
+    display: flex;
+    flex-direction: column;
+    background: #fff0f5;
+    border-radius: 12px;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.12);
+    z-index: 1000;
+
+    opacity: 0;
+    transform: translateY(-8px);
+    visibility: hidden;
+    pointer-events: none;
+    transition: opacity 200ms ease, transform 200ms ease, visibility 200ms ease;
+}
+
+/* visible state */
+.notifications-dropdown.show {
+    opacity: 1;
+    transform: translateY(0);
+    visibility: visible;
+    pointer-events: auto;
+}
+
+.notif-tabs {
+    display: flex;
+    padding: 10px;
+    border-bottom: 1px solid #ccc;
+}
+
+.notif-tabs span {
+    flex: 1;
+    text-align: center;
+    padding: 8px;
+    border-radius: 12px;
+    cursor: pointer;
+    font-weight: 600;
+    color: #7e6eaa;
+}
+
+.notif-tabs span.active {
+    background: #7e6eaa33;
+    color: #312972;
+}
+
+.notif-list {
+    display: flex;
+    flex-direction: column;
+    max-height: 420px;     /* scroll within panel */
+    overflow-y: auto;
+}
+
+.notif-item {
+    display: flex;
+    padding: 10px;
+    border-bottom: 1px solid #eee;
+}
+
+.notif-item img {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    margin-right: 10px;
+    object-fit: cover;
+}
+
+.notif-content p {
+    margin: 0;
+    font-size: 14px;
+}
+
+.notif-content .time {
+    font-size: 12px;
+    color: #7e6eaa;
+}
+
+.notif-item.read p,
+.notif-item.read .time {
+    color: #b0b0b0;
+}
