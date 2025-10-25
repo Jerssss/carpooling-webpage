@@ -1,23 +1,25 @@
 .profile-page {
-  background-color: #f8f3f4;
+  background: linear-gradient(90deg, #f0f0f0 0%, #f8e396 50%, #FFB300 100%);
   min-height: 100vh;
   display: flex;
   justify-content: center;
   align-items: flex-start;
   padding: 60px 0;
+  font-family: "Poppins", sans-serif;
 }
 
 .profile-container {
   background: #fff;
   width: 90%;
   max-width: 1000px;
-  border-radius: 8px;
-  box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
   overflow: hidden;
 }
 
 .profile-header {
-  background: linear-gradient(90deg, #f6c1d5, #9b8cc2);
+  background-color: #2C2C2C;
+  color: #fff;
   padding: 30px 40px;
   display: flex;
   justify-content: space-between;
@@ -35,42 +37,46 @@
   height: 70px;
   border-radius: 50%;
   object-fit: cover;
-  border: 3px solid #fff;
+  border: 3px solid #FFC800;
 }
 
 .user-basic h2 {
   margin-bottom: 5px;
   font-size: 20px;
   font-weight: 600;
-  color: #1a1a1a;
+  color: #fff;
 }
 
 .user-basic p {
-  color: #5a5a5a;
+  color: #ccc;
   font-size: 14px;
 }
 
 .edit-btn {
-  background: #745674;
-  color: #fff;
+  background: #FFB300;
+  color: #2C2C2C;
   border: none;
-  border-radius: 5px;
+  border-radius: 6px;
   padding: 8px 20px;
   font-size: 14px;
+  font-weight: 600;
   cursor: pointer;
-  transition: 0.3s;
+  transition: all 0.3s ease;
+  box-shadow: 0 3px 10px rgba(255, 179, 0, 0.4);
 }
 
 .edit-btn:hover {
-  background: #8a6b8a;
+  transform: translateY(-2px);
+  background: #FFC800;
+  box-shadow: 0 5px 15px rgba(255, 179, 0, 0.6);
 }
 
-/* ===== Profile Form ===== */
 .profile-form {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
   gap: 25px 40px;
   padding: 40px;
+  background: #fff;
 }
 
 .form-group {
@@ -80,13 +86,14 @@
 
 .form-group label {
   font-size: 14px;
-  color: #1a1a1a;
+  color: #2C2C2C;
   margin-bottom: 8px;
+  font-weight: 500;
 }
 
 .form-group input {
-  background: #f7f2f2;
-  border: none;
+  background: #f7f7f7;
+  border: 1px solid #ddd;
   padding: 10px;
   border-radius: 5px;
   font-size: 14px;
@@ -95,6 +102,22 @@
 }
 
 .form-group input:focus {
-  background: #f0e8e8;
-  border: 1px solid #9b8cc2;
+  background: #fffaf0;
+  border: 1px solid #FFB300;
+  box-shadow: 0 0 5px rgba(255, 179, 0, 0.4);
+}
+
+@media (max-width: 768px) {
+  .profile-form {
+    grid-template-columns: 1fr;
+  }
+
+  .edit-btn {
+    padding: 10px 24px;
+  }
+
+  .profile-photo {
+    width: 60px;
+    height: 60px;
+  }
 }
