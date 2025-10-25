@@ -7,6 +7,7 @@
   <link rel="stylesheet" href="css/style.css">
   <link rel="stylesheet" href="css/index.css">
   <link rel="stylesheet" href="css/notifications.css">
+  <link rel="stylesheet" href="css/list-of-carpools.css">
   <script src="js/script.js" defer></script>
 </head>
 
@@ -16,7 +17,7 @@
         <img src="logo.png" class="logo">
         <ul>
             <li><a class="active" href="index.html">Home</a></li>
-            <li><a href="rides.html">Rides</a></li>
+            <li><a href="list-of-carpools.html">Rides</a></li>
             <li><a href="history.html">History</a></li>
             <li><a href="about.html">About Us</a></li>
             <li class="nav-bell">
@@ -101,20 +102,93 @@
   </nav>
   <!-- End of navigation bar-->
 
-  <!-- Start of list of car pools section -->
-   <h1>List of Carpools in Your Area</h1>
-   <div class="search-filter">
-    <input type="text" placeholder="Search car pool, location, or driver...">
-    <button class="filter-btn">
+   <section class="carpool-section">
+    <!-- Start of list of car pools section -->
+     <h1>List of Carpools in Your Area</h1>
+     <div class="search-filter">
+      <input type="text" placeholder="Search car pool, location, or driver...">
+      <button class="filter-btn">
         <img src="images/filter-icon.png" alt="Filter">
-    </button>
-   </div>
-
-   <!-- Start of container class containing car pool cards -->
-   <div class="carpool-container">
+      </button>
+    </div>
     
-   </div>
+    <div class="cards-container">
+      <!-- Start of container class containing car pool cards -->
+     <div class="carpool-container">
+      <!-- MUST NOT BE STATIC -->
+       <div class="carpool-card">
+        <img src="images/sample-pfp.png" alt="Sebasthian">
+        <div class="carpool-info">
+          <h3>Bernard Sebasthian Molina</h3>
+          <p class="vehicle">Tesla Cybertruck</p>
+          <p class="role">Student</p>
+          <p>1m away from you</p>
+          <p>Available for pickup/meetup</p>
+          <p>Available seats: 1</p>
+          <p>Leaving 2:30 PM - 3:00 PM</p>
+        </div>
+        <div class="card-footer">
+          <span class="status-dot green"></span>
+          <button class="view-btn"><a href="driverdetails.html">View</a></button>
+        </div>
+      </div>
 
+      <!-- Another static card -->
+       <div class="carpool-card">
+        <img src="images/sample-pfp.png" alt="Sebasthian">
+        <div class="carpool-info">
+          <h3>Bernard Sebasthian Molina</h3>
+          <p class="vehicle">Tesla Cybertruck</p>
+          <p class="role">Student</p>
+          <p>1m away from you</p>
+          <p>Available for pickup/meetup</p>
+          <p>Available seats: 1</p>
+          <p>Leaving 2:30 PM - 3:00 PM</p>
+        </div>
+        <div class="card-footer">
+          <span class="status-dot green"></span>
+          <button class="view-btn"><a href="driverdetails.html">View</a></button>
+        </div>
+      </div>
+
+    <!-- Another static card -->
+       <div class="carpool-card">
+        <img src="images/sample-pfp.png" alt="Sebasthian">
+        <div class="carpool-info">
+          <h3>Bernard Sebasthian Molina</h3>
+          <p class="vehicle">Tesla Cybertruck</p>
+          <p class="role">Student</p>
+          <p>1m away from you</p>
+          <p>Available for pickup/meetup</p>
+          <p>Available seats: 1</p>
+          <p>Leaving 2:30 PM - 3:00 PM</p>
+        </div>
+        <div class="card-footer">
+          <span class="status-dot green"></span>
+          <button class="view-btn"><a href="driverdetails.html">View</a></button>
+        </div>
+      </div>
+
+    <!-- Another static card -->
+       <div class="carpool-card">
+        <img src="images/sample-pfp.png" alt="Sebasthian">
+        <div class="carpool-info">
+          <h3>Bernard Sebasthian Molina</h3>
+          <p class="vehicle">Tesla Cybertruck</p>
+          <p class="role">Student</p>
+          <p>1m away from you</p>
+          <p>Available for pickup/meetup</p>
+          <p>Available seats: 1</p>
+          <p>Leaving 2:30 PM - 3:00 PM</p>
+        </div>
+        <div class="card-footer">
+          <span class="status-dot green"></span>
+          <button class="view-btn"><a href="driverdetails.html">View</a></button>
+        </div>
+      </div>
+    </div>
+    </div>
+  </section>
 
 
   <!-- Start of footer section -->
