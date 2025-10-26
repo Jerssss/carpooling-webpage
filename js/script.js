@@ -64,3 +64,21 @@ document.addEventListener('click', function (e) {
         dropdown.classList.remove('show');
     }
 });
+
+document.addEventListener('DOMContentLoaded', () => {
+
+  const cancelBtn = document.getElementById("cancelBtn");
+  if (cancelBtn) {
+    cancelBtn.addEventListener("click", () => {
+      window.location.href = "list-of-carpools.html";  // adjust if file name is different
+    });
+  }
+
+  const bookBtn = document.getElementById("bookBtn");
+  if (bookBtn) {
+    bookBtn.addEventListener("click", () => {
+      window.location.href = "loading.html"; // placeholder (you will make later)
+    });
+  }
+
+});
