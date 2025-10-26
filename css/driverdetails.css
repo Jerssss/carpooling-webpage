@@ -98,7 +98,7 @@ body {
   margin: 10px 0;
 }
 
-/* ========= BOOK BUTTON ========= */
+/* ========= BUTTON ========= */
 .book-btn {
   align-self: flex-start;
   background: #2C2C2C;
@@ -116,6 +116,37 @@ body {
   transform: translateY(-3px);
   box-shadow: 0 8px 20px rgba(255,167,38,0.5);
 }
+
+.cancel-btn {
+  align-self: flex-start;
+  background: #2C2C2C;
+  color: #f0f0f0;
+  padding: 12px 30px;
+  border: none;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 12px rgba(255,167,38,0.3);
+}
+
+.cancel-btn:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 8px 20px rgba(255,167,38,0.5);
+}
+
+.btn-group {
+  display: flex;
+  gap: 15px;        
+  margin-top: 10px;
+}
+
+.btn-group .book-btn,
+.btn-group .cancel-btn {
+  align-self: unset; /* remove vertical self positioning */
+}
+
+
 
 /* ========== FOOTER SECTION ========== */
 .site-footer {
