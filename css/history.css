@@ -1,13 +1,22 @@
+:root {
+  background-color: #f8f2f7;
+}
+
+main {
+  margin-top: 2%;
+}
+
 /* ===== TITLE ===== */
 .page-title {
-  background-color: #6667AB;
+  background-color: #ffcc00;
+  background: linear-gradient(160deg, #FFC800, #ffee9a);;
   margin: 2%;
   padding: 2%;
   border-radius: 10px;
 }
 
 h1 {
-  color: rgb(214, 204, 226);
+  color: #2C2C2C;
   font-size: 50px;
 }
 
@@ -29,7 +38,7 @@ h1 {
   cursor: pointer;
   height: 30px;
   width: 30px;
-  background-color: #f6c1d5;
+  background-color: #FFC800;
   display: flex;               
   justify-content: center;
   align-items: center;
@@ -74,7 +83,7 @@ h1 {
 #filter {
   height: 40px;
   width: 40px;
-  background-color: #f6c1d5;
+  background-color: #FFC800;
   border-radius: 5px;
   border: none;
   cursor: pointer;
@@ -105,14 +114,18 @@ h1 {
 
 /* Inner cards */
 .upcoming-rides {
-  background: linear-gradient(90deg, #9b8cc2, #f6c1d5);
+  background: #fff;
+  border-radius: 15px;
+  border: 5px solid #f9a603;
   border-radius: 12px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
   padding: 20px;
 }
 
 .completed-rides {
-  background: linear-gradient(90deg, #f6c1d5, #9b8cc2);
+  background: #fff;
+  border-radius: 15px;
+  border: 5px solid #f9a603;
   border-radius: 12px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
   padding: 20px;
@@ -126,43 +139,192 @@ h1 {
   gap: 15px;
 }
 
+/* ===== RIDE CARD CONTAINER ===== */
 .ride-card {
-  display: flex;
-  align-items: center;          
-  justify-content: space-between; 
-  background-color: #fff;
-  border-radius: 10px;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
-  padding: 10px 15px;
-  margin-bottom: 15px;
+  background: #f8f8f8;
+  border-radius: 25px;
+  width: 850px;
+  padding: 30px;
+  box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+  margin-bottom: 30px;
 }
 
-.ride-image img {
+/* ===== HEADER (works for both with and without Rate button) ===== */
+.ride-header {
+  display: flex;
+  align-items: center;
+  background: linear-gradient(90deg, #ffe680, #fff8d6);
+  border-radius: 15px;
+  padding: 15px 20px;
+  gap: 15px;
+}
+
+/* For completed rides that include a Rate button */
+.ride-header.with-button {
+  justify-content: space-between;
+}
+
+/* Make sure upcoming rides stay aligned to the left */
+.ride-header:not(.with-button) {
+  justify-content: flex-start;
+}
+
+/* ===== LEFT SECTION ===== */
+.ride-left,
+.ride-header:not(.with-button) {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+
+/* ===== ICON & INFO STYLES ===== */
+.ride-icon {
+  background: #ffcc00;
   width: 60px;
   height: 60px;
-  object-fit: cover; 
-  border-radius: 8px; 
+  border-radius: 15px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-shrink: 0;
 }
 
-.ride-info {
-  flex: 1;              
-  margin-left: 15px;    
+.ride-icon img {
+  width: 35px;
+  height: 35px;
+  object-fit: contain;
 }
 
-/* Rate button */
-.ride-review button {
-  width: 130px;
-  height: 40px;
-  background-color: #9b8cc2;
-  color: white;
-  font-size: 16px;
+.ride-info h2 {
+  font-size: 24px;
+  margin: 0;
+  font-weight: 700;
+}
+
+.ride-info p {
+  margin: 2px 0 0;
+  color: #444;
+  font-size: 15px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.user-icon {
+  width: 16px;
+  height: 16px;
+  object-fit: contain;
+}
+
+/* ===== RATE BUTTON ===== */
+.rate-btn {
+  background: #ffcc00;
   border: none;
-  padding: 8px 15px;
-  border-radius: 6px;
+  color: #000;
+  font-weight: 600;
+  padding: 10px 20px;
+  border-radius: 10px;
   cursor: pointer;
+  transition: 0.2s ease;
+  box-shadow: 0 3px 5px rgba(0,0,0,0.15);
+  white-space: nowrap;
 }
 
-.ride-review button:hover {
-  background-color: #f6c1d5;
+.rate-btn:hover {
+  background: #ffb700;
+}
+
+/* ===== ROUTE SECTION ===== */
+.ride-route {
+  display: flex;
+  gap: 20px;
+  background: linear-gradient(90deg, #fff9d9, #fff3bf);
+  border-radius: 15px;
+  padding: 20px;
+  margin-top: 20px;
+}
+
+.route-line {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.dot {
+  width: 15px;
+  height: 15px;
+  background: #ffcc00;
+  border-radius: 50%;
+}
+
+.line {
+  height: 40px;
+  width: 3px;
+  background: #ffcc00;
+}
+
+.route-details {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.label {
+  color: #888;
+  font-weight: 600;
+  font-size: 13px;
+  text-transform: uppercase;
+  margin: 0;
+}
+
+.place {
+  font-size: 17px;
+  font-weight: 700;
   color: #000;
+  margin: 5px 0;
+}
+
+/* ===== FOOTER ===== */
+.ride-footer {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 25px;
+}
+
+.info-box {
+  background: linear-gradient(180deg, #fff7cc, #fff2b3);
+  border-radius: 15px;
+  padding: 15px 25px;
+  text-align: center;
+  flex: 1;
+  margin: 0 8px;
+}
+
+.icon {
+  background: #ffcc00;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 10px;
+  width: 40px;
+  height: 40px;
+  margin: 0 auto 8px;
+}
+
+.icon img {
+  width: 20px;
+  height: 20px;
+  object-fit: contain;
+}
+
+.info-box .label {
+  font-size: 14px;
+  color: #777;
+  margin: 0;
+}
+
+.info-box .value {
+  font-size: 18px;
+  font-weight: 700;
+  margin: 4px 0 0;
 }
