@@ -1,40 +1,48 @@
 /* notifications.css */
 .nav-bell {
-    position: relative;
-    list-style: none;
-    overflow: visible; /* ensure panel isn't clipped */
-}
-
-/* container is just a hook; no animation here */
-#notificationsContainer {
-    position: relative;
-    top: auto;
-    right: auto;
-    width: auto;
-    max-height: none;
+    position: static;
+    display: inline-flex;
+    align-items: center;
+    vertical-align: middle;
     overflow: visible;
-    opacity: 1;
-    transform: none;
-    transition: none;
-    background: transparent; /* avoid pink line when closed */
-    box-shadow: none;
-    z-index: auto;
-    pointer-events: auto;
 }
 
-/* the actual dropdown panel */
-.notifications-dropdown {
-    position: absolute;
-    top: 44px;
-    right: 0;
-    width: 350px;
+nav .nav-bell { 
+    display: inline-flex;
+    align-items: center;
+    line-height: 1;
+}
 
+nav .nav-bell img.bell-icon,
+nav img.bell-icon {
+    width: 22px;
+    height: 22px;
+    display: inline-block;
+    object-fit: contain;
+    vertical-align: middle;
+    margin: 0;
+    padding: 0;
+}
+
+#notificationsContainer {
+    position: absolute;
+    top: 100%;
+    right: 10%;
+    width: 350px;
+    z-index: 1000;
+    background: transparent;
+    box-shadow: none;
+}
+
+.notifications-dropdown {
+    position: relative;
+    width: 100%;
+    margin-top: 10px;
     display: flex;
     flex-direction: column;
-    background: #fff0f5;
+    background: #fff4ce;
     border-radius: 12px;
     box-shadow: 0 8px 24px rgba(0,0,0,0.12);
-    z-index: 1000;
 
     opacity: 0;
     transform: translateY(-8px);
@@ -43,7 +51,6 @@
     transition: opacity 200ms ease, transform 200ms ease, visibility 200ms ease;
 }
 
-/* visible state */
 .notifications-dropdown.show {
     opacity: 1;
     transform: translateY(0);
@@ -64,18 +71,18 @@
     border-radius: 12px;
     cursor: pointer;
     font-weight: 600;
-    color: #7e6eaa;
+    color: #FFC800;
 }
 
 .notif-tabs span.active {
-    background: #7e6eaa33;
-    color: #312972;
+    background: #FFD84D;
+    color: #e89453;
 }
 
 .notif-list {
     display: flex;
     flex-direction: column;
-    max-height: 420px;     /* scroll within panel */
+    max-height: 420px;
     overflow-y: auto;
 }
 
@@ -100,7 +107,7 @@
 
 .notif-content .time {
     font-size: 12px;
-    color: #7e6eaa;
+    color: #FFC800;
 }
 
 .notif-item.read p,

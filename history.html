@@ -1,384 +1,440 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>POOLCAR | History</title>
-    <link rel="stylesheet" href="css/style.css">
-    <link rel="stylesheet" href="css/history.css">
-    <script src="js/script.js" defer></script>
-  </head>
-  <body>
-    <nav>
-      <img src="logo.png" class="logo">
-      <ul>
-        <li><a href="index.html">Home</a></li>
-        <li><a href="list-of-carpools.html">Rides</a></li>
-        <li><a class="active" href="history.html">History</a></li>
-        <li><a href="about.html">About Us</a></li>
-      </ul>
-      <img src="images/speed.jpg" class="user-pic" onclick="toggleMenu()">
-      <div class="sub-menu-wrap" id="subMenu">
-        <div class="sub-menu">
-          <div class="user-info">
-            <img src="/images/speed.jpg">
-            <h2>Darren Watkins</h2>
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>POOLCAR | History</title>
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/history.css">
+  <link rel="stylesheet" href="css/notifications.css">
+  <script src="js/script.js" defer></script>
+</head>
+
+<body>
+  <nav>
+    <img src="logo.png" class="logo">
+    <ul>
+      <li><a class="active" href="index.html">Home</a></li>
+      <li><a href="list-of-carpools.html">Rides</a></li>
+      <li><a href="history.html">History</a></li>
+      <li><a href="about.html">About Us</a></li>
+      <li class="nav-bell">
+        <img src="images/bell.png" class="bell-icon" onclick="toggleNotifications()">
+        <div id="notificationsContainer">
+          <div class="notifications-dropdown" id="notificationsDropdown">
+            <div class="notif-tabs">
+              <span class="active" id="allTab">All</span>
+              <span id="unreadTab">Unread</span>
+            </div>
+            <div class="notif-list" id="notifList">
+              <div class="notif-item unread">
+                <img src="images/driver1.jpg" alt="driver">
+                <div class="notif-content">
+                  <p><strong>Dr. Taejin Cheon</strong> bound to SLU-Maryheights campus has arrived, with plate no.
+                    <strong>XYZ 123</strong>.</p>
+                  <span class="time">2 sec</span>
+                </div>
+              </div>
+              <div class="notif-item unread">
+                <img src="images/driver1.jpg" alt="driver">
+                <div class="notif-content">
+                  <p><strong>Dr. Taejin Cheon</strong> bound to SLU-Maryheights campus is on the way, with plate no.
+                    <strong>XYZ 123</strong>.</p>
+                  <span class="time">10 min</span>
+                </div>
+              </div>
+              <div class="notif-item unread">
+                <img src="images/driver2.jpg" alt="driver">
+                <div class="notif-content">
+                  <p>Hey there, we have a <strong>50% off</strong> on your first carpool for the day. Book now!</p>
+                  <span class="time">2h</span>
+                </div>
+              </div>
+              <div class="notif-item read">
+                <img src="images/driver3.jpg" alt="driver">
+                <div class="notif-content">
+                  <p><strong>Jorge Terre</strong> has dropped you off at your destination SLU-Maryheights campus, with
+                    plate no. <strong>ABC 321</strong>.</p>
+                  <span class="time">2d</span>
+                </div>
+              </div>
+              <div class="notif-item read">
+                <img src="images/driver3.jpg" alt="driver">
+                <div class="notif-content">
+                  <p><strong>Jorge Terre</strong> bound to SLU-Maryheights campus has arrived, with plate no.
+                    <strong>ABC 321</strong>.</p>
+                  <span class="time">2d</span>
+                </div>
+              </div>
+            </div>
           </div>
-          <hr>
-          <a href="profile.html" class="sub-menu-link">
-            <img src="images/user.png" alt="usericon">
-            <p>Edit Profile</p>
-            <span>></span>
-          </a>
-          <a href="#" class="sub-menu-link">
-            <img src="images/settings.png" alt="settings">
-            <p>Settings</p>
-            <span>></span>
-          </a>
-          <a href="#" class="sub-menu-link">
-            <img src="images/question.png" alt="helpsicon">
-            <p>Help & Support</p>
-            <span>></span>
-          </a>
-          <a href="#" class="sub-menu-link">
-            <img src="images/user-logout.png" alt="userlogouticon">
-            <p>Logout</p>
-            <span>></span>
-          </a>
+        </div>
+      </li>
+    </ul>
+    <img src="images/speed.jpg" class="user-pic" onclick="toggleMenu()">
+    <div class="sub-menu-wrap" id="subMenu">
+      <div class="sub-menu">
+        <div class="user-info">
+          <img src="images/speed.jpg">
+          <h2>Darren Watkins</h2>
+        </div>
+        <hr>
+        <a href="profile.html" class="sub-menu-link">
+          <img src="images/user.png" alt="usericon">
+          <p>Edit Profile</p>
+          <span>></span>
+        </a>
+        <a href="#" class="sub-menu-link">
+          <img src="images/settings.png" alt="settings">
+          <p>Settings</p>
+          <span>></span>
+        </a>
+        <a href="#" class="sub-menu-link">
+          <img src="images/question.png" alt="helpsicon">
+          <p>Help & Support</p>
+          <span>></span>
+        </a>
+        <a href="#" class="sub-menu-link">
+          <img src="images/user-logout.png" alt="userlogouticon">
+          <p>Logout</p>
+          <span>></span>
+        </a>
+      </div>
+    </div>
+  </nav>
+
+  <main>
+
+    <section class="search-bar">
+      <form>
+        <div class="search-container">
+          <input type="text" placeholder="Search for rides" />
+          <button type="submit">
+            <img src="images/search-icon.png" alt="Search">
+          </button>
+        </div>
+        <button id="filter" type="button">
+          <img src="images/filter-icon.png" alt="Filter">
+        </button>
+      </form>
+    </section>
+
+
+    <section class="booked-rides">
+
+      <div class="upcoming-rides">
+        <h2>Upcoming</h2>
+        <div class="ride-list">
+
+          <div class="ride-card">
+            <!-- Header -->
+            <div class="ride-header">
+              <div class="ride-left">
+                <div class="ride-icon">
+                  <img src="images/car.png" alt="Car Icon">
+                </div>
+                <div class="ride-info">
+                  <h2>Toyota Prius</h2>
+                  <p>
+                    <img src="images/person-icon.png" class="user-icon" alt="User">
+                    John Doe
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            <!-- Route Section -->
+            <div class="ride-route">
+              <div class="route-line">
+                <div class="dot"></div>
+                <div class="line"></div>
+                <div class="dot"></div>
+              </div>
+
+              <div class="route-details">
+                <div class="pickup">
+                  <p class="label">PICKUP</p>
+                  <p class="place">Home Address</p>
+                </div>
+                <div class="dropoff">
+                  <p class="label">DROPOFF</p>
+                  <p class="place">Maryheights Campus</p>
+                </div>
+              </div>
+            </div>
+
+            <!-- Footer -->
+            <div class="ride-footer">
+              <div class="info-box">
+                <div class="icon">
+                  <img src="images/calendar-icon.png" alt="Date">
+                </div>
+                <p class="label">Date</p>
+                <p class="value">Oct 25</p>
+              </div>
+
+              <div class="info-box">
+                <div class="icon">
+                  <img src="images/clock-icon.png" alt="Time">
+                </div>
+                <p class="label">Time</p>
+                <p class="value">08:30 AM</p>
+              </div>
+
+              <div class="info-box">
+                <div class="icon">
+                  <img src="images/distance-icon.png" alt="Distance">
+                </div>
+                <p class="label">Distance</p>
+                <p class="value">7.5 km</p>
+              </div>
+
+              <div class="info-box">
+                <div class="icon">
+                  <img src="images/pseo-icon.png" alt="Fare">
+                </div>
+                <p class="label">Fare</p>
+                <p class="value">₱67.00</p>
+              </div>
+            </div>
+          </div>
+
+          <div class="ride-card">
+            <!-- Header -->
+            <div class="ride-header">
+              <div class="ride-left">
+                <div class="ride-icon">
+                  <img src="images/car.png" alt="Car Icon">
+                </div>
+                <div class="ride-info">
+                  <h2>Toyota Prius</h2>
+                  <p>
+                    <img src="images/person-icon.png" class="user-icon" alt="User">
+                    John Doe
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            <!-- Route Section -->
+            <div class="ride-route">
+              <div class="route-line">
+                <div class="dot"></div>
+                <div class="line"></div>
+                <div class="dot"></div>
+              </div>
+
+              <div class="route-details">
+                <div class="pickup">
+                  <p class="label">PICKUP</p>
+                  <p class="place">Home Address</p>
+                </div>
+                <div class="dropoff">
+                  <p class="label">DROPOFF</p>
+                  <p class="place">Maryheights Campus</p>
+                </div>
+              </div>
+            </div>
+
+            <!-- Footer -->
+            <div class="ride-footer">
+              <div class="info-box">
+                <div class="icon">
+                  <img src="images/calendar-icon.png" alt="Date">
+                </div>
+                <p class="label">Date</p>
+                <p class="value">Oct 25</p>
+              </div>
+
+              <div class="info-box">
+                <div class="icon">
+                  <img src="images/clock-icon.png" alt="Time">
+                </div>
+                <p class="label">Time</p>
+                <p class="value">08:30 AM</p>
+              </div>
+
+              <div class="info-box">
+                <div class="icon">
+                  <img src="images/distance-icon.png" alt="Distance">
+                </div>
+                <p class="label">Distance</p>
+                <p class="value">7.5 km</p>
+              </div>
+
+              <div class="info-box">
+                <div class="icon">
+                  <img src="images/pseo-icon.png" alt="Fare">
+                </div>
+                <p class="label">Fare</p>
+                <p class="value">₱67.00</p>
+              </div>
+            </div>
+          </div>
+
         </div>
       </div>
-    </nav>
 
-    <main>
+      <div class="completed-rides">
+        <h2>Completed</h2>
+        <div class="ride-list">
 
-      <section class="search-bar">
-        <form>
-          <div class="search-container">
-            <input type="text" placeholder="Search for rides" />
-            <button type="submit">
-              <img src="images/search-icon.png" alt="Search">
-            </button>
-          </div>
-          <button id="filter" type="button">
-            <img src="images/filter-icon.png" alt="Filter">
-          </button>
-        </form>
-      </section>
-
-
-      <section class="booked-rides">
-
-        <div class="upcoming-rides">
-          <h2>Upcoming</h2>
-          <div class="ride-list">
-
-            <div class="ride-card">
-              <!-- Header -->
-              <div class="ride-header">
-                <div class="ride-left">
-                  <div class="ride-icon">
-                    <img src="images/car.png" alt="Car Icon">
-                  </div>
-                  <div class="ride-info">
-                    <h2>Toyota Prius</h2>
-                    <p>
-                      <img src="images/person-icon.png" class="user-icon" alt="User">
-                      John Doe
-                    </p>
-                  </div>
+          <div class="ride-card">
+            <!-- Header -->
+            <div class="ride-header with-button">
+              <div class="ride-left">
+                <div class="ride-icon">
+                  <img src="images/car.png" alt="Car Icon">
+                </div>
+                <div class="ride-info">
+                  <h2>Toyota Prius</h2>
+                  <p>
+                    <img src="images/person-icon.png" class="user-icon" alt="User">
+                    John Doe
+                  </p>
                 </div>
               </div>
+              <button class="rate-btn">Rate</button>
+            </div>
 
-              <!-- Route Section -->
-              <div class="ride-route">
-                <div class="route-line">
-                  <div class="dot"></div>
-                  <div class="line"></div>
-                  <div class="dot"></div>
-                </div>
-
-                <div class="route-details">
-                  <div class="pickup">
-                    <p class="label">PICKUP</p>
-                    <p class="place">Home Address</p>
-                  </div>
-                  <div class="dropoff">
-                    <p class="label">DROPOFF</p>
-                    <p class="place">Maryheights Campus</p>
-                  </div>
-                </div>
+            <!-- Route Section -->
+            <div class="ride-route">
+              <div class="route-line">
+                <div class="dot"></div>
+                <div class="line"></div>
+                <div class="dot"></div>
               </div>
 
-              <!-- Footer -->
-              <div class="ride-footer">
-                <div class="info-box">
-                  <div class="icon">
-                    <img src="images/calendar-icon.png" alt="Date">
-                  </div>
-                  <p class="label">Date</p>
-                  <p class="value">Oct 25</p>
+              <div class="route-details">
+                <div class="pickup">
+                  <p class="label">PICKUP</p>
+                  <p class="place">Home Address</p>
                 </div>
-
-                <div class="info-box">
-                  <div class="icon">
-                    <img src="images/clock-icon.png" alt="Time">
-                  </div>
-                  <p class="label">Time</p>
-                  <p class="value">08:30 AM</p>
-                </div>
-
-                <div class="info-box">
-                  <div class="icon">
-                    <img src="images/distance-icon.png" alt="Distance">
-                  </div>
-                  <p class="label">Distance</p>
-                  <p class="value">7.5 km</p>
-                </div>
-
-                <div class="info-box">
-                  <div class="icon">
-                    <img src="images/pseo-icon.png" alt="Fare">
-                  </div>
-                  <p class="label">Fare</p>
-                  <p class="value">₱67.00</p>
+                <div class="dropoff">
+                  <p class="label">DROPOFF</p>
+                  <p class="place">Maryheights Campus</p>
                 </div>
               </div>
             </div>
 
-            <div class="ride-card">
-              <!-- Header -->
-              <div class="ride-header">
-                <div class="ride-left">
-                  <div class="ride-icon">
-                    <img src="images/car.png" alt="Car Icon">
-                  </div>
-                  <div class="ride-info">
-                    <h2>Toyota Prius</h2>
-                    <p>
-                      <img src="images/person-icon.png" class="user-icon" alt="User">
-                      John Doe
-                    </p>
-                  </div>
+            <!-- Footer -->
+            <div class="ride-footer">
+              <div class="info-box">
+                <div class="icon">
+                  <img src="images/calendar-icon.png" alt="Date">
                 </div>
+                <p class="label">Date</p>
+                <p class="value">Oct 25</p>
               </div>
 
-              <!-- Route Section -->
-              <div class="ride-route">
-                <div class="route-line">
-                  <div class="dot"></div>
-                  <div class="line"></div>
-                  <div class="dot"></div>
+              <div class="info-box">
+                <div class="icon">
+                  <img src="images/clock-icon.png" alt="Time">
                 </div>
-
-                <div class="route-details">
-                  <div class="pickup">
-                    <p class="label">PICKUP</p>
-                    <p class="place">Home Address</p>
-                  </div>
-                  <div class="dropoff">
-                    <p class="label">DROPOFF</p>
-                    <p class="place">Maryheights Campus</p>
-                  </div>
-                </div>
+                <p class="label">Time</p>
+                <p class="value">08:30 AM</p>
               </div>
 
-              <!-- Footer -->
-              <div class="ride-footer">
-                <div class="info-box">
-                  <div class="icon">
-                    <img src="images/calendar-icon.png" alt="Date">
-                  </div>
-                  <p class="label">Date</p>
-                  <p class="value">Oct 25</p>
+              <div class="info-box">
+                <div class="icon">
+                  <img src="images/distance-icon.png" alt="Distance">
                 </div>
+                <p class="label">Distance</p>
+                <p class="value">7.5 km</p>
+              </div>
 
-                <div class="info-box">
-                  <div class="icon">
-                    <img src="images/clock-icon.png" alt="Time">
-                  </div>
-                  <p class="label">Time</p>
-                  <p class="value">08:30 AM</p>
+              <div class="info-box">
+                <div class="icon">
+                  <img src="images/pseo-icon.png" alt="Fare">
                 </div>
+                <p class="label">Fare</p>
+                <p class="value">₱67.00</p>
+              </div>
+            </div>
+          </div>
 
-                <div class="info-box">
-                  <div class="icon">
-                    <img src="images/distance-icon.png" alt="Distance">
-                  </div>
-                  <p class="label">Distance</p>
-                  <p class="value">7.5 km</p>
+
+          <div class="ride-card">
+            <!-- Header -->
+            <div class="ride-header with-button">
+              <div class="ride-left">
+                <div class="ride-icon">
+                  <img src="images/car.png" alt="Car Icon">
                 </div>
+                <div class="ride-info">
+                  <h2>Toyota Prius</h2>
+                  <p>
+                    <img src="images/person-icon.png" class="user-icon" alt="User">
+                    John Doe
+                  </p>
+                </div>
+              </div>
+              <button class="rate-btn">Rate</button>
+            </div>
 
-                <div class="info-box">
-                  <div class="icon">
-                    <img src="images/pseo-icon.png" alt="Fare">
-                  </div>
-                  <p class="label">Fare</p>
-                  <p class="value">₱67.00</p>
+            <!-- Route Section -->
+            <div class="ride-route">
+              <div class="route-line">
+                <div class="dot"></div>
+                <div class="line"></div>
+                <div class="dot"></div>
+              </div>
+
+              <div class="route-details">
+                <div class="pickup">
+                  <p class="label">PICKUP</p>
+                  <p class="place">Home Address</p>
+                </div>
+                <div class="dropoff">
+                  <p class="label">DROPOFF</p>
+                  <p class="place">Maryheights Campus</p>
                 </div>
               </div>
             </div>
 
+            <!-- Footer -->
+            <div class="ride-footer">
+              <div class="info-box">
+                <div class="icon">
+                  <img src="images/calendar-icon.png" alt="Date">
+                </div>
+                <p class="label">Date</p>
+                <p class="value">Oct 25</p>
+              </div>
+
+              <div class="info-box">
+                <div class="icon">
+                  <img src="images/clock-icon.png" alt="Time">
+                </div>
+                <p class="label">Time</p>
+                <p class="value">08:30 AM</p>
+              </div>
+
+              <div class="info-box">
+                <div class="icon">
+                  <img src="images/distance-icon.png" alt="Distance">
+                </div>
+                <p class="label">Distance</p>
+                <p class="value">7.5 km</p>
+              </div>
+
+              <div class="info-box">
+                <div class="icon">
+                  <img src="images/pseo-icon.png" alt="Fare">
+                </div>
+                <p class="label">Fare</p>
+                <p class="value">₱67.00</p>
+              </div>
+            </div>
           </div>
+
         </div>
-        
-        <div class="completed-rides">
-          <h2>Completed</h2>
-          <div class="ride-list">
+      </div>
 
-            <div class="ride-card">
-              <!-- Header -->
-              <div class="ride-header with-button">
-                <div class="ride-left">
-                  <div class="ride-icon">
-                    <img src="images/car.png" alt="Car Icon">
-                  </div>
-                  <div class="ride-info">
-                    <h2>Toyota Prius</h2>
-                    <p>
-                      <img src="images/person-icon.png" class="user-icon" alt="User">
-                      John Doe
-                    </p>
-                  </div>
-                </div>
-                <button class="rate-btn">Rate</button>
-              </div>
+    </section>
+  </main>
 
-              <!-- Route Section -->
-              <div class="ride-route">
-                <div class="route-line">
-                  <div class="dot"></div>
-                  <div class="line"></div>
-                  <div class="dot"></div>
-                </div>
+</body>
 
-                <div class="route-details">
-                  <div class="pickup">
-                    <p class="label">PICKUP</p>
-                    <p class="place">Home Address</p>
-                  </div>
-                  <div class="dropoff">
-                    <p class="label">DROPOFF</p>
-                    <p class="place">Maryheights Campus</p>
-                  </div>
-                </div>
-              </div>
-
-              <!-- Footer -->
-              <div class="ride-footer">
-                <div class="info-box">
-                  <div class="icon">
-                    <img src="images/calendar-icon.png" alt="Date">
-                  </div>
-                  <p class="label">Date</p>
-                  <p class="value">Oct 25</p>
-                </div>
-
-                <div class="info-box">
-                  <div class="icon">
-                    <img src="images/clock-icon.png" alt="Time">
-                  </div>
-                  <p class="label">Time</p>
-                  <p class="value">08:30 AM</p>
-                </div>
-
-                <div class="info-box">
-                  <div class="icon">
-                    <img src="images/distance-icon.png" alt="Distance">
-                  </div>
-                  <p class="label">Distance</p>
-                  <p class="value">7.5 km</p>
-                </div>
-
-                <div class="info-box">
-                  <div class="icon">
-                    <img src="images/pseo-icon.png" alt="Fare">
-                  </div>
-                  <p class="label">Fare</p>
-                  <p class="value">₱67.00</p>
-                </div>
-              </div>
-            </div>
-
-
-            <div class="ride-card">
-              <!-- Header -->
-              <div class="ride-header with-button">
-                <div class="ride-left">
-                  <div class="ride-icon">
-                    <img src="images/car.png" alt="Car Icon">
-                  </div>
-                  <div class="ride-info">
-                    <h2>Toyota Prius</h2>
-                    <p>
-                      <img src="images/person-icon.png" class="user-icon" alt="User">
-                      John Doe
-                    </p>
-                  </div>
-                </div>
-                <button class="rate-btn">Rate</button>
-              </div>
-
-              <!-- Route Section -->
-              <div class="ride-route">
-                <div class="route-line">
-                  <div class="dot"></div>
-                  <div class="line"></div>
-                  <div class="dot"></div>
-                </div>
-
-                <div class="route-details">
-                  <div class="pickup">
-                    <p class="label">PICKUP</p>
-                    <p class="place">Home Address</p>
-                  </div>
-                  <div class="dropoff">
-                    <p class="label">DROPOFF</p>
-                    <p class="place">Maryheights Campus</p>
-                  </div>
-                </div>
-              </div>
-
-              <!-- Footer -->
-              <div class="ride-footer">
-                <div class="info-box">
-                  <div class="icon">
-                    <img src="images/calendar-icon.png" alt="Date">
-                  </div>
-                  <p class="label">Date</p>
-                  <p class="value">Oct 25</p>
-                </div>
-
-                <div class="info-box">
-                  <div class="icon">
-                    <img src="images/clock-icon.png" alt="Time">
-                  </div>
-                  <p class="label">Time</p>
-                  <p class="value">08:30 AM</p>
-                </div>
-
-                <div class="info-box">
-                  <div class="icon">
-                    <img src="images/distance-icon.png" alt="Distance">
-                  </div>
-                  <p class="label">Distance</p>
-                  <p class="value">7.5 km</p>
-                </div>
-
-                <div class="info-box">
-                  <div class="icon">
-                    <img src="images/pseo-icon.png" alt="Fare">
-                  </div>
-                  <p class="label">Fare</p>
-                  <p class="value">₱67.00</p>
-                </div>
-              </div>
-            </div>
-
-          </div>
-        </div>
-
-      </section>
-    </main>
-
-  </body>
 </html>

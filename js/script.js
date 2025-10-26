@@ -24,7 +24,7 @@ function initializeNotificationTabs() {
         if (target.id !== "allTab" && target.id !== "unreadTab") return;
 
         e.preventDefault();
-        e.stopPropagation(); // keep dropdown open
+        e.stopPropagation();
 
         switchTab(target.id === "allTab" ? "all" : "unread");
     });
@@ -49,7 +49,6 @@ function switchTab(tab) {
     }
 }
 
-// Keep clicks inside dropdown from closing it
 document.addEventListener('DOMContentLoaded', () => {
     const dropdown = document.getElementById("notificationsDropdown");
     if (dropdown) {
@@ -58,7 +57,6 @@ document.addEventListener('DOMContentLoaded', () => {
     initializeNotificationTabs();
 });
 
-// Close only when clicking completely outside the bell/dropdown
 document.addEventListener('click', function (e) {
     const dropdown = document.getElementById("notificationsDropdown");
     const insideBell = e.target.closest('.nav-bell');
