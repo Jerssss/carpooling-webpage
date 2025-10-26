@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>POOLCAR | Payment </title>
+        <link rel="stylesheet" href="css/style.css">
+        <link rel="stylesheet" href="css/index.css">
+        <link rel="stylesheet" href="css/notifications.css">
+        <link rel="stylesheet" href="css/payment-gateway.css">
+        <script src="js/script.js" defer></script>
+    </head>
+
+    <body>
+        <!-- Navigation bar section -->
+         <nav>
+            <img src="logo.png" class="logo">
+            <ul>
+                <li><a class="active" href="index.html">Home</a></li>
+                <li><a href="list-of-carpools.html">Rides</a></li>
+                <li><a href="history.html">History</a></li>
+                <li><a href="about.html">About Us</a></li>
+                <li class="nav-bell">
+                    <img src="images/bell.png" class="bell-icon" onclick="toggleNotifications()">
+                    <div id="notificationsContainer">
+                        <div class="notifications-dropdown" id="notificationsDropdown">
+                            <div class="notif-tabs">
+                                <span class="active" id="allTab">All</span>
+                                <span id="unreadTab">Unread</span>
+                            </div>
+                            <div class="notif-list" id="notifList">
+                                <div class="notif-item unread">
+                                    <img src="images/driver1.jpg" alt="driver">
+                                    <div class="notif-content">
+                                        <p><strong>Dr. Taejin Cheon</strong> bound to SLU-Maryheights campus has arrived, with plate no. <strong>XYZ 123</strong>.</p>
+                                        <span class="time">2 sec</span>
+                                    </div>
+                                </div>
+                                <div class="notif-item unread">
+                                    <img src="images/driver1.jpg" alt="driver">
+                                    <div class="notif-content">
+                                        <p><strong>Dr. Taejin Cheon</strong> bound to SLU-Maryheights campus is on the way, with plate no. <strong>XYZ 123</strong>.</p>
+                                        <span class="time">10 min</span>
+                                    </div>
+                                </div>
+                                <div class="notif-item unread">
+                                    <img src="images/driver2.jpg" alt="driver">
+                                    <div class="notif-content">
+                                        <p>Hey there, we have a <strong>50% off</strong> on your first carpool for the day. Book now!</p>
+                                        <span class="time">2h</span>
+                                    </div>
+                                </div>
+                                <div class="notif-item read">
+                                    <img src="images/driver3.jpg" alt="driver">
+                                    <div class="notif-content">
+                                        <p><strong>Jorge Terre</strong> has dropped you off at your destination SLU-Maryheights campus, with plate no. <strong>ABC 321</strong>.</p>
+                                        <span class="time">2d</span>
+                                    </div>
+                                </div>
+                                <div class="notif-item read">
+                                    <img src="images/driver3.jpg" alt="driver">
+                                    <div class="notif-content">
+                                        <p><strong>Jorge Terre</strong> bound to SLU-Maryheights campus has arrived, with plate no. <strong>ABC 321</strong>.</p>
+                                        <span class="time">2d</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </li>
+            </ul>
+            <img src="images/speed.jpg" class="user-pic" onclick="toggleMenu()">
+            <div class="sub-menu-wrap" id="subMenu">
+                <div class="sub-menu">
+                    <div class="user-info">
+                        <img src="images/speed.jpg">
+                        <h2>Darren Watkins</h2>
+                    </div>
+                    <hr>
+                    <a href="profile.html" class="sub-menu-link">
+                        <img src="images/user.png" alt="usericon">
+                        <p>Edit Profile</p>
+                        <span>></span>
+                    </a>
+                    <a href="#" class="sub-menu-link">
+                        <img src="images/settings.png" alt="settings">
+                        <p>Settings</p>
+                        <span>></span>
+                    </a>
+                    <a href="#" class="sub-menu-link">
+                        <img src="images/question.png" alt="helpsicon">
+                        <p>Help & Support</p>
+                        <span>></span>
+                    </a>
+                    <a href="#" class="sub-menu-link">
+                        <img src="images/user-logout.png" alt="userlogouticon">
+                        <p>Logout</p>
+                        <span>></span>
+                    </a>
+                </div>
+            </div>
+        </nav>
+        <!-- End of navigation section -->
+
+
+        <!-- Footer section -->
+         <footer class="site-footer">
+            <div class="social-icons">
+                <a href="#"><img src="images/facebook-app-symbol.png" alt="Facebook"></a>
+                <a href="#"><img src="images/instagram.png" alt="Instagram"></a>
+                <a href="#"><img src="images/twitter.png" alt="Twitter"></a>
+                <a href="#"><img src="images/google.png" alt="Google"></a>
+                <a href="#"><img src="images/youtube.png" alt="YouTube"></a>
+            </div>
+            <ul class="footer-nav">
+                <li><a href="index.html">Home</a></li>
+                <li><a href="news.html">News</a></li>
+                <li><a href="about.html">About</a></li>
+                <li><a href="contact.html">Contact Us</a></li>
+                <li><a href="team.html">Our Team</a></li>
+            </ul>
+            <p class="footer-copy">Copyright ©2025 | Designed by <span>Bos Badet</span></p>
+        </footer>
+        <!-- End of footer section -->
+    </body>
+</html>
