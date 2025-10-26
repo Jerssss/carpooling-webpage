@@ -12,95 +12,106 @@
     </head>
 
     <body>
-        <!-- Navigation bar section -->
-         <nav>
-            <img src="logo.png" class="logo">
-            <ul>
-                <li><a class="active" href="index.html">Home</a></li>
-                <li><a href="list-of-carpools.html">Rides</a></li>
-                <li><a href="history.html">History</a></li>
-                <li><a href="about.html">About Us</a></li>
-                <li class="nav-bell">
-                    <img src="images/bell.png" class="bell-icon" onclick="toggleNotifications()">
-                    <div id="notificationsContainer">
-                        <div class="notifications-dropdown" id="notificationsDropdown">
-                            <div class="notif-tabs">
-                                <span class="active" id="allTab">All</span>
-                                <span id="unreadTab">Unread</span>
-                            </div>
-                            <div class="notif-list" id="notifList">
-                                <div class="notif-item unread">
-                                    <img src="images/driver1.jpg" alt="driver">
-                                    <div class="notif-content">
-                                        <p><strong>Dr. Taejin Cheon</strong> bound to SLU-Maryheights campus has arrived, with plate no. <strong>XYZ 123</strong>.</p>
-                                        <span class="time">2 sec</span>
-                                    </div>
-                                </div>
-                                <div class="notif-item unread">
-                                    <img src="images/driver1.jpg" alt="driver">
-                                    <div class="notif-content">
-                                        <p><strong>Dr. Taejin Cheon</strong> bound to SLU-Maryheights campus is on the way, with plate no. <strong>XYZ 123</strong>.</p>
-                                        <span class="time">10 min</span>
-                                    </div>
-                                </div>
-                                <div class="notif-item unread">
-                                    <img src="images/driver2.jpg" alt="driver">
-                                    <div class="notif-content">
-                                        <p>Hey there, we have a <strong>50% off</strong> on your first carpool for the day. Book now!</p>
-                                        <span class="time">2h</span>
-                                    </div>
-                                </div>
-                                <div class="notif-item read">
-                                    <img src="images/driver3.jpg" alt="driver">
-                                    <div class="notif-content">
-                                        <p><strong>Jorge Terre</strong> has dropped you off at your destination SLU-Maryheights campus, with plate no. <strong>ABC 321</strong>.</p>
-                                        <span class="time">2d</span>
-                                    </div>
-                                </div>
-                                <div class="notif-item read">
-                                    <img src="images/driver3.jpg" alt="driver">
-                                    <div class="notif-content">
-                                        <p><strong>Jorge Terre</strong> bound to SLU-Maryheights campus has arrived, with plate no. <strong>ABC 321</strong>.</p>
-                                        <span class="time">2d</span>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </li>
-            </ul>
-            <img src="images/speed.jpg" class="user-pic" onclick="toggleMenu()">
-            <div class="sub-menu-wrap" id="subMenu">
-                <div class="sub-menu">
-                    <div class="user-info">
-                        <img src="images/speed.jpg">
-                        <h2>Darren Watkins</h2>
-                    </div>
-                    <hr>
-                    <a href="profile.html" class="sub-menu-link">
-                        <img src="images/user.png" alt="usericon">
-                        <p>Edit Profile</p>
-                        <span>></span>
-                    </a>
-                    <a href="#" class="sub-menu-link">
-                        <img src="images/settings.png" alt="settings">
-                        <p>Settings</p>
-                        <span>></span>
-                    </a>
-                    <a href="#" class="sub-menu-link">
-                        <img src="images/question.png" alt="helpsicon">
-                        <p>Help & Support</p>
-                        <span>></span>
-                    </a>
-                    <a href="#" class="sub-menu-link">
-                        <img src="images/user-logout.png" alt="userlogouticon">
-                        <p>Logout</p>
-                        <span>></span>
-                    </a>
+        <nav>
+      <!-- Left side nav -->
+      <div class="nav-left">
+        <img src="images/sample-pfp.png" class="logo" alt="Drop N Go Logo">
+        <span class="site-name">Drop N Stop</span>
+      </div>
+
+      <!-- Center navigation links -->
+      <ul>
+        <li><a href="index.html">Home</a></li>
+        <li><a class="active" href="list-of-carpools.html">Rides</a></li>
+        <li><a href="history.html">History</a></li>
+        <li><a href="about.html">About Us</a></li>
+      </ul>
+
+      <!-- Right side nav -->
+      <div class="nav-right">
+        <div class="nav-bell">
+          <img src="images/bell.png" class="bell-icon" onclick="toggleNotifications()">
+          <div id="notificationsContainer">
+            <div class="notifications-dropdown" id="notificationsDropdown">
+              <div class="notif-tabs">
+                <span class="active" id="allTab">All</span>
+                <span id="unreadTab">Unread</span>
+              </div>
+              <div class="notif-list" id="notifList">
+                <div class="notif-item unread">
+                  <img src="images/person-icon.png" alt="driver">
+                  <div class="notif-content">
+                    <p><strong>Dr. Taejin Cheon</strong> bound to SLU-Maryheights campus has arrived, with plate no. <strong>XYZ 123</strong>.</p>
+                    <span class="time">2 sec</span>
+                  </div>
                 </div>
+                <div class="notif-item unread">
+                  <img src="images/person-icon.png" alt="driver">
+                  <div class="notif-content">
+                    <p><strong>Dr. Taejin Cheon</strong> bound to SLU-Maryheights campus is on the way, with plate no. <strong>XYZ 123</strong>.</p>
+                    <span class="time">10 min</span>
+                  </div>
+                </div>
+                <div class="notif-item unread">
+                  <img src="images/person-icon.png" alt="driver">
+                  <div class="notif-content">
+                    <p>Hey there, we have a <strong>50% off</strong> on your first carpool for the day. Book now!</p>
+                    <span class="time">2h</span>
+                  </div>
+                </div>
+                <div class="notif-item read">
+                  <img src="images/person-icon.png" alt="driver">
+                  <div class="notif-content">
+                    <p><strong>Jorge Terre</strong> has dropped you off at your destination SLU-Maryheights campus, with plate no. <strong>ABC 321</strong>.</p>
+                    <span class="time">2d</span>
+                  </div>
+                </div>
+                <div class="notif-item read">
+                  <img src="images/person-icon.png" alt="driver">
+                  <div class="notif-content">
+                    <p><strong>Jorge Terre</strong> bound to SLU-Maryheights campus has arrived, with plate no. <strong>ABC 321</strong>.</p>
+                    <span class="time">2d</span>
+                  </div>
+                </div>
+              </div>
             </div>
-        </nav>
-        <!-- End of navigation section -->
+          </div>
+        </div>
+
+        <img src="images/speed.jpg" class="user-pic" onclick="toggleMenu()">
+      </div>
+
+      <!-- Profile dropdown -->
+      <div class="sub-menu-wrap" id="subMenu">
+        <div class="sub-menu">
+          <div class="user-info">
+            <img src="images/speed.jpg">
+            <h2>Darren Watkins</h2>
+          </div>
+          <hr>
+          <a href="profile.html" class="sub-menu-link">
+            <img src="images/user.png" alt="usericon">
+            <p>Edit Profile</p>
+            <span>></span>
+          </a>
+          <a href="#" class="sub-menu-link">
+            <img src="images/settings.png" alt="settings">
+            <p>Settings</p>
+            <span>></span>
+          </a>
+          <a href="#" class="sub-menu-link">
+            <img src="images/question.png" alt="helpsicon">
+            <p>Help & Support</p>
+            <span>></span>
+          </a>
+          <a href="#" class="sub-menu-link">
+            <img src="images/user-logout.png" alt="userlogouticon">
+            <p>Logout</p>
+            <span>></span>
+          </a>
+        </div>
+      </div>
+    </nav>
 
          <!-- Start of payment section -->
           <section class="payment-container">
