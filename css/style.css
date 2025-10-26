@@ -10,87 +10,256 @@
     --light-color: #fff;
 }
 
-/* ===== NAVIGATION ===== */
+/* ===== NAVIGATION BAR ===== */
 nav {
-    background: #1a1a1a;
-    width: 100%;
-    padding: 10px 10%;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    position: relative;
+  background: #2C2C2C;
+  width: 100%;
+  padding: 20px 3%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  position: relative;
+  z-index: 10;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
 }
 
-nav, header {
-    position: relative;
-    z-index: 1;
+/* Left: logo + site name */
+.nav-left {
+  display: flex;
+  align-items: center;
+  gap: 10px;
 }
 
 .logo {
-    width: 120px;
+  width: 45px;
+  height: 45px;
+  object-fit: contain;
 }
 
-.user-pic {
-    width: 40px;
-    cursor: pointer;
-    margin-left: 30px;
-    border-radius: 50%;
+.site-name {
+  padding-left: 5px;
+  color: #ffb300;
+  font-weight: 700;
+  font-size: 22px;
+  letter-spacing: 1px;
 }
 
+/* Center: navigation links */
 nav ul {
-    width: 100%;
-    text-align: right;
+  display: flex;
+  justify-content: center;
+  flex: 1;
+  list-style: none;
 }
 
 nav li {
-    display: inline-block;
-    list-style: none;
-    margin: 10px 20px;
+  display: inline-block;
+  margin: 0 18px;
+  font-size: 18px;
+  letter-spacing: 1px;
 }
 
 nav ul li a {
-    color: #fff;
-    text-decoration: none;
+  color: #fff;
+  text-decoration: none;
+  transition: color 0.3s;
+  font-weight: 500;
+  position: relative;
 }
 
-.sub-menu-wrap {
+nav ul li a:hover,
+nav ul li a.active {
+  color: #ffb300;
+  font-weight: 600;
+}
+
+/* underline animation */
+nav ul li a::after {
+    content: "";
+    position: absolute;
+    bottom: -4px;
+    left: 0;
+    width: 0;
+    height: 2px;
+    background-color: #FFC800; /* yellow underline */
+    transition: width 0.3s ease;
+}
+
+nav ul li a:hover::after {
+    width: 100%;
+}
+
+/* Right: bell + profile */
+.nav-right {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin-right: 15px; /* pushes them more to the right */
+}
+
+.nav-bell {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.bell-icon {
+  width: 38px;
+  height: 38px;
+  cursor: pointer;
+  object-fit: cover;
+  padding: 5px;
+  border-radius: 50%;
+  background-color: #2a2a2a;
+  transition: background-color 0.3s, transform 0.2s;
+}
+
+.bell-icon:hover {
+  background-color: #3a3a3a;
+  transform: scale(1.05);
+}
+
+/* ===== NOTIFICATION DROPDOWN ===== */
+#notificationsContainer {
+  position: relative;
+}
+
+.notifications-dropdown {
+  display: none;
   position: absolute;
-  top: 100%;
-  right: 10%;
-  width: 320px;
-  max-height: 0;
+  right: 0;
+  top: 55px;
+  width: 350px;
+  background: #fff;
+  border-radius: 10px;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.15);
   overflow: hidden;
-  transition: max-height 0.5s;
-  z-index: 9999;          
-  pointer-events: none;   
+  z-index: 1000;
+  animation: fadeIn 0.3s ease;
+}
+
+.notifications-dropdown.show {
+  display: block;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(-10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.notif-tabs {
+  display: flex;
+  justify-content: space-around;
+  padding: 10px 0;
+  border-bottom: 1px solid #eee;
+  background-color: #f9f9f9;
+}
+
+.notif-tabs span {
+  cursor: pointer;
+  color: #777;
+  font-weight: 500;
+  padding: 6px 10px;
+  border-radius: 5px;
+  transition: 0.3s;
+}
+
+.notif-tabs span.active {
+  background: #ffb300;
+  color: #fff;
+}
+
+.notif-list {
+  max-height: 300px;
+  overflow-y: auto;
+}
+
+.notif-item {
+  display: flex;
+  padding: 10px;
+  border-bottom: 1px solid #eee;
+}
+
+.notif-item img {
+  width: 45px;
+  height: 45px;
+  border-radius: 50%;
+  margin-right: 10px;
+  object-fit: cover;
+}
+
+.notif-content p {
+  font-size: 13px;
+  margin-bottom: 4px;
+  color: #333;
+}
+
+.notif-content .time {
+  font-size: 11px;
+  color: #888;
+}
+
+.notif-list::-webkit-scrollbar {
+  width: 6px;
+}
+.notif-list::-webkit-scrollbar-thumb {
+  background-color: #ccc;
+  border-radius: 10px;
+}
+
+/* Profile image */
+.user-pic {
+  width: 40px;
+  height: 40px;
+  cursor: pointer;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid #ffb300;
+  transition: transform 0.3s ease;
+}
+.user-pic:hover {
+  transform: scale(1.05);
+}
+
+/* ========== DROPDOWN MENU (WHITE) ========== */
+.sub-menu-wrap {
+    position: absolute;
+    top: 100%;
+    right: 10%;
+    width: 320px;
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.4s ease;
+    z-index: 10;
 }
 
 .sub-menu-wrap.open-menu {
-  max-height: 400px;
-  pointer-events: auto;   
+    max-height: 400px;
+    pointer-events: auto;
 }
 
 .sub-menu {
-    background: white;
+    background: #fff;
     padding: 20px;
     margin: 10px;
     border-radius: 10px;
-    box-shadow: 0 5px 10px rgba(0,0,0,0.1); 
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
 }
 
 .user-info {
     display: flex;
+    align-items: center;
     text-align: center;
-}
-
-.user-info h2 {
-    font-weight: 500;
 }
 
 .user-info img {
     width: 60px;
     border-radius: 50%;
     margin-right: 15px;
+}
+
+.user-info h2 {
+    font-weight: 500;
 }
 
 .sub-menu hr {
@@ -107,10 +276,7 @@ nav ul li a {
     text-decoration: none;
     color: #525252;
     margin: 12px 0;
-}
-
-.sub-menu-link p {
-    width: 100%;
+    transition: all 0.3s ease;
 }
 
 .sub-menu-link img {
@@ -123,7 +289,7 @@ nav ul li a {
 
 .sub-menu-link span {
     font-size: 22px;
-    transform: transform 0.5s;
+    transition: transform 0.3s ease;
 }
 
 .sub-menu-link:hover span {
@@ -133,28 +299,6 @@ nav ul li a {
 .sub-menu-link:hover p {
     font-weight: 600;
 }
-
-.btn {
-    background: #312972;
-    color: #fff;
-    padding: 12px 36px;
-    border-radius: 8px;
-    text-decoration: none;
-    font-weight: 600;
-    transition: 0.3s;
-}
-
-.btn:hover {
-    background: #7e73d6;
-    transform: translateY(-2px);
-}
-
-/* ===== Navbar Active Link ===== */
-nav ul li a.active {
-  font-weight: 700;
-  color: #fff;
-}
-
 
 /* ===== FOOTER ===== */
 /* insert here */
