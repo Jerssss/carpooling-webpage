@@ -4,7 +4,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>POOLCAR | History</title>
+  <title>POOLCAR | About Us</title>
   <link rel="stylesheet" href="css/style.css">
   <link rel="stylesheet" href="css/about.css">
   <link rel="stylesheet" href="css/notifications.css">
@@ -13,109 +13,110 @@
 
 <body>
   <nav>
-      <!-- Left side nav -->
-      <div class="nav-left">
-        <img src="images/sample-pfp.png" class="logo" alt="Drop N Go Logo">
-        <span class="site-name">Drop N Stop</span>
-      </div>
+    <div class="nav-left">
+      <img src="images/sample-pfp.png" class="logo" alt="Drop N Go Logo">
+      <span class="site-name">Carma</span>
+    </div>
 
-      <!-- Center navigation links -->
-      <ul>
-        <li><a href="index.html">Home</a></li>
-        <li><a href="list-of-carpools.html">Rides</a></li>
-        <li><a href="history.html">History</a></li>
-        <li><a class="active" href="about.html">About Us</a></li>
-      </ul>
+    <ul>
+      <li><a href="index.html">Home</a></li>
+      <li><a href="list-of-carpools.html">Rides</a></li>
+      <li><a href="history.html">History</a></li>
+      <li><a class="active" href="about.html">About Us</a></li>
+    </ul>
 
-      <!-- Right side nav -->
-      <div class="nav-right">
-        <div class="nav-bell">
-          <img src="images/bell.png" class="bell-icon" onclick="toggleNotifications()">
-          <div id="notificationsContainer">
-            <div class="notifications-dropdown" id="notificationsDropdown">
-              <div class="notif-tabs">
-                <span class="active" id="allTab">All</span>
-                <span id="unreadTab">Unread</span>
-              </div>
-              <div class="notif-list" id="notifList">
-                <div class="notif-item unread">
-                  <img src="images/person-icon.png" alt="driver">
-                  <div class="notif-content">
-                    <p><strong>Dr. Taejin Cheon</strong> bound to SLU-Maryheights campus has arrived, with plate no. <strong>XYZ 123</strong>.</p>
-                    <span class="time">2 sec</span>
-                  </div>
-                </div>
-                <div class="notif-item unread">
-                  <img src="images/person-icon.png" alt="driver">
-                  <div class="notif-content">
-                    <p><strong>Dr. Taejin Cheon</strong> bound to SLU-Maryheights campus is on the way, with plate no. <strong>XYZ 123</strong>.</p>
-                    <span class="time">10 min</span>
-                  </div>
-                </div>
-                <div class="notif-item unread">
-                  <img src="images/person-icon.png" alt="driver">
-                  <div class="notif-content">
-                    <p>Hey there, we have a <strong>50% off</strong> on your first carpool for the day. Book now!</p>
-                    <span class="time">2h</span>
-                  </div>
-                </div>
-                <div class="notif-item read">
-                  <img src="images/person-icon.png" alt="driver">
-                  <div class="notif-content">
-                    <p><strong>Jorge Terre</strong> has dropped you off at your destination SLU-Maryheights campus, with plate no. <strong>ABC 321</strong>.</p>
-                    <span class="time">2d</span>
-                  </div>
-                </div>
-                <div class="notif-item read">
-                  <img src="images/person-icon.png" alt="driver">
-                  <div class="notif-content">
-                    <p><strong>Jorge Terre</strong> bound to SLU-Maryheights campus has arrived, with plate no. <strong>ABC 321</strong>.</p>
-                    <span class="time">2d</span>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <img src="images/speed.jpg" class="user-pic" onclick="toggleMenu()">
-      </div>
-
-      <!-- Profile dropdown -->
-      <div class="sub-menu-wrap" id="subMenu">
-        <div class="sub-menu">
-          <div class="user-info">
-            <img src="images/speed.jpg">
-            <h2>Darren Watkins</h2>
-          </div>
-          <hr>
-          <a href="profile.html" class="sub-menu-link">
-            <img src="images/user.png" alt="usericon">
-            <p>Edit Profile</p>
-            <span>></span>
-          </a>
-          <a href="#" class="sub-menu-link">
-            <img src="images/settings.png" alt="settings">
-            <p>Settings</p>
-            <span>></span>
-          </a>
-          <a href="#" class="sub-menu-link">
-            <img src="images/question.png" alt="helpsicon">
-            <p>Help & Support</p>
-            <span>></span>
-          </a>
-          <a href="#" class="sub-menu-link">
-            <img src="images/user-logout.png" alt="userlogouticon">
-            <p>Logout</p>
-            <span>></span>
-          </a>
-        </div>
-      </div>
-    </nav>
+    <div class="nav-right">
+      <img src="images/speed.jpg" class="user-pic" onclick="toggleMenu()">
+    </div>
+  </nav>
 
   <div class="history">
-    <h1>ABOUT</h1>
+    <h1>ABOUT US</h1>
+    <p class="about-desc">
+      Carma is a student-led carpooling platform designed to make commuting faster,
+      safer, and more convenient for students and staff traveling to campus.
+    </p>
   </div>
+
+    <!-- ===== ABOUT FEATURES (IN CARDS) ===== -->
+  <section class="about-features">
+  <div class="feature-card">
+    <h3>Safe Rides</h3>
+    <p>All drivers are verified and undergo regular safety checks to ensure reliable trips.</p>
+  </div>
+
+  <div class="feature-card">
+    <h3>Time Efficient</h3>
+    <p>Enjoy quick and convenient booking for your daily school commutes.</p>
+  </div>
+
+  <div class="feature-card">
+    <h3>Community Driven</h3>
+    <p>We foster a culture of trust and collaboration among students and drivers.</p>
+  </div>
+</section>
+
+
+  <!-- ===== MEET OUR TEAM (CIRCULAR ICONS) ===== -->
+  <section class="team-section">
+    <div class="team-header">
+      <h2>Meet Our Team</h2>
+      <p>Get to know the dedicated people behind Carma.</p>
+    </div>
+
+    <div class="team-container">
+      <div class="team-member">
+        <img src="images/lolen.jfif" alt="Team Member 1">
+        <h3>Noelle Adame</h3>
+      </div>
+
+      <div class="team-member">
+        <img src="images/team2.jpg" alt="Team Member 2">
+        <h3>Jeremiah Ang-angco</h3>
+      </div>
+
+      <div class="team-member">
+        <img src="images/team4.jpg" alt="Team Member 3">
+        <h3>Geoff Ferrer</h3>
+      </div>
+
+      <div class="team-member">
+        <img src="images/yana.jfif" alt="Team Member 4">
+        <h3>Giana Grabanzor</h3>
+      </div>
+
+      <div class="team-member">
+        <img src="images/seb.jpg" alt="Team Member 5">
+        <h3>Sebasthian Molina</h3>
+      </div>
+
+      <div class="team-member">
+        <img src="images/jorge.png" alt="Team Member 6">
+        <h3>Jorge Terre</h3>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== FOOTER SECTION ===== -->
+    <footer class="site-footer">
+      <div class="social-icons">
+        <a href="#"><img src="images/facebook-app-symbol.png" alt="Facebook"></a>
+        <a href="#"><img src="images/instagram.png" alt="Instagram"></a>
+        <a href="#"><img src="images/twitter.png" alt="Twitter"></a>
+        <a href="#"><img src="images/google.png" alt="Google"></a>
+        <a href="#"><img src="images/youtube.png" alt="YouTube"></a>
+      </div>
+
+      <ul class="footer-nav">
+        <li><a href="index.html">Home</a></li>
+        <li><a href="news.html">Rides</a></li>
+        <li><a href="about.html">History</a></li>
+        <li><a href="team.html">Our Team</a></li>
+      </ul>
+
+      <p class="footer-copy">Copyright ©2025 | Designed by <span>Bos Badet</span></p>
+    </footer>
+
 </body>
 
 </html>
