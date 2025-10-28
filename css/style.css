@@ -303,4 +303,68 @@ nav ul li a:hover::after {
 }
 
 /* ===== FOOTER ===== */
-/* insert here */
+.site-footer {
+  background-color: #1A1A1A;
+  color: #ccc;
+  text-align: center;
+  padding: 40px 0 20px;
+  font-family: 'Poppins', sans-serif;
+}
+
+.site-footer .social-icons {
+  margin-bottom: 20px;
+}
+
+.site-footer .social-icons a {
+  display: inline-block;
+  margin: 0 10px;
+  background-color: #fff;
+  border-radius: 50%;
+  padding: 10px;
+  width: 45px;
+  height: 45px;
+  transition: transform 0.3s ease, background-color 0.3s ease;
+}
+
+.site-footer .social-icons a:hover {
+  transform: scale(1.1);
+  background-color: #ffb300;
+}
+
+.site-footer .social-icons img {
+  width: 25px;
+  height: 25px;
+}
+
+.site-footer .footer-nav {
+  list-style: none;
+  padding: 0;
+  margin: 20px 0;
+}
+
+.site-footer .footer-nav li {
+  display: inline-block;
+  margin: 0 15px;
+}
+
+.site-footer .footer-nav li a {
+  color: #ccc;
+  text-decoration: none;
+  font-size: 18px;
+  transition: color 0.3s ease;
+}
+
+.site-footer .footer-nav li a:hover {
+  color: #fff;
+}
+
+.site-footer .footer-copy {
+  font-size: 15px;
+  margin-top: 15px;
+  color: #bfbfbf;
+}
+
+.site-footer .footer-copy span {
+  color: #FFB300;
+  font-weight: 600;
+}
