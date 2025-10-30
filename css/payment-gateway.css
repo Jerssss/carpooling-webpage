@@ -130,6 +130,11 @@ body{
     transform: scale(1.05);
 }
 
+.confirm-btn a{
+    text-decoration: none;
+    color: white;
+}
+
 /* QR Code Section*/
 .qr-section {
     background: white;
@@ -170,3 +175,57 @@ body{
 .hidden{
     display: none;
 }
+
+
+/* Receipt CSS */
+.receipt-container {
+    flex: 1;
+    display: flex;
+    justify-content: flex-end;
+}
+
+.receipt-box {
+    width: 400px;
+    background-color: #faf7fa;
+    border-radius: 16px;
+    padding: 25px;
+    box-shadow: inset 0 0 8px rgba(0, 0, 0, 0.05);
+}
+
+.receipt-box h2 {
+    text-align: center;
+    font-size: 22px;
+    font-weight: 600;
+    margin-bottom: 25px;
+    color: #C49102;
+}
+
+.receipt-item {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 12px;
+    font-size: 15px;
+    color: #333;
+}
+
+.receipt-item span:first-child {
+    font-weight: 500;
+}
+
+hr {
+    border: none;
+    border-top: 1px solid #ddd;
+    margin: 18px 0;
+}
+
+.total {
+    font-size: 18px;
+    font-weight: 600;
+    color: #C49102;
+}
+
+.placeholder {
+    color: #777;
+    font-style: italic;
+}
+
