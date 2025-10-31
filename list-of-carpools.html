@@ -124,81 +124,11 @@
     
     <div class="cards-container">
       <!-- Start of container class containing car pool cards -->
-     <div class="carpool-container">
-      <!-- MUST NOT BE STATIC -->
-       <div class="carpool-card">
-        <img src="images/sample-pfp.png" alt="Sebasthian">
-        <div class="carpool-info">
-          <h3>Bernard Sebasthian Molina</h3>
-          <p class="vehicle">Tesla Cybertruck</p>
-          <p class="role">Student</p>
-          <p>1m away from you</p>
-          <p>Available for pickup/meetup</p>
-          <p>Available seats: 1</p>
-          <p>Leaving 2:30 PM - 3:00 PM</p>
-        </div>
-        <div class="card-footer">
-          <span class="status-dot green"></span>
-          <button class="view-btn"><a href="driverdetails.html">View</a></button>
-        </div>
-      </div>
-
-      <!-- Another static card -->
-       <div class="carpool-card">
-        <img src="images/sample-pfp.png" alt="Sebasthian">
-        <div class="carpool-info">
-          <h3>Bernard Sebasthian Molina</h3>
-          <p class="vehicle">Tesla Cybertruck</p>
-          <p class="role">Student</p>
-          <p>1m away from you</p>
-          <p>Available for pickup/meetup</p>
-          <p>Available seats: 1</p>
-          <p>Leaving 2:30 PM - 3:00 PM</p>
-        </div>
-        <div class="card-footer">
-          <span class="status-dot green"></span>
-          <button class="view-btn"><a href="driverdetails.html">View</a></button>
-        </div>
-      </div>
-
-    <!-- Another static card -->
-       <div class="carpool-card">
-        <img src="images/sample-pfp.png" alt="Sebasthian">
-        <div class="carpool-info">
-          <h3>Bernard Sebasthian Molina</h3>
-          <p class="vehicle">Tesla Cybertruck</p>
-          <p class="role">Student</p>
-          <p>1m away from you</p>
-          <p>Available for pickup/meetup</p>
-          <p>Available seats: 1</p>
-          <p>Leaving 2:30 PM - 3:00 PM</p>
-        </div>
-        <div class="card-footer">
-          <span class="status-dot green"></span>
-          <button class="view-btn"><a href="driverdetails.html">View</a></button>
-        </div>
-      </div>
-
-    <!-- Another static card -->
-       <div class="carpool-card">
-        <img src="images/sample-pfp.png" alt="Sebasthian">
-        <div class="carpool-info">
-          <h3>Bernard Sebasthian Molina</h3>
-          <p class="vehicle">Tesla Cybertruck</p>
-          <p class="role">Student</p>
-          <p>1m away from you</p>
-          <p>Available for pickup/meetup</p>
-          <p>Available seats: 1</p>
-          <p>Leaving 2:30 PM - 3:00 PM</p>
-        </div>
-        <div class="card-footer">
-          <span class="status-dot green"></span>
-          <button class="view-btn"><a href="driverdetails.html">View</a></button>
-        </div>
-      </div>
+     <div class="carpool-container" id="carpoolContainer"> <!-- Calling the script file-->
+      <!-- Generate dynamic content here -->
     </div>
-    </div>
-  </section>
+  </div>
+</section>
 
 
   <!-- Start of footer section -->
@@ -222,5 +152,6 @@
     <p class="footer-copy">Copyright ©2025 | Designed by <span>Bos Badet</span></p>
   </footer>
   <!-- End of footer section -->
+   <script src="js/fetch_carpool.js"></script>
 </body>
 </html>
