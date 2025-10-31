@@ -2,7 +2,7 @@
 
 document.addEventListener("DOMContentLoaded", () => {
     // This variable gets the element ID which the dynamic content will be inserted in
-    const container = document.querySelector('.carpoolContainer');
+    const container = document.querySelector('.carpool-container'); // Gets class from the HTML file
     
     // Fetch carpool data from PHP
     fetch('includes/fetch_carpool.php')
