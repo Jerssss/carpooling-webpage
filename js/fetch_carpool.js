@@ -11,7 +11,7 @@ document.addEventListener("DOMContentLoaded", () => {
       container.innerHTML = ''; // clear old cards
 
       data.forEach(carpool => {
-        const card = document.createElement('div');
+        const card = document.createElement('div'); // Creates dynamic divs that contains the carpool cars
         card.classList.add('carpool-card');
 
         card.innerHTML = `
