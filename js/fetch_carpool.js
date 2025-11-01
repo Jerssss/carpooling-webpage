@@ -8,7 +8,7 @@ document.addEventListener("DOMContentLoaded", () => {
     fetch('includes/fetch_carpool.php')
     .then(response => response.json())
     .then(data => {
-      container.innerHTML = ''; // clear old cards
+      container.innerHTML = ''; // Clear old cards
 
       data.forEach(carpool => {
         const card = document.createElement('div'); // Creates dynamic divs that contains the carpool cars
@@ -19,14 +19,15 @@ document.addEventListener("DOMContentLoaded", () => {
           <img src="${carpool.photo}" alt="${carpool.name}">
           <div class="carpool-info">
             <h3>${carpool.name}</h3>
-            <p class="occupation">${carpool.occupation}</p>
-            <p class="stationedAt">Stationed at:${carpool.stationedAt}</p>
-            <p class="destination">Destination:${carpool.destination}</p>
-            <p>Available seats: ${carpool.availableSeats}</p>
-            <p>Leaving at: ${carpool.leavingTime}</p>
+            <p class="occupation"><strong>${carpool.occupation}</strong></p>
+            <p class="stationedAt"><strong>Stationed at: </strong> ${carpool.stationedAt}</p>
+            <p class="destination"><strong>Destination:</strong> ${carpool.destination}</p>
+            <p><strong>Available seats: </strong>${carpool.availableSeats}</p>
+            <p><strong>Leaving at:</strong> ${carpool.leavingTime}</p>
+            <p><strong>For:</strong> ${carpool.for}</p>
           </div>
           <div class="card-footer">
-            <span class="status-dot ${carpool.status.toLowerCase() === 'active' ? 'green' : 'red'}"></span>
+            <span class="status-dot ${carpool.status.toLowerCase() === 'available' ? 'green' : 'red'}"></span>
             <button class="view-btn"><a href="driverdetails.html?driver=${encodeURIComponent(carpool.name)}">View</a></button>
           </div>
         `;

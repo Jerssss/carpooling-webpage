@@ -1,7 +1,7 @@
 <?php
 require __DIR__ . '/../vendor/autoload.php'; // MongoDB PHP library
 
-// Establish MongoDB connection. Be sure MongoDB server is on!
+// Establish MongoDB connection. Note: Ensure that MongoDB compass server is on
 $client = new MongoDB\Client("mongodb://localhost:27017/");
 
 // Select the databases and collections
@@ -10,25 +10,27 @@ $usersCollection = $client->carpooling_data->users;
 
 // QUERYING. Imagine niyo 'to as a "Prepared Statement" like in SQL
 
-// Use aggregation to "join" rides with users. SQL equivalent of pipile: left join on
+// Use aggregation to "join" rides db with users db. SQL equivalent of pipline: left join on
 $pipeline = [
     [
         // Lookup is equivalent to JOIN in SQL
         '$lookup' => [
-            'from' => 'users', // target collection name
-            'localField' => 'driverId', // field from rides
-            'foreignField' => 'userID', // field from users
-            'as' => 'driverInfo' // alias for joined data
+            'from' => 'users', // Target collection name
+            'localField' => 'driverId', // Field from rides
+            'foreignField' => 'userID', // Field from users
+            'as' => 'driverInfo' // driverInfo contains all the aggregated data
         ]
     ],
     [
-        '$unwind' => '$driverInfo' // flatten array (each ride has one driver)
+        '$unwind' => '$driverInfo' // Flatten array (each ride has one driver)
     ]
 ];
 
 // Execute aggregation pipeline
 $results = $ridesCollection->aggregate($pipeline);
 
+
+// Store the fetched data here
 $carpools = [];
 
 // Fetch the required data to generate dynamic content
@@ -44,9 +46,11 @@ foreach ($results as $ride) {
         'availableSeats' => $ride['availableSeats'],
         'destination' => $ride['destination'],
         'status' => ucfirst($ride['status']),
+        'for' => $ride['for'],
 
-        // Formating the time
-        'leavingTime' => date("g:i A", strtotime($ride['departureTime'])),
+        // Since ung format ng date and time sa db cannot be parsed, saka nalang muna ung date formatting 
+        // 'leavingTime' => date("g:i A", strtotime($ride['departureTime'])),
+        'leavingTime' => $ride['departureTime'], // No date parsing
 
         // Get photopath from mongoDB
         'photo' => $ride['driverInfo']['picture'] ?? 'images/profile_pics/default-pic.png'
