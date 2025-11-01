@@ -34,21 +34,22 @@ $carpools = [];
 // Fetch the required data to generate dynamic content
 foreach ($results as $ride) {
     $carpools[] = [
-
         // Extract driver info from users collection
         'name' => $ride['driverInfo']['name'],
         'email' => $ride['driverInfo']['email'],
-        'role' => ucfirst($ride['driverInfo']['role']),
+        'occupation' => ucfirst($ride['driverInfo']['occupation']),
 
         // Extract ride info from rides collection
-        'vehicle' => isset($ride['carId']) ? $ride['carId'] : 'Unknown Vehicle',
+        'stationedAt' => isset($ride['stationedAt']) ? $ride['stationedAt'] : 'Unknown Location',
         'availableSeats' => $ride['availableSeats'],
+        'destination' => $ride['destination'],
         'status' => ucfirst($ride['status']),
 
         // Formating the time
         'leavingTime' => date("g:i A", strtotime($ride['departureTime'])),
 
-        'photo' => 'images/sample-pfp.png' // placeholder photo
+        // Get photopath from mongoDB
+        'photo' => $ride['driverInfo']['picture'] ?? 'images/profile_pics/default-pic.png'
     ];
 }
 

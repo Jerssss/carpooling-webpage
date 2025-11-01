@@ -99,7 +99,7 @@
     font-size: 16px;
 }
 
-.carpool-info .vehicle {
+.carpool-info .stationedAt {
     font-weight: 600;
     color: #000;
     margin-bottom: 5px;
@@ -111,7 +111,7 @@
     margin: 2px 0;
 }
 
-.role {
+.occupation {
     font-style: italic;
     color: #777;
 }

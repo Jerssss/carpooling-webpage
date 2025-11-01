@@ -14,12 +14,14 @@ document.addEventListener("DOMContentLoaded", () => {
         const card = document.createElement('div'); // Creates dynamic divs that contains the carpool cars
         card.classList.add('carpool-card');
 
+        // Generate dynamic cards
         card.innerHTML = `
           <img src="${carpool.photo}" alt="${carpool.name}">
           <div class="carpool-info">
             <h3>${carpool.name}</h3>
-            <p class="vehicle">${carpool.vehicle}</p>
-            <p class="role">${carpool.role}</p>
+            <p class="occupation">${carpool.occupation}</p>
+            <p class="stationedAt">Stationed at:${carpool.stationedAt}</p>
+            <p class="destination">Destination:${carpool.destination}</p>
             <p>Available seats: ${carpool.availableSeats}</p>
             <p>Leaving at: ${carpool.leavingTime}</p>
           </div>
