@@ -29,7 +29,6 @@ $pipeline = [
 // Execute aggregation pipeline
 $results = $ridesCollection->aggregate($pipeline);
 
-
 // Store the fetched data here
 $carpools = [];
 
@@ -37,6 +36,7 @@ $carpools = [];
 foreach ($results as $ride) {
     $carpools[] = [
         // Extract driver info from users collection
+        'rideId' => $ride['rideId'], // To be used for the "View carpool details" feature
         'name' => $ride['driverInfo']['name'],
         'email' => $ride['driverInfo']['email'],
         'occupation' => ucfirst($ride['driverInfo']['occupation']),
