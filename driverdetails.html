@@ -7,6 +7,7 @@
     <link rel="stylesheet" href="css/style.css">
     <link rel="stylesheet" href="css/driverdetails.css">
     <link rel="stylesheet" href="css/notifications.css">
+    <link rel="stylesheet" href="css/bookingconfirmation.css">
     <script src="js/view_carpool.js"></script>
   </head>
   <body>
@@ -149,6 +150,22 @@
 
       </div>
     </section>
+
+    <!-- Confirmation Popup -->
+<div class="overlay" id="confirmationPopup">
+  <div class="popup-card">
+    <h2 class="popup-title">Confirm Booking</h2>
+    <p class="popup-text">
+      You are about to book <span id="driverNamePlaceholder"></span>. <br>
+      Would you like to proceed?
+    </p>
+    <div class="btn-group">
+      <button class="cancel-btn" id="cancelBooking">Cancel</button>
+      <button class="book-btn" id="proceedBooking">Proceed</button>
+    </div>
+  </div>
+</div>
+
 
     <!-- ===== FOOTER SECTION ===== -->
   <footer class="site-footer">
