@@ -65,20 +65,53 @@ document.addEventListener('click', function (e) {
     }
 });
 
-document.addEventListener('DOMContentLoaded', () => {
-
-  const cancelBtn = document.getElementById("cancelBtn");
-  if (cancelBtn) {
-    cancelBtn.addEventListener("click", () => {
-      window.location.href = "list-of-carpools.html";  // adjust if file name is different
-    });
-  }
-
+document.addEventListener("DOMContentLoaded", async () => {
   const bookBtn = document.getElementById("bookBtn");
+  const popup = document.getElementById("confirmationPopup");
+  const popupCancel = document.getElementById("cancelBooking");
+  const popupProceed = document.getElementById("proceedBooking");
+  const driverNameEl = document.getElementById("driverNamePlaceholder");
+
+  // Extract rideId from URL
+  const urlParams = new URLSearchParams(window.location.search);
+  const rideId = urlParams.get("rideId");
+
+  if (!rideId) return;
+
+  // Fetch only the driver’s name from your PHP file
+  try {
+    const response = await fetch(`includes/view_carpool.php?rideId=${rideId}`);
+    const data = await response.json();
+
+    if (!data || data.error) {
+      console.error(data?.error || "Failed to load ride details.");
+      return;
+    }
+
+    if (driverNameEl) driverNameEl.textContent = data.driverName;
+  } catch (err) {
+    console.error("Error fetching ride details:", err);
+  }
+
+  // Show popup when clicking "Book Now"
   if (bookBtn) {
-    bookBtn.addEventListener("click", () => {
-      window.location.href = "loading.html"; // placeholder (you will make later)
+    bookBtn.addEventListener("click", (e) => {
+      e.preventDefault();
+      if (popup) popup.style.display = "flex";
     });
   }
 
+  // Hide popup on cancel
+  if (popupCancel) {
+    popupCancel.addEventListener("click", () => {
+      if (popup) popup.style.display = "none";
+    });
+  }
+
+  // Proceed to payment
+  if (popupProceed) {
+    popupProceed.addEventListener("click", () => {
+      window.location.href = `payment-gateway.html?rideId=${rideId}`;
+    });
+  }
 });

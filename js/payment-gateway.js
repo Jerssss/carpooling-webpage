@@ -18,3 +18,47 @@ cashTab.addEventListener("click", () => {
   cashContent.classList.remove("hidden");
   gcashContent.classList.add("hidden");
 });
+
+document.addEventListener("DOMContentLoaded", () => {
+  const paymentForm = document.querySelector("#paymentForm");
+
+  const userId = "U0001"; // Replace later with session variable
+  const rideId = localStorage.getItem("selectedRideId") || "R0001";
+
+  // Load user info
+  fetch(`includes/get_user_info.php?userId=${userId}`)
+    .then(res => res.json())
+    .then(data => {
+      if (data.success && data.user) {
+        const u = data.user;
+        document.getElementById("fullName").value = u.name || "";
+        document.getElementById("idNumber").value = u.userID || "";
+        document.getElementById("email").value = u.email || "";
+      }
+    })
+    .catch(err => console.error("Error loading user info:", err));
+
+  // Submit payment form
+  paymentForm.addEventListener("submit", (e) => {
+    e.preventDefault();
+    const formData = new FormData(paymentForm);
+    formData.append("userId", userId);
+    formData.append("rideId", rideId);
+    formData.append("amount", 50);
+
+    fetch("includes/payment_handler.php", {
+      method: "POST",
+      body: formData
+    })
+      .then(res => res.json())
+      .then(data => {
+        if (data.success) {
+          alert("✅ Payment successfully recorded!");
+          window.location.href = "receipt.html";
+        } else {
+          alert("❌ " + data.message);
+        }
+      })
+      .catch(err => console.error("Error submitting payment:", err));
+  });
+});
