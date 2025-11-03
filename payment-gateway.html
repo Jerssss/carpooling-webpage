@@ -8,6 +8,7 @@
         <link rel="stylesheet" href="css/notifications.css">
         <link rel="stylesheet" href="css/payment-gateway.css">
         <script src="js/script.js" defer></script>
+  <script src="js/notifications.js" defer></script>
     </head>
 
     <body>
@@ -29,7 +30,7 @@
       <!-- Right side nav -->
       <div class="nav-right">
         <div class="nav-bell">
-          <img src="images/bell.png" class="bell-icon" onclick="toggleNotifications()">
+          <img src="images/bell.png" class="bell-icon" alt="Notifications" onclick="toggleNotifications()">
           <div id="notificationsContainer">
             <div class="notifications-dropdown" id="notificationsDropdown">
               <div class="notif-tabs">
@@ -37,39 +38,9 @@
                 <span id="unreadTab">Unread</span>
               </div>
               <div class="notif-list" id="notifList">
-                <div class="notif-item unread">
-                  <img src="images/person-icon.png" alt="driver">
+                <div class="notif-item">
                   <div class="notif-content">
-                    <p><strong>Dr. Taejin Cheon</strong> bound to SLU-Maryheights campus has arrived, with plate no. <strong>XYZ 123</strong>.</p>
-                    <span class="time">2 sec</span>
-                  </div>
-                </div>
-                <div class="notif-item unread">
-                  <img src="images/person-icon.png" alt="driver">
-                  <div class="notif-content">
-                    <p><strong>Dr. Taejin Cheon</strong> bound to SLU-Maryheights campus is on the way, with plate no. <strong>XYZ 123</strong>.</p>
-                    <span class="time">10 min</span>
-                  </div>
-                </div>
-                <div class="notif-item unread">
-                  <img src="images/person-icon.png" alt="driver">
-                  <div class="notif-content">
-                    <p>Hey there, we have a <strong>50% off</strong> on your first carpool for the day. Book now!</p>
-                    <span class="time">2h</span>
-                  </div>
-                </div>
-                <div class="notif-item read">
-                  <img src="images/person-icon.png" alt="driver">
-                  <div class="notif-content">
-                    <p><strong>Jorge Terre</strong> has dropped you off at your destination SLU-Maryheights campus, with plate no. <strong>ABC 321</strong>.</p>
-                    <span class="time">2d</span>
-                  </div>
-                </div>
-                <div class="notif-item read">
-                  <img src="images/person-icon.png" alt="driver">
-                  <div class="notif-content">
-                    <p><strong>Jorge Terre</strong> bound to SLU-Maryheights campus has arrived, with plate no. <strong>ABC 321</strong>.</p>
-                    <span class="time">2d</span>
+                    <p>Loading notifications...</p>
                   </div>
                 </div>
               </div>
@@ -77,36 +48,36 @@
           </div>
         </div>
 
-        <img src="images/speed.jpg" class="user-pic" onclick="toggleMenu()">
+  <img src="images/speed.jpg" class="user-pic" alt="User" onclick="toggleMenu()">
       </div>
 
       <!-- Profile dropdown -->
       <div class="sub-menu-wrap" id="subMenu">
         <div class="sub-menu">
           <div class="user-info">
-            <img src="images/speed.jpg">
+            <img src="images/speed.jpg" alt="User">
             <h2>Darren Watkins</h2>
           </div>
           <hr>
           <a href="profile.html" class="sub-menu-link">
             <img src="images/user.png" alt="usericon">
             <p>Edit Profile</p>
-            <span>></span>
+            <span>&gt;</span>
           </a>
           <a href="#" class="sub-menu-link">
             <img src="images/settings.png" alt="settings">
             <p>Settings</p>
-            <span>></span>
+            <span>&gt;</span>
           </a>
           <a href="#" class="sub-menu-link">
             <img src="images/question.png" alt="helpsicon">
-            <p>Help & Support</p>
-            <span>></span>
+            <p>Help &amp; Support</p>
+            <span>&gt;</span>
           </a>
           <a href="#" class="sub-menu-link">
             <img src="images/user-logout.png" alt="userlogouticon">
             <p>Logout</p>
-            <span>></span>
+            <span>&gt;</span>
           </a>
         </div>
       </div>
@@ -117,50 +88,40 @@
             <h2>Select Payment Method</h2>
 
             <div class="payment-tabs">
-                <button class="tab active" id="gcash-tab">GCash</button>
-                <button class="tab" id="cash-tab">Cash</button>
+                <button class="tab active" id="gcash-tab" type="button">GCash</button>
+                <button class="tab" id="cash-tab" type="button">Cash</button>
             </div>
 
             <!--Gcash payment-->
             <form class="payment-form" id="paymentForm">
               <h3>Transaction Details</h3>
-            
               <label>Full Name</label>
               <input type="text" id="fullName" name="fullName" required>
-            
               <label>ID Number</label>
               <input type="text" id="idNumber" name="idNumber" required>
-            
               <label>Email Address</label>
               <input type="email" id="email" name="email" required>
-            
               <label>Pickup Type</label>
               <select id="pickupType" name="pickupType" required>
                 <option value="pickup">Pickup</option>
                 <option value="meetup">Meetup</option>
               </select>
-            
               <label>Pickup/Meetup Time</label>
               <input type="text" id="pickupTime" name="pickupTime" placeholder="e.g. 2:30 to 3:00 PM" required>
-            
               <label>Pickup/Meetup Location</label>
               <input type="text" id="pickupLocation" name="pickupLocation" placeholder="Enter Location" required>
-            
               <div class="proof-section">
                 <div class="ref-number">
                   <label>GCash Reference Number</label>
                   <input type="text" id="referenceNumber" name="referenceNumber" placeholder="Enter GCash Reference Number" required>
                 </div>
-            
                 <div class="upload-proof">
                   <label>Upload Screenshot</label>
                   <input type="file" id="proofScreenshot" name="proofScreenshot" accept="image/*" required>
                 </div>
               </div>
-            
               <button type="submit" class="confirm-btn">Confirm Payment</button>
             </form>
-            
             <!-- Cash section -->
             <div class="payment-content hidden" id="cash-content">
                <form class="payment-form">
@@ -180,7 +141,6 @@
                      <!-- Confirm button -->
                      <button type="submit" class="confirm-btn">Confirm Payment</button>
                 </form>
-                
                 <!-- REUSED QR CODE CLASS FOR THIS IMAGE-->
                 <div class="qr-section">
                     <img src="images/cash.png" alt="Cash icon" class="qr-code">

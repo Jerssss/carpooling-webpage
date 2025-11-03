@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
     <head>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -8,6 +8,7 @@
         <link rel="stylesheet" href="css/notifications.css">
         <link rel="stylesheet" href="css/payment-gateway.css">
         <script src="js/script.js" defer></script>
+    <script src="js/notifications.js" defer></script>
     </head>
 
     <body>
@@ -29,7 +30,7 @@
       <!-- Right side nav -->
       <div class="nav-right">
         <div class="nav-bell">
-          <img src="images/bell.png" class="bell-icon" onclick="toggleNotifications()">
+          <img src="images/bell.png" class="bell-icon" alt="Notifications" onclick="toggleNotifications()">
           <div id="notificationsContainer">
             <div class="notifications-dropdown" id="notificationsDropdown">
               <div class="notif-tabs">
@@ -37,39 +38,9 @@
                 <span id="unreadTab">Unread</span>
               </div>
               <div class="notif-list" id="notifList">
-                <div class="notif-item unread">
-                  <img src="images/person-icon.png" alt="driver">
+                <div class="notif-item">
                   <div class="notif-content">
-                    <p><strong>Dr. Taejin Cheon</strong> bound to SLU-Maryheights campus has arrived, with plate no. <strong>XYZ 123</strong>.</p>
-                    <span class="time">2 sec</span>
-                  </div>
-                </div>
-                <div class="notif-item unread">
-                  <img src="images/person-icon.png" alt="driver">
-                  <div class="notif-content">
-                    <p><strong>Dr. Taejin Cheon</strong> bound to SLU-Maryheights campus is on the way, with plate no. <strong>XYZ 123</strong>.</p>
-                    <span class="time">10 min</span>
-                  </div>
-                </div>
-                <div class="notif-item unread">
-                  <img src="images/person-icon.png" alt="driver">
-                  <div class="notif-content">
-                    <p>Hey there, we have a <strong>50% off</strong> on your first carpool for the day. Book now!</p>
-                    <span class="time">2h</span>
-                  </div>
-                </div>
-                <div class="notif-item read">
-                  <img src="images/person-icon.png" alt="driver">
-                  <div class="notif-content">
-                    <p><strong>Jorge Terre</strong> has dropped you off at your destination SLU-Maryheights campus, with plate no. <strong>ABC 321</strong>.</p>
-                    <span class="time">2d</span>
-                  </div>
-                </div>
-                <div class="notif-item read">
-                  <img src="images/person-icon.png" alt="driver">
-                  <div class="notif-content">
-                    <p><strong>Jorge Terre</strong> bound to SLU-Maryheights campus has arrived, with plate no. <strong>ABC 321</strong>.</p>
-                    <span class="time">2d</span>
+                    <p>Loading notifications...</p>
                   </div>
                 </div>
               </div>
@@ -77,36 +48,36 @@
           </div>
         </div>
 
-        <img src="images/speed.jpg" class="user-pic" onclick="toggleMenu()">
+  <img src="images/speed.jpg" class="user-pic" alt="User" onclick="toggleMenu()">
       </div>
 
       <!-- Profile dropdown -->
       <div class="sub-menu-wrap" id="subMenu">
         <div class="sub-menu">
           <div class="user-info">
-            <img src="images/speed.jpg">
+            <img src="images/speed.jpg" alt="User">
             <h2>Darren Watkins</h2>
           </div>
           <hr>
           <a href="profile.html" class="sub-menu-link">
             <img src="images/user.png" alt="usericon">
             <p>Edit Profile</p>
-            <span>></span>
+            <span>&gt;</span>
           </a>
           <a href="#" class="sub-menu-link">
             <img src="images/settings.png" alt="settings">
             <p>Settings</p>
-            <span>></span>
+            <span>&gt;</span>
           </a>
           <a href="#" class="sub-menu-link">
             <img src="images/question.png" alt="helpsicon">
-            <p>Help & Support</p>
-            <span>></span>
+            <p>Help &amp; Support</p>
+            <span>&gt;</span>
           </a>
           <a href="#" class="sub-menu-link">
             <img src="images/user-logout.png" alt="userlogouticon">
             <p>Logout</p>
-            <span>></span>
+            <span>&gt;</span>
           </a>
         </div>
       </div>
@@ -117,7 +88,7 @@
             <h2>Transaction Summary</h2>
 
             <div class="payment-content" id="gcash-content">
-                <form class="payment-form">
+                <div class="payment-form">
                     <h3>Transaction Details</h3>
                     <!-- STATIC INFORMATION. TODO: MAKE DYNAMIC -->
                      <label>Full Name</label>
@@ -130,7 +101,7 @@
                      <input type="text" value="2:30 to 3:00 PM" readonly>
                      <label>Pickup/Meetup Location</label>
                      <input type="text" value="Palawan Pawnshop Bakakeng Road" readonly>
-                </form>
+                </div>
 
             <!-- Receipt Section -->
              <div class="receipt-container">
@@ -153,7 +124,6 @@
                         <span>Transaction ID:</span>
                         <span class="placeholder">__________</span>
                     </div>
-                    
                     <div class="receipt-item">
                         <span>Destination:</span>
                         <span class="placeholder">__________</span>
@@ -175,7 +145,7 @@
             </div>
         </div>
 
-            <button class="confirm-btn"><a href=list-of-carpools.html>Back Home</a></button>
+            <a class="confirm-btn" href="list-of-carpools.html">Back Home</a>
 
         </section>
 

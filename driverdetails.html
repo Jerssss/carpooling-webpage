@@ -8,6 +8,7 @@
     <link rel="stylesheet" href="css/driverdetails.css">
     <link rel="stylesheet" href="css/notifications.css">
     <link rel="stylesheet" href="css/bookingconfirmation.css">
+  <script src="js/notifications.js" defer></script>
     <script src="js/view_carpool.js"></script>
   </head>
   <body>
@@ -29,7 +30,7 @@
       <!-- Right side nav -->
       <div class="nav-right">
         <div class="nav-bell">
-          <img src="images/bell.png" class="bell-icon" onclick="toggleNotifications()">
+          <img src="images/bell.png" class="bell-icon" alt="Notifications" onclick="toggleNotifications()">
           <div id="notificationsContainer">
             <div class="notifications-dropdown" id="notificationsDropdown">
               <div class="notif-tabs">
@@ -37,39 +38,9 @@
                 <span id="unreadTab">Unread</span>
               </div>
               <div class="notif-list" id="notifList">
-                <div class="notif-item unread">
-                  <img src="images/person-icon.png" alt="driver">
+                <div class="notif-item">
                   <div class="notif-content">
-                    <p><strong>Dr. Taejin Cheon</strong> bound to SLU-Maryheights campus has arrived, with plate no. <strong>XYZ 123</strong>.</p>
-                    <span class="time">2 sec</span>
-                  </div>
-                </div>
-                <div class="notif-item unread">
-                  <img src="images/person-icon.png" alt="driver">
-                  <div class="notif-content">
-                    <p><strong>Dr. Taejin Cheon</strong> bound to SLU-Maryheights campus is on the way, with plate no. <strong>XYZ 123</strong>.</p>
-                    <span class="time">10 min</span>
-                  </div>
-                </div>
-                <div class="notif-item unread">
-                  <img src="images/person-icon.png" alt="driver">
-                  <div class="notif-content">
-                    <p>Hey there, we have a <strong>50% off</strong> on your first carpool for the day. Book now!</p>
-                    <span class="time">2h</span>
-                  </div>
-                </div>
-                <div class="notif-item read">
-                  <img src="images/person-icon.png" alt="driver">
-                  <div class="notif-content">
-                    <p><strong>Jorge Terre</strong> has dropped you off at your destination SLU-Maryheights campus, with plate no. <strong>ABC 321</strong>.</p>
-                    <span class="time">2d</span>
-                  </div>
-                </div>
-                <div class="notif-item read">
-                  <img src="images/person-icon.png" alt="driver">
-                  <div class="notif-content">
-                    <p><strong>Jorge Terre</strong> bound to SLU-Maryheights campus has arrived, with plate no. <strong>ABC 321</strong>.</p>
-                    <span class="time">2d</span>
+                    <p>Loading notifications...</p>
                   </div>
                 </div>
               </div>
@@ -77,36 +48,36 @@
           </div>
         </div>
 
-        <img src="images/speed.jpg" class="user-pic" onclick="toggleMenu()">
+  <img src="images/speed.jpg" class="user-pic" alt="User" onclick="toggleMenu()">
       </div>
 
       <!-- Profile dropdown -->
       <div class="sub-menu-wrap" id="subMenu">
         <div class="sub-menu">
           <div class="user-info">
-            <img src="images/speed.jpg">
+            <img src="images/speed.jpg" alt="User">
             <h2>Darren Watkins</h2>
           </div>
           <hr>
           <a href="profile.html" class="sub-menu-link">
             <img src="images/user.png" alt="usericon">
             <p>Edit Profile</p>
-            <span>></span>
+            <span>&gt;</span>
           </a>
           <a href="#" class="sub-menu-link">
             <img src="images/settings.png" alt="settings">
             <p>Settings</p>
-            <span>></span>
+            <span>&gt;</span>
           </a>
           <a href="#" class="sub-menu-link">
             <img src="images/question.png" alt="helpsicon">
-            <p>Help & Support</p>
-            <span>></span>
+            <p>Help &amp; Support</p>
+            <span>&gt;</span>
           </a>
           <a href="#" class="sub-menu-link">
             <img src="images/user-logout.png" alt="userlogouticon">
             <p>Logout</p>
-            <span>></span>
+            <span>&gt;</span>
           </a>
         </div>
       </div>
@@ -143,8 +114,8 @@
             <p>Loading details...</p>
           </div>
           <div class="btn-group">
-            <button id="bookBtn" class="book-btn">Book</button>
-             <button id="cancelBtn" class="cancel-btn">Cancel</button>
+            <button id="bookBtn" class="book-btn" type="button">Book</button>
+             <button id="cancelBtn" class="cancel-btn" type="button">Cancel</button>
           </div>
         </div>
 
@@ -160,8 +131,8 @@
       Would you like to proceed?
     </p>
     <div class="btn-group">
-      <button class="cancel-btn" id="cancelBooking">Cancel</button>
-      <button class="book-btn" id="proceedBooking">Proceed</button>
+  <button class="cancel-btn" id="cancelBooking" type="button">Cancel</button>
+  <button class="book-btn" id="proceedBooking" type="button">Proceed</button>
     </div>
   </div>
 </div>
