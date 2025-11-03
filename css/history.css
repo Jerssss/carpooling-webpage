@@ -328,3 +328,73 @@ h1 {
   font-weight: 700;
   margin: 4px 0 0;
 }
+
+/* ===== FETCHED HISTORY CARDS ===== */
+
+.ride-history-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 25px;
+  margin-top: 30px;
+}
+
+/* Each card uniform height */
+.history-card {
+  background: #f8f8f8;
+  border-radius: 25px;
+  width: 850px;
+  padding: 30px;
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  min-height: 260px; /* ⬅ ensures equal height */
+}
+
+/* Header (Action + Status) */
+.history-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: linear-gradient(90deg, #ffe680, #fff8d6);
+  border-radius: 15px;
+  padding: 15px 20px;
+  margin-bottom: 15px;
+}
+
+/* Status badges */
+.status {
+  padding: 5px 15px;
+  border-radius: 10px;
+  color: #fff;
+  font-weight: 600;
+  text-transform: capitalize;
+}
+
+.status.completed {
+  background-color: #28a745;
+}
+
+.status.pending {
+  background-color: #ffc107;
+  color: #000;
+}
+
+.status.cancelled {
+  background-color: #dc3545;
+}
+
+.history-card p {
+  margin: 8px 0;
+  color: #444;
+  font-size: 15px;
+}
+
+.no-history, .error {
+  color: #777;
+  text-align: center;
+  margin-top: 2rem;
+  font-size: 18px;
+}
+

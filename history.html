@@ -1,32 +1,32 @@
 <!DOCTYPE html>
 <html lang="en">
 
-  <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CARMA | History</title>
-    <link rel="stylesheet" href="css/style.css">
-    <link rel="stylesheet" href="css/history.css">
-    <link rel="stylesheet" href="css/notifications.css">
-    <script src="js/script.js" defer></script>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CARMA | History</title>
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/history.css">
+  <link rel="stylesheet" href="css/notifications.css">
+  <script src="js/script.js" defer></script>
   <script src="js/notifications.js" defer></script>
-  </head>
+</head>
 
-  <body>
-    <nav>
-        <!-- Left side nav -->
-        <div class="nav-left">
-          <img src="images/sample-pfp.png" class="logo" alt="Drop N Go Logo">
-          <span class="site-name">CARMA</span>
-        </div>
+<body>
+  <nav>
+    <!-- Left side nav -->
+    <div class="nav-left">
+      <img src="images/sample-pfp.png" class="logo" alt="Drop N Go Logo">
+      <span class="site-name">CARMA</span>
+    </div>
 
-        <!-- Center navigation links -->
-        <ul>
-          <li><a href="index.html">Home</a></li>
-          <li><a href="list-of-carpools.html">Rides</a></li>
-          <li><a class="active" href="history.html">History</a></li>
-          <li><a href="about.html">About Us</a></li>
-        </ul>
+    <!-- Center navigation links -->
+    <ul>
+      <li><a href="index.html">Home</a></li>
+      <li><a href="list-of-carpools.html">Rides</a></li>
+      <li><a class="active" href="history.html">History</a></li>
+      <li><a href="about.html">About Us</a></li>
+    </ul>
 
         <!-- Right side nav -->
         <div class="nav-right">
@@ -101,339 +101,113 @@
       </section>
 
 
-      <section class="booked-rides">
+    <section class="booked-rides">
+      <!-- This is where ride cards will be dynamically inserted -->
+      <div id="rideHistoryContainer"></div>
+    </section>
+  </main>
 
-        <div class="upcoming-rides">
-          <h2>Upcoming</h2>
-          <div class="ride-list">
+  <footer class="site-footer">
+    <div class="social-icons">
+      <a href="#"><img src="images/facebook-app-symbol.png" alt="Facebook"></a>
+      <a href="#"><img src="images/instagram.png" alt="Instagram"></a>
+      <a href="#"><img src="images/twitter.png" alt="Twitter"></a>
+      <a href="#"><img src="images/google.png" alt="Google"></a>
+      <a href="#"><img src="images/youtube.png" alt="YouTube"></a>
+    </div>
 
-            <div class="ride-card">
-              <!-- Header -->
-              <div class="ride-header">
+    <ul class="footer-nav">
+      <li><a href="index.html">Home</a></li>
+      <li><a href="news.html">Rides</a></li>
+      <li><a href="about.html">History</a></li>
+      <li><a href="team.html">Our Team</a></li>
+    </ul>
+
+    <p class="footer-copy">Copyright ©2025 | Designed by <span>Bos Badet</span></p>
+  </footer>
+
+  <script>
+    document.addEventListener("DOMContentLoaded", () => {
+      const container = document.getElementById("rideHistoryContainer");
+
+      fetch("includes/fetch_history.php")
+        .then((response) => response.json())
+        .then((data) => {
+          container.innerHTML = "";
+
+          if (!data || data.length === 0) {
+            container.innerHTML = "<p>No history records found.</p>";
+            return;
+          }
+
+          data.forEach((record) => {
+            const mappedRecord = {
+              rideId: record.rideId || "N/A",
+              userId: record.passengerId || "Unknown User",
+              action: `Pickup: ${record.pickupLocation || "N/A"}`,
+              description: `Dropoff: ${record.dropoffLocation || "N/A"} | Fare: ₱${record.fare || 0}`,
+              timestamp: `${record.date || ""} ${record.time || ""}`,
+              status: record.status || "pending"
+            };
+
+            const card = document.createElement("div");
+            card.classList.add("ride-card");
+
+            card.innerHTML = `
+              <div class="ride-header ${mappedRecord.status === "completed" ? "with-button" : ""}">
                 <div class="ride-left">
                   <div class="ride-icon">
-                    <img src="images/car.png" alt="Car Icon">
+                    <img src="images/car.png" alt="ride icon">
                   </div>
                   <div class="ride-info">
-                    <h2>Toyota Prius</h2>
-                    <p>
-                      <img src="images/person-icon.png" class="user-icon" alt="User">
-                      John Doe
-                    </p>
+                    <h2>Ride ID: ${mappedRecord.rideId}</h2>
+                    <p><img src="images/person-icon.png" class="user-icon"> ${mappedRecord.userId}</p>
                   </div>
                 </div>
+                ${mappedRecord.status === "completed" ? '<button class="rate-btn">Rate</button>' : ''}
               </div>
 
-              <!-- Route Section -->
               <div class="ride-route">
                 <div class="route-line">
                   <div class="dot"></div>
                   <div class="line"></div>
                   <div class="dot"></div>
                 </div>
-
                 <div class="route-details">
-                  <div class="pickup">
-                    <p class="label">PICKUP</p>
-                    <p class="place">Home Address</p>
+                  <div>
+                    <p class="label">Action</p>
+                    <p class="place">${mappedRecord.action}</p>
                   </div>
-                  <div class="dropoff">
-                    <p class="label">DROPOFF</p>
-                    <p class="place">Maryheights Campus</p>
+                  <div>
+                    <p class="label">Description</p>
+                    <p class="place">${mappedRecord.description}</p>
                   </div>
                 </div>
               </div>
 
-              <!-- Footer -->
               <div class="ride-footer">
                 <div class="info-box">
-                  <div class="icon">
-                    <img src="images/calendar-icon.png" alt="Date">
-                  </div>
-                  <p class="label">Date</p>
-                  <p class="value">Oct 25</p>
+                  <div class="icon"><img src="images/calendar.png"></div>
+                  <p class="label">Timestamp</p>
+                  <p class="value">${mappedRecord.timestamp}</p>
                 </div>
-
                 <div class="info-box">
-                  <div class="icon">
-                    <img src="images/clock-icon.png" alt="Time">
-                  </div>
-                  <p class="label">Time</p>
-                  <p class="value">08:30 AM</p>
-                </div>
-
-                <div class="info-box">
-                  <div class="icon">
-                    <img src="images/distance-icon.png" alt="Distance">
-                  </div>
-                  <p class="label">Distance</p>
-                  <p class="value">7.5 km</p>
-                </div>
-
-                <div class="info-box">
-                  <div class="icon">
-                    <img src="images/pseo-icon.png" alt="Fare">
-                  </div>
-                  <p class="label">Fare</p>
-                  <p class="value">₱67.00</p>
+                  <div class="icon"><img src="images/status.png"></div>
+                  <p class="label">Status</p>
+                  <p class="value">${mappedRecord.status}</p>
                 </div>
               </div>
-            </div>
+            `;
 
-            <div class="ride-card">
-              <!-- Header -->
-              <div class="ride-header">
-                <div class="ride-left">
-                  <div class="ride-icon">
-                    <img src="images/car.png" alt="Car Icon">
-                  </div>
-                  <div class="ride-info">
-                    <h2>Toyota Prius</h2>
-                    <p>
-                      <img src="images/person-icon.png" class="user-icon" alt="User">
-                      John Doe
-                    </p>
-                  </div>
-                </div>
-              </div>
+            container.appendChild(card);
+          });
+        })
+        .catch((error) => {
+          console.error("Error loading history records:", error);
+          container.innerHTML = "<p>Failed to load history records.</p>";
+        });
+    });
+  </script>
+</body>
 
-              <!-- Route Section -->
-              <div class="ride-route">
-                <div class="route-line">
-                  <div class="dot"></div>
-                  <div class="line"></div>
-                  <div class="dot"></div>
-                </div>
-
-                <div class="route-details">
-                  <div class="pickup">
-                    <p class="label">PICKUP</p>
-                    <p class="place">Home Address</p>
-                  </div>
-                  <div class="dropoff">
-                    <p class="label">DROPOFF</p>
-                    <p class="place">Maryheights Campus</p>
-                  </div>
-                </div>
-              </div>
-
-              <!-- Footer -->
-              <div class="ride-footer">
-                <div class="info-box">
-                  <div class="icon">
-                    <img src="images/calendar-icon.png" alt="Date">
-                  </div>
-                  <p class="label">Date</p>
-                  <p class="value">Oct 25</p>
-                </div>
-
-                <div class="info-box">
-                  <div class="icon">
-                    <img src="images/clock-icon.png" alt="Time">
-                  </div>
-                  <p class="label">Time</p>
-                  <p class="value">08:30 AM</p>
-                </div>
-
-                <div class="info-box">
-                  <div class="icon">
-                    <img src="images/distance-icon.png" alt="Distance">
-                  </div>
-                  <p class="label">Distance</p>
-                  <p class="value">7.5 km</p>
-                </div>
-
-                <div class="info-box">
-                  <div class="icon">
-                    <img src="images/pseo-icon.png" alt="Fare">
-                  </div>
-                  <p class="label">Fare</p>
-                  <p class="value">₱67.00</p>
-                </div>
-              </div>
-            </div>
-
-          </div>
-        </div>
-
-        <div class="completed-rides">
-          <h2>Completed</h2>
-          <div class="ride-list">
-
-            <div class="ride-card">
-              <!-- Header -->
-              <div class="ride-header with-button">
-                <div class="ride-left">
-                  <div class="ride-icon">
-                    <img src="images/car.png" alt="Car Icon">
-                  </div>
-                  <div class="ride-info">
-                    <h2>Toyota Prius</h2>
-                    <p>
-                      <img src="images/person-icon.png" class="user-icon" alt="User">
-                      John Doe
-                    </p>
-                  </div>
-                </div>
-                <button class="rate-btn" type="button">Rate</button>
-              </div>
-
-              <!-- Route Section -->
-              <div class="ride-route">
-                <div class="route-line">
-                  <div class="dot"></div>
-                  <div class="line"></div>
-                  <div class="dot"></div>
-                </div>
-
-                <div class="route-details">
-                  <div class="pickup">
-                    <p class="label">PICKUP</p>
-                    <p class="place">Home Address</p>
-                  </div>
-                  <div class="dropoff">
-                    <p class="label">DROPOFF</p>
-                    <p class="place">Maryheights Campus</p>
-                  </div>
-                </div>
-              </div>
-
-              <!-- Footer -->
-              <div class="ride-footer">
-                <div class="info-box">
-                  <div class="icon">
-                    <img src="images/calendar-icon.png" alt="Date">
-                  </div>
-                  <p class="label">Date</p>
-                  <p class="value">Oct 25</p>
-                </div>
-
-                <div class="info-box">
-                  <div class="icon">
-                    <img src="images/clock-icon.png" alt="Time">
-                  </div>
-                  <p class="label">Time</p>
-                  <p class="value">08:30 AM</p>
-                </div>
-
-                <div class="info-box">
-                  <div class="icon">
-                    <img src="images/distance-icon.png" alt="Distance">
-                  </div>
-                  <p class="label">Distance</p>
-                  <p class="value">7.5 km</p>
-                </div>
-
-                <div class="info-box">
-                  <div class="icon">
-                    <img src="images/pseo-icon.png" alt="Fare">
-                  </div>
-                  <p class="label">Fare</p>
-                  <p class="value">₱67.00</p>
-                </div>
-              </div>
-            </div>
-
-
-            <div class="ride-card">
-              <!-- Header -->
-              <div class="ride-header with-button">
-                <div class="ride-left">
-                  <div class="ride-icon">
-                    <img src="images/car.png" alt="Car Icon">
-                  </div>
-                  <div class="ride-info">
-                    <h2>Toyota Prius</h2>
-                    <p>
-                      <img src="images/person-icon.png" class="user-icon" alt="User">
-                      John Doe
-                    </p>
-                  </div>
-                </div>
-                <button class="rate-btn" type="button">Rate</button>
-              </div>
-
-              <!-- Route Section -->
-              <div class="ride-route">
-                <div class="route-line">
-                  <div class="dot"></div>
-                  <div class="line"></div>
-                  <div class="dot"></div>
-                </div>
-
-                <div class="route-details">
-                  <div class="pickup">
-                    <p class="label">PICKUP</p>
-                    <p class="place">Home Address</p>
-                  </div>
-                  <div class="dropoff">
-                    <p class="label">DROPOFF</p>
-                    <p class="place">Maryheights Campus</p>
-                  </div>
-                </div>
-              </div>
-
-              <!-- Footer -->
-              <div class="ride-footer">
-                <div class="info-box">
-                  <div class="icon">
-                    <img src="images/calendar-icon.png" alt="Date">
-                  </div>
-                  <p class="label">Date</p>
-                  <p class="value">Oct 25</p>
-                </div>
-
-                <div class="info-box">
-                  <div class="icon">
-                    <img src="images/clock-icon.png" alt="Time">
-                  </div>
-                  <p class="label">Time</p>
-                  <p class="value">08:30 AM</p>
-                </div>
-
-                <div class="info-box">
-                  <div class="icon">
-                    <img src="images/distance-icon.png" alt="Distance">
-                  </div>
-                  <p class="label">Distance</p>
-                  <p class="value">7.5 km</p>
-                </div>
-
-                <div class="info-box">
-                  <div class="icon">
-                    <img src="images/pseo-icon.png" alt="Fare">
-                  </div>
-                  <p class="label">Fare</p>
-                  <p class="value">₱67.00</p>
-                </div>
-              </div>
-            </div>
-
-          </div>
-        </div>
-
-      </section>
-    </main>
-
-    <!-- ===== FOOTER SECTION ===== -->
-    <footer class="site-footer">
-      <div class="social-icons">
-        <a href="#"><img src="images/facebook-app-symbol.png" alt="Facebook"></a>
-        <a href="#"><img src="images/instagram.png" alt="Instagram"></a>
-        <a href="#"><img src="images/twitter.png" alt="Twitter"></a>
-        <a href="#"><img src="images/google.png" alt="Google"></a>
-        <a href="#"><img src="images/youtube.png" alt="YouTube"></a>
-      </div>
-
-      <ul class="footer-nav">
-        <li><a href="index.html">Home</a></li>
-        <li><a href="news.html">Rides</a></li>
-        <li><a href="about.html">History</a></li>
-        <li><a href="team.html">Our Team</a></li>
-      </ul>
-
-      <p class="footer-copy">Copyright ©2025 | Designed by <span>Bos Badet</span></p>
-    </footer>
-
-  </body>
 </html>
