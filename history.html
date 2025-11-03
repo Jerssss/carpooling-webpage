@@ -1,6 +1,5 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -9,18 +8,15 @@
   <link rel="stylesheet" href="css/history.css">
   <link rel="stylesheet" href="css/notifications.css">
   <script src="js/script.js" defer></script>
-  <script src="js/notifications.js" defer></script>
 </head>
 
 <body>
   <nav>
-    <!-- Left side nav -->
     <div class="nav-left">
-      <img src="images/sample-pfp.png" class="logo" alt="Drop N Go Logo">
+      <img src="images/sample-pfp.png" class="logo" alt="CARMA Logo">
       <span class="site-name">CARMA</span>
     </div>
 
-    <!-- Center navigation links -->
     <ul>
       <li><a href="index.html">Home</a></li>
       <li><a href="list-of-carpools.html">Rides</a></li>
@@ -28,82 +24,18 @@
       <li><a href="about.html">About Us</a></li>
     </ul>
 
-        <!-- Right side nav -->
-        <div class="nav-right">
-          <div class="nav-bell">
-            <img src="images/bell.png" class="bell-icon" alt="Notifications" onclick="toggleNotifications()">
-            <div id="notificationsContainer">
-              <div class="notifications-dropdown" id="notificationsDropdown">
-                <div class="notif-tabs">
-                  <span class="active" id="allTab">All</span>
-                  <span id="unreadTab">Unread</span>
-                </div>
-                <div class="notif-list" id="notifList">
-                  <div class="notif-item">
-                    <div class="notif-content">
-                      <p>Loading notifications...</p>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
+    <div class="nav-right">
+      <div class="nav-bell">
+        <img src="images/bell.png" class="bell-icon" onclick="toggleNotifications()">
+      </div>
+      <img src="images/speed.jpg" class="user-pic" onclick="toggleMenu()">
+    </div>
+  </nav>
 
-          <img src="images/speed.jpg" class="user-pic" alt="User" onclick="toggleMenu()">
-        </div>
-
-        <!-- Profile dropdown -->
-        <div class="sub-menu-wrap" id="subMenu">
-          <div class="sub-menu">
-            <div class="user-info">
-              <img src="images/speed.jpg" alt="User">
-              <h2>Darren Watkins</h2>
-            </div>
-            <hr>
-            <a href="profile.html" class="sub-menu-link">
-              <img src="images/user.png" alt="usericon">
-              <p>Edit Profile</p>
-              <span>&gt;</span>
-            </a>
-            <a href="#" class="sub-menu-link">
-              <img src="images/settings.png" alt="settings">
-              <p>Settings</p>
-              <span>&gt;</span>
-            </a>
-            <a href="#" class="sub-menu-link">
-              <img src="images/question.png" alt="helpsicon">
-              <p>Help &amp; Support</p>
-              <span>&gt;</span>
-            </a>
-            <a href="#" class="sub-menu-link">
-              <img src="images/user-logout.png" alt="userlogouticon">
-              <p>Logout</p>
-              <span>&gt;</span>
-            </a>
-          </div>
-        </div>
-      </nav>
-
-    <main>
-
-      <section class="search-bar">
-        <form>
-          <div class="search-container">
-            <input type="text" placeholder="Search for rides">
-            <button type="submit">
-              <img src="images/search-icon.png" alt="Search">
-            </button>
-          </div>
-          <button id="filter" type="button">
-            <img src="images/filter-icon.png" alt="Filter">
-          </button>
-        </form>
-      </section>
-
-
+  <main>
     <section class="booked-rides">
-      <!-- This is where ride cards will be dynamically inserted -->
-      <div id="rideHistoryContainer"></div>
+      <h2>Your Rides</h2>
+      <div id="rideHistoryContainer" class="ride-list"></div>
     </section>
   </main>
 
@@ -118,55 +50,47 @@
 
     <ul class="footer-nav">
       <li><a href="index.html">Home</a></li>
-      <li><a href="news.html">Rides</a></li>
-      <li><a href="about.html">History</a></li>
-      <li><a href="team.html">Our Team</a></li>
+      <li><a href="list-of-carpools.html">Rides</a></li>
+      <li><a href="history.html">History</a></li>
+      <li><a href="about.html">About</a></li>
     </ul>
 
     <p class="footer-copy">Copyright ©2025 | Designed by <span>Bos Badet</span></p>
   </footer>
 
   <script>
-    document.addEventListener("DOMContentLoaded", () => {
+    document.addEventListener("DOMContentLoaded", async () => {
       const container = document.getElementById("rideHistoryContainer");
 
-      fetch("includes/fetch_history.php")
-        .then((response) => response.json())
-        .then((data) => {
-          container.innerHTML = "";
+      try {
+        const response = await fetch("includes/fetch_history.php");
+        const rides = await response.json();
 
-          if (!data || data.length === 0) {
-            container.innerHTML = "<p>No history records found.</p>";
-            return;
-          }
+        if (rides.length === 0) {
+          container.innerHTML = "<p>No rides found.</p>";
+          return;
+        }
 
-          data.forEach((record) => {
-            const mappedRecord = {
-              rideId: record.rideId || "N/A",
-              userId: record.passengerId || "Unknown User",
-              action: `Pickup: ${record.pickupLocation || "N/A"}`,
-              description: `Dropoff: ${record.dropoffLocation || "N/A"} | Fare: ₱${record.fare || 0}`,
-              timestamp: `${record.date || ""} ${record.time || ""}`,
-              status: record.status || "pending"
-            };
-
-            const card = document.createElement("div");
-            card.classList.add("ride-card");
-
-            card.innerHTML = `
-              <div class="ride-header ${mappedRecord.status === "completed" ? "with-button" : ""}">
+        rides.forEach(ride => {
+          const rideCard = `
+            <div class="ride-card">
+              <!-- Header -->
+              <div class="ride-header">
                 <div class="ride-left">
                   <div class="ride-icon">
-                    <img src="images/car.png" alt="ride icon">
+                    <img src="images/car.png" alt="Car Icon">
                   </div>
                   <div class="ride-info">
-                    <h2>Ride ID: ${mappedRecord.rideId}</h2>
-                    <p><img src="images/person-icon.png" class="user-icon"> ${mappedRecord.userId}</p>
+                    <h2>${ride.carModel}</h2>
+                    <p>
+                      <img src="images/person-icon.png" class="user-icon" alt="Driver">
+                      ${ride.name}
+                    </p>
                   </div>
                 </div>
-                ${mappedRecord.status === "completed" ? '<button class="rate-btn">Rate</button>' : ''}
               </div>
 
+              <!-- Route Section -->
               <div class="ride-route">
                 <div class="route-line">
                   <div class="dot"></div>
@@ -174,40 +98,52 @@
                   <div class="dot"></div>
                 </div>
                 <div class="route-details">
-                  <div>
-                    <p class="label">Action</p>
-                    <p class="place">${mappedRecord.action}</p>
+                  <div class="pickup">
+                    <p class="label">PICKUP</p>
+                    <p class="place">${ride.pickup}</p>
                   </div>
-                  <div>
-                    <p class="label">Description</p>
-                    <p class="place">${mappedRecord.description}</p>
+                  <div class="dropoff">
+                    <p class="label">DROPOFF</p>
+                    <p class="place">${ride.dropoff}</p>
                   </div>
                 </div>
               </div>
 
+              <!-- Footer -->
               <div class="ride-footer">
                 <div class="info-box">
-                  <div class="icon"><img src="images/calendar.png"></div>
-                  <p class="label">Timestamp</p>
-                  <p class="value">${mappedRecord.timestamp}</p>
+                  <div class="icon"><img src="images/calendar-icon.png" alt="Date"></div>
+                  <p class="label">Date</p>
+                  <p class="value">${ride.date}</p>
                 </div>
+
                 <div class="info-box">
-                  <div class="icon"><img src="images/status.png"></div>
-                  <p class="label">Status</p>
-                  <p class="value">${mappedRecord.status}</p>
+                  <div class="icon"><img src="images/clock-icon.png" alt="Time"></div>
+                  <p class="label">Time</p>
+                  <p class="value">${ride.time}</p>
+                </div>
+
+                <div class="info-box">
+                  <div class="icon"><img src="images/distance-icon.png" alt="Distance"></div>
+                  <p class="label">Distance</p>
+                  <p class="value">${ride.distance} km</p>
+                </div>
+
+                <div class="info-box">
+                  <div class="icon"><img src="images/peso-icon.png" alt="Fare"></div>
+                  <p class="label">Fare</p>
+                  <p class="value">₱${ride.fare}</p>
                 </div>
               </div>
-            `;
-
-            container.appendChild(card);
-          });
-        })
-        .catch((error) => {
-          console.error("Error loading history records:", error);
-          container.innerHTML = "<p>Failed to load history records.</p>";
+            </div>
+          `;
+          container.insertAdjacentHTML("beforeend", rideCard);
         });
+      } catch (err) {
+        console.error("Error loading rides:", err);
+        container.innerHTML = "<p>Failed to load ride history.</p>";
+      }
     });
   </script>
 </body>
-
 </html>
