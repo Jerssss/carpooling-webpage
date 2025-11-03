@@ -10,6 +10,7 @@
   <script src="js/script.js" defer></script>
   <script src="js/notifications.js" defer></script>
   <script src="js/fetch_carpool.js"></script>
+  <script src="js/search_filter.js"></script>
 </head>
 
 <body>
@@ -84,15 +85,36 @@
       </div>
     </nav>
 
-   <section class="carpool-section">
-    <!-- Start of list of car pools section -->
-     <h1>List of Carpools in Your Area</h1>
-     <div class="search-filter">
-      <input type="text" placeholder="Search car pool, location, or driver...">
-  <button class="filter-btn" type="button">
-        <img src="images/filter-icon.png" alt="Filter">
-      </button>
-    </div>
+    <section class="carpool-section">
+      <h1>List of Carpools in Your Area</h1>
+      
+<div class="search-filter">
+  <input type="text" id="searchInput" placeholder="Search car pool, location, or driver...">
+
+  <div class="filter-group">
+    <select id="forFilter">
+      <option value="">All Types</option>
+      <option value="pickup">Pickup</option>
+      <option value="meetup">Meetup</option>
+    </select>
+
+    <select id="seatsFilter">
+      <option value="">All Seats</option>
+      <option value="1">1 seat available</option>
+      <option value="2">2 seats available</option>
+      <option value="3">3 seats available</option>
+      <option value="4">4+ seats available</option>
+    </select>
+
+    <select id="statusFilter">
+      <option value="">All Booking Status</option>
+      <option value="empty">No booked seats</option>
+      <option value="partial">Partially booked</option>
+      <option value="full">Fully booked</option>
+    </select>
+  </div>
+</div>  
+
   <div class="cards-container">
       <!-- Start of container class containing car pool cards -->
      <div class="carpool-container"> <!-- Calling the script file-->
