@@ -8,8 +8,9 @@
     <link rel="stylesheet" href="css/driverdetails.css">
     <link rel="stylesheet" href="css/notifications.css">
     <link rel="stylesheet" href="css/bookingconfirmation.css">
-  <script src="js/notifications.js" defer></script>
+    <script src="js/notifications.js" defer></script>
     <script src="js/view_carpool.js"></script>
+    <script src="js/driverprofile.js"></script>
   </head>
   <body>
     <nav>
@@ -90,6 +91,8 @@
           <img src="..." alt="Driver" class="driver-photo">
           <p class="label">Your Driver</p>
           <h2 class="driver-name">....</h2>
+          <button id="viewDriverBtn" class="view-btn">View Driver Profile</button>
+
 
           <div class="driver-info">
             <div class="info-item">
@@ -160,6 +163,22 @@
   </footer>
 
   <script src="js/script.js"></script>
+  <script src="js/driverprofile.js"></script>
 
+  <script>
+document.addEventListener("DOMContentLoaded", () => {
+  const viewBtn = document.getElementById("viewDriverBtn");
+
+  const driverId = "U0001";
+
+  viewBtn.addEventListener("click", () => {
+    if (driverId) {
+      window.location.href = `viewprofile.html?driverId=${driverId}`;
+    } else {
+      alert("Driver ID not found.");
+    }
+  });
+});
+</script>
   </body>
 </html>
