@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 <?php
 require __DIR__ . '/../vendor/autoload.php';
 header('Content-Type: application/json');
@@ -48,3 +49,4 @@ try {
     echo json_encode(['success' => false, 'message' => 'Error saving payment: ' . $e->getMessage()]);
 }
 ?>
+
