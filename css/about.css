@@ -6,9 +6,9 @@ h1 {
   line-height: 1.2;
   margin: 40px 0 20px;
   text-align: center;
-  background: linear-gradient(90deg, #312972, #8d80a1);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
+  background: linear-gradient(90deg, #FFD84D 0%, #FFB300 50%, #FF6F00 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
 }
 
 /* ========== ABOUT PAGE ========== */
