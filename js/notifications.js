@@ -20,7 +20,12 @@ async function loadNotifications(userId, filter = 'all') {
     const list = document.getElementById('notifList');
     if (!list) return;
 
-    list.innerHTML = `<div class="notif-item"><div class="notif-content"><p>Loading notifications...</p></div></div>`;
+    list.innerHTML =
+    `<div class="notif-item">
+        <div class="notif-content">
+            <p>Loading notifications...</p>
+        </div>
+     </div>`;
 
     try {
         const url = `includes/fetch_notifications.php?userId=${encodeURIComponent(userId)}${filter === 'unread' ? '&filter=unread' : ''}`;
@@ -31,7 +36,12 @@ async function loadNotifications(userId, filter = 'all') {
         if (!Array.isArray(data)) throw new Error('Invalid data');
 
         if (data.length === 0) {
-            list.innerHTML = `<div class="notif-item"><div class="notif-content"><p>No notifications.</p></div></div>`;
+            list.innerHTML =
+            `<div class="notif-item">
+                <div class="notif-content">
+                    <p>No notifications.</p>
+                </div>
+            </div>`;
             return;
         }
 
@@ -70,7 +80,12 @@ async function loadNotifications(userId, filter = 'all') {
 
     } catch (err) {
         console.error('Error loading notifications:', err);
-        list.innerHTML = `<div class="notif-item"><div class="notif-content"><p>Failed to load notifications</p></div></div>`;
+        list.innerHTML = 
+        `<div class="notif-item">
+            <div class="notif-content">
+                <p>Failed to load notifications</p>
+            </div>
+        </div>`;
     }
 }
 
