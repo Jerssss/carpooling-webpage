@@ -84,7 +84,7 @@ document.addEventListener("DOMContentLoaded", () => {
         .then((data) => {
           if (data.success) {
             alert("Payment successfully recorded!");
-            window.location.href = "receipt.html";
+            window.location.href = `receipt.html?rideId=${rideId}`
           } else {
             alert(data.message);
           }

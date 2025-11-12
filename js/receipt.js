@@ -4,7 +4,7 @@ function formatCurrency(amount) {
 }
 
 // Function to fetch and populate receipt data
-async function loadReceipt(paymentId) {
+async function loadReceipt(rideId) {
     try {
         // Show loading state
         const placeholders = document.querySelectorAll('.receipt-box .placeholder');
@@ -13,7 +13,7 @@ async function loadReceipt(paymentId) {
         });
 
         // Fetch receipt data from API
-        const response = await fetch(`php/get_receipt.php?paymentId=${paymentId}`);
+        const response = await fetch(`includes/receipt.php?rideId=${rideId}`);
         const result = await response.json();
 
         if (result.error) {
@@ -25,13 +25,13 @@ async function loadReceipt(paymentId) {
         const data = result.data;
 
         // Populate receipt fields using DOM manipulation
-        updateReceiptField('paymentType', data.paymentType);
-        updateReceiptField('carpoolDriver', data.carpoolDriver);
-        updateReceiptField('bookingTime', data.bookingTime);
-        updateReceiptField('transactionId', data.transactionId);
+        updateReceiptField('method', data.method);
+        updateReceiptField('rideId', data.rideId);
+        updateReceiptField('pickupTime', data.pickupTime);
+        updateReceiptField('paymentId', data.paymentId);
         updateReceiptField('destination', data.destination);
-        updateReceiptField('discount', formatCurrency(data.discount));
-        updateReceiptField('subtotal', formatCurrency(data.subtotal));
+        // updateReceiptField('discount', formatCurrency(data.discount));
+        // updateReceiptField('subtotal', formatCurrency(data.subtotal));
         updateReceiptField('total', formatCurrency(data.total));
 
         // Optional status indicator
@@ -52,13 +52,13 @@ function updateReceiptField(fieldName, value) {
         
         // Match field names with labels
         const fieldMap = {
-            'payment type:': 'paymentType',
-            'carpool driver:': 'carpoolDriver',
-            'booking time:': 'bookingTime',
-            'transaction id:': 'transactionId',
+            'method:': 'method',
+            'carpool driver:': 'rideId',
+            'booking time:': 'pickupTime',
+            'transaction id:': 'paymentId',
             'destination:': 'destination',
-            'discount:': 'discount',
-            'subtotal:': 'subtotal',
+            'discount:': 'N/A',
+            'subtotal:': 'N/A',
             'total:': 'total'
         };
 
@@ -90,22 +90,20 @@ function addStatusBadge(status) {
 // Get payment ID from URL parameter
 function getPaymentIdFromURL() {
     const urlParams = new URLSearchParams(window.location.search);
-    return urlParams.get('paymentId');
+    return urlParams.get('rideId');
 }
 
 // Initialize receipt when page loads
 document.addEventListener('DOMContentLoaded', function() {
-    const paymentId = getPaymentIdFromURL();
+    const rideId = getPaymentIdFromURL();
     
-    if (paymentId) {
-        loadReceipt(paymentId);
+    if (rideId) {
+        loadReceipt(rideId);
     } else {
         // For testing, use a default payment ID
         // Remove this in production
-        console.warn('No payment ID provided. Using test data.');
+        console.warn('No ride ID provided. Using test data.');
         loadReceipt('P69146b5955383');
     }
 });
 
-// Optional: Export function for manual loading
-window.loadReceipt = loadReceipt;

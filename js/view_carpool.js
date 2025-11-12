@@ -70,3 +70,9 @@ document.addEventListener("DOMContentLoaded", () => {
         window.location.href = 'list-of-carpools.html';
     });
 });
+
+// Gets ride ID and passes it to payment
+function getRideIdFromURL() {
+    const urlParams = new URLSearchParams(window.location.search);
+    return urlParams.get('rideId');
+}
