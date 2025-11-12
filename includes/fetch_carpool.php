@@ -48,29 +48,16 @@ if (!empty($_GET['for'])) {
 
 if (!empty($_GET['seat'])) {
     $seat = (int) $_GET['seat'];
-    if ($seat >= 4) {
-        $match['availableSeats'] = ['$gte' => 4];
+    if ($seat >= 3) {
+        $match['availableSeats'] = ['$gte' => 3];
     } else {
         $match['availableSeats'] = $seat;
     }
 }
 
-
-if (!empty($_GET['booked'])) {
-    if ($_GET['booked'] === 'empty') {
-        $match['bookedSeats'] = 0;
-    } elseif ($_GET['booked'] === 'partial') {
-        $match['$expr'] = [
-            '$and' => [
-                ['$gt' => ['$bookedSeats', 0]],
-                ['$lt' => ['$bookedSeats', '$availableSeats']]
-            ]
-        ];
-    } elseif ($_GET['booked'] === 'full') {
-        $match['$expr'] = [
-            '$eq' => ['$bookedSeats', '$availableSeats']
-        ];
-    }
+if (!empty($_GET['role'])) { 
+    $role = strtolower($_GET['role']); 
+    $match['driverInfo.occupation'] = $role; 
 }
 
 

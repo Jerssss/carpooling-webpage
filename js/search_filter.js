@@ -3,14 +3,14 @@ document.addEventListener("DOMContentLoaded", () => {
     const searchInput = document.getElementById("searchInput");
     const forFilter = document.getElementById("forFilter");
     const seatFilter = document.getElementById("seatsFilter");
-    const bookedFilter = document.getElementById("statusFilter");
+    const roleFilter = document.getElementById("roleFilter");
   
     async function fetchCarpools() {
       const params = new URLSearchParams({
         search: searchInput.value.trim(),
         for: forFilter.value,
         seat: seatFilter.value,
-        booked: bookedFilter.value
+        role: roleFilter.value
       });
   
       try {
@@ -48,7 +48,7 @@ document.addEventListener("DOMContentLoaded", () => {
       });
     }
   
-    [searchInput, forFilter, seatFilter, bookedFilter].forEach((el) => {
+    [searchInput, forFilter, seatFilter, roleFilter].forEach((el) => {
       el.addEventListener("input", fetchCarpools);
       el.addEventListener("change", fetchCarpools);
     });

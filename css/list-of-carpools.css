@@ -21,7 +21,6 @@
   
   /* === Search + Filter Bar === */
   .search-filter {
-    position: sticky;
     top: 10px;
     z-index: 100;
     display: flex;
