@@ -8,15 +8,18 @@
   <link rel="stylesheet" href="css/history.css">
   <link rel="stylesheet" href="css/notifications.css">
   <script src="js/script.js" defer></script>
+  <script src="js/notifications.js" defer></script>
 </head>
 
 <body>
   <nav>
+    <!-- Left side nav -->
     <div class="nav-left">
       <img src="images/carma-logo.png" class="logo" alt="CARMA Logo">
       <span class="site-name">CARMA</span>
     </div>
 
+    <!-- Center navigation links -->
     <ul>
       <li><a href="index.html">Home</a></li>
       <li><a href="list-of-carpools.html">Rides</a></li>
@@ -24,14 +27,63 @@
       <li><a href="about.html">About Us</a></li>
     </ul>
 
+    <!-- Right side nav -->
     <div class="nav-right">
       <div class="nav-bell">
         <img src="images/bell.png" class="bell-icon" onclick="toggleNotifications()">
+        <div id="notificationsContainer">
+          <div class="notifications-dropdown" id="notificationsDropdown">
+            <div class="notif-tabs">
+              <span class="active" id="allTab">All</span>
+              <span id="unreadTab">Unread</span>
+            </div>
+            <div class="notif-list" id="notifList">
+              <div class="notif-item">
+                <div class="notif-content">
+                  <p>Loading notifications...</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
+
       <img src="images/speed.jpg" class="user-pic" onclick="toggleMenu()">
+    </div>
+
+    <!-- Profile dropdown -->
+    <div class="sub-menu-wrap" id="subMenu">
+      <div class="sub-menu">
+        <div class="user-info">
+          <img src="images/speed.jpg">
+          <h2>Darren Watkins</h2>
+        </div>
+        <hr>
+        <a href="profile.html" class="sub-menu-link">
+          <img src="images/user.png" alt="usericon">
+          <p>Edit Profile</p>
+          <span>></span>
+        </a>
+        <a href="#" class="sub-menu-link">
+          <img src="images/settings.png" alt="settings">
+          <p>Settings</p>
+          <span>></span>
+        </a>
+        <a href="#" class="sub-menu-link">
+          <img src="images/question.png" alt="helpsicon">
+          <p>Help & Support</p>
+          <span>></span>
+        </a>
+        <a href="#" class="sub-menu-link">
+          <img src="images/user-logout.png" alt="userlogouticon">
+          <p>Logout</p>
+          <span>></span>
+        </a>
+      </div>
     </div>
   </nav>
 
+  <!-- ===================== MAIN SECTION ===================== -->
   <main>
     <section class="booked-rides">
       <h2>Your Rides</h2>
@@ -39,6 +91,7 @@
     </section>
   </main>
 
+  <!-- ===================== FOOTER ===================== -->
   <footer class="site-footer">
     <div class="social-icons">
       <a href="#"><img src="images/facebook-app-symbol.png" alt="Facebook"></a>
@@ -58,6 +111,7 @@
     <p class="footer-copy">Copyright ©2025 | Designed by <span>Bos Badet</span></p>
   </footer>
 
+  <!-- ===================== RIDE HISTORY SCRIPT ===================== -->
   <script>
     document.addEventListener("DOMContentLoaded", async () => {
       const container = document.getElementById("rideHistoryContainer");
@@ -66,7 +120,7 @@
         const response = await fetch("includes/fetch_history.php");
         const rides = await response.json();
 
-        if (rides.length === 0) {
+        if (!rides || rides.length === 0) {
           container.innerHTML = "<p>No rides found.</p>";
           return;
         }
@@ -74,7 +128,6 @@
         rides.forEach(ride => {
           const rideCard = `
             <div class="ride-card">
-              <!-- Header -->
               <div class="ride-header">
                 <div class="ride-left">
                   <div class="ride-icon">
@@ -82,15 +135,11 @@
                   </div>
                   <div class="ride-info">
                     <h2>${ride.carModel}</h2>
-                    <p>
-                      <img src="images/person-icon.png" class="user-icon" alt="Driver">
-                      ${ride.name}
-                    </p>
+                    <p><img src="images/person-icon.png" class="user-icon" alt="Driver"> ${ride.name}</p>
                   </div>
                 </div>
               </div>
 
-              <!-- Route Section -->
               <div class="ride-route">
                 <div class="route-line">
                   <div class="dot"></div>
@@ -109,26 +158,22 @@
                 </div>
               </div>
 
-              <!-- Footer -->
               <div class="ride-footer">
                 <div class="info-box">
                   <div class="icon"><img src="images/calendar-icon.png" alt="Date"></div>
                   <p class="label">Date</p>
                   <p class="value">${ride.date}</p>
                 </div>
-
                 <div class="info-box">
                   <div class="icon"><img src="images/clock-icon.png" alt="Time"></div>
                   <p class="label">Time</p>
                   <p class="value">${ride.time}</p>
                 </div>
-
                 <div class="info-box">
                   <div class="icon"><img src="images/distance-icon.png" alt="Distance"></div>
                   <p class="label">Distance</p>
                   <p class="value">${ride.distance} km</p>
                 </div>
-
                 <div class="info-box">
                   <div class="icon"><img src="images/peso-icon.png" alt="Fare"></div>
                   <p class="label">Fare</p>
