@@ -369,3 +369,42 @@ nav ul li a:hover::after {
   color: #FFB300;
   font-weight: 600;
 }
+
+.view-btn {
+  background-color: #FFB300; /* golden amber */
+  color: #fff;
+  border: none;
+  border-radius: 50px;
+  padding: 10px 25px;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.view-btn:hover {
+  background-color: #e5a200; /* slightly darker amber */
+  transform: translateY(-2px);
+  box-shadow: 0 6px 18px rgba(0,0,0,0.15);
+}
+
+.view-btn:active {
+  transform: translateY(0);
+  box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+}
+
+/* Optional: add a small left arrow for back buttons */
+.view-btn.back {
+  font-size: 15px;
+  padding: 8px 20px;
+}
+
+.view-btn.back::before {
+  content: "←";
+  margin-right: 8px;
+  font-weight: bold;
+}

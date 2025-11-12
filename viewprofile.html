@@ -11,20 +11,86 @@
     <script src="js/notifications.js" defer></script>
   </head>
   <body>
+    <!-- ===== NAVBAR ===== -->
     <nav>
-      <!-- Navigation content stays the same -->
-      <!-- ... -->
+      <!-- Left side nav -->
+      <div class="nav-left">
+        <img src="images/carma-logo.png" class="logo" alt="Drop N Go Logo">
+        <span class="site-name">Carma</span>
+      </div>
+
+      <!-- Center navigation links -->
+      <ul>
+        <li><a href="index.html">Home</a></li>
+        <li><a href="list-of-carpools.html">Rides</a></li>
+        <li><a href="history.html">History</a></li>
+        <li><a href="about.html">About Us</a></li>
+      </ul>
+
+      <!-- Right side nav -->
+      <div class="nav-right">
+        <div class="nav-bell">
+          <img src="images/bell.png" class="bell-icon" alt="Notifications" onclick="toggleNotifications()">
+          <div id="notificationsContainer">
+            <div class="notifications-dropdown" id="notificationsDropdown">
+              <div class="notif-tabs">
+                <span class="active" id="allTab">All</span>
+                <span id="unreadTab">Unread</span>
+              </div>
+              <div class="notif-list" id="notifList">
+                <div class="notif-item">
+                  <div class="notif-content">
+                    <p>Loading notifications...</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <img src="images/speed.jpg" class="user-pic" alt="User" onclick="toggleMenu()">
+      </div>
+
+      <!-- Profile dropdown -->
+      <div class="sub-menu-wrap" id="subMenu">
+        <div class="sub-menu">
+          <div class="user-info">
+            <img src="images/speed.jpg" alt="User">
+            <h2>Darren Watkins</h2>
+          </div>
+          <hr>
+          <a href="profile.html" class="sub-menu-link">
+            <img src="images/user.png" alt="usericon">
+            <p>Edit Profile</p>
+            <span>&gt;</span>
+          </a>
+          <a href="#" class="sub-menu-link">
+            <img src="images/settings.png" alt="settings">
+            <p>Settings</p>
+            <span>&gt;</span>
+          </a>
+          <a href="#" class="sub-menu-link">
+            <img src="images/question.png" alt="helpsicon">
+            <p>Help &amp; Support</p>
+            <span>&gt;</span>
+          </a>
+          <a href="#" class="sub-menu-link">
+            <img src="images/user-logout.png" alt="userlogouticon">
+            <p>Logout</p>
+            <span>&gt;</span>
+          </a>
+        </div>
+      </div>
     </nav>
 
-
-    <!-- Dynamic driver profile container -->
+    <!-- ===== DRIVER PROFILE SECTION ===== -->
     <section class="profile-page">
+
+
       <div id="driverProfile">
-        <!-- JS will populate this section -->
         <p>Loading driver profile...</p>
       </div>
     </section>
-
 
     <!-- ===== FOOTER SECTION ===== -->
     <footer class="site-footer">
@@ -36,7 +102,6 @@
         <a href="#"><img src="images/youtube.png" alt="YouTube"></a>
       </div>
 
-
       <ul class="footer-nav">
         <li><a href="index.html">Home</a></li>
         <li><a href="news.html">Rides</a></li>
@@ -44,14 +109,10 @@
         <li><a href="team.html">Our Team</a></li>
       </ul>
 
-
       <p class="footer-copy">Copyright ©2025 | Designed by <span>Bos Badet</span></p>
     </footer>
-
 
     <!-- Include driverprofile.js last so it can populate the profile -->
     <script src="js/driverprofile.js"></script>
   </body>
 </html>
-
-
