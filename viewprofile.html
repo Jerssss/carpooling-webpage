@@ -12,138 +12,19 @@
   </head>
   <body>
     <nav>
-      <!-- Left side nav -->
-      <div class="nav-left">
-        <img src="images/carma-logo.png" class="logo" alt="Carma Logo">
-        <span class="site-name">Carma</span>
-      </div>
-
-      <!-- Center navigation links -->
-      <ul>
-        <li><a href="index.html">Home</a></li>
-        <li><a href="list-of-carpools.html">Rides</a></li>
-        <li><a href="history.html">History</a></li>
-        <li><a href="about.html">About Us</a></li>
-      </ul>
-
-      <!-- Right side nav -->
-      <div class="nav-right">
-        <div class="nav-bell">
-          <img src="images/bell.png" class="bell-icon" alt="Notifications" onclick="toggleNotifications()">
-          <div id="notificationsContainer">
-            <div class="notifications-dropdown" id="notificationsDropdown">
-              <div class="notif-tabs">
-                <span class="active" id="allTab">All</span>
-                <span id="unreadTab">Unread</span>
-              </div>
-              <div class="notif-list" id="notifList">
-                <div class="notif-item">
-                  <div class="notif-content">
-                    <p>Loading notifications...</p>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-
-  <img src="images/speed.jpg" class="user-pic" alt="User" onclick="toggleMenu()">
-      </div>
-
-      <!-- Profile dropdown -->
-      <div class="sub-menu-wrap" id="subMenu">
-        <div class="sub-menu">
-          <div class="user-info">
-            <img src="images/speed.jpg" alt="User">
-            <h2>Darren Watkins</h2>
-          </div>
-          <hr>
-          <a href="profile.html" class="sub-menu-link">
-            <img src="images/user.png" alt="usericon">
-            <p>Edit Profile</p>
-            <span>&gt;</span>
-          </a>
-          <a href="#" class="sub-menu-link">
-            <img src="images/settings.png" alt="settings">
-            <p>Settings</p>
-            <span>&gt;</span>
-          </a>
-          <a href="#" class="sub-menu-link">
-            <img src="images/question.png" alt="helpsicon">
-            <p>Help &amp; Support</p>
-            <span>&gt;</span>
-          </a>
-          <a href="#" class="sub-menu-link">
-            <img src="images/user-logout.png" alt="userlogouticon">
-            <p>Logout</p>
-            <span>&gt;</span>
-          </a>
-        </div>
-      </div>
+      <!-- Navigation content stays the same -->
+      <!-- ... -->
     </nav>
 
+
+    <!-- Dynamic driver profile container -->
     <section class="profile-page">
-      <div class="profile-container">
-        <div class="profile-header">
-          <div class="user-basic">
-            <img src="images/bod.jpg" alt="Driver Picture" class="profile-photo">
-            <div>
-              <h2>Bod Bande</h2>
-              <p>Driver | jeremiah@gmail.com</p>
-              <div class="rating">
-                <span class="star" data-value="1">&#9734;</span>
-                <span class="star" data-value="2">&#9734;</span>
-                <span class="star" data-value="3">&#9734;</span>
-                <span class="star" data-value="4">&#9734;</span>
-                <span class="star" data-value="5">&#9734;</span>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <div class="profile-details">
-          <div class="detail-group">
-            <label>Full Name</label>
-            <p>Bod bande</p>
-          </div>
-
-          <div class="detail-group">
-            <label>Nickname</label>
-            <p>Mi bombo</p>
-          </div>
-
-          <div class="detail-group">
-            <label>Contact Number</label>
-            <p>+63 912 345 6789</p>
-          </div>
-
-          <div class="detail-group">
-            <label>Alternate Number</label>
-            <p>+63 987 654 3210</p>
-          </div>
-
-          <div class="detail-group">
-            <label>Gender</label>
-            <p>Male</p>
-          </div>
-
-          <div class="detail-group">
-            <label>Role</label>
-            <p>Driver</p>
-          </div>
-
-          <div class="detail-group">
-            <label>Vehicle</label>
-            <p>Toyota Vios 2021 - Red</p>
-          </div>
-
-          <div class="detail-group">
-            <label>Plate Number</label>
-            <p>ABC-1234</p>
-          </div>
-        </div>
+      <div id="driverProfile">
+        <!-- JS will populate this section -->
+        <p>Loading driver profile...</p>
       </div>
     </section>
+
 
     <!-- ===== FOOTER SECTION ===== -->
     <footer class="site-footer">
@@ -155,14 +36,22 @@
         <a href="#"><img src="images/youtube.png" alt="YouTube"></a>
       </div>
 
-            <ul class="footer-nav">
-              <li><a href="index.html">Home</a></li>
-              <li><a href="list-of-carpools.html">Rides</a></li>
-              <li><a href="history.html">History</a></li>
-              <li><a href="about.html">Our Team</a></li>
-            </ul>
 
-      <p class="footer-copy">Copyright ©2025 | Designed by <span>Carma</span></p>
+      <ul class="footer-nav">
+        <li><a href="index.html">Home</a></li>
+        <li><a href="news.html">Rides</a></li>
+        <li><a href="about.html">History</a></li>
+        <li><a href="team.html">Our Team</a></li>
+      </ul>
+
+
+      <p class="footer-copy">Copyright ©2025 | Designed by <span>Bos Badet</span></p>
     </footer>
+
+
+    <!-- Include driverprofile.js last so it can populate the profile -->
+    <script src="js/driverprofile.js"></script>
   </body>
 </html>
+
+

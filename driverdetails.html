@@ -16,9 +16,10 @@
     <nav>
       <!-- Left side nav -->
       <div class="nav-left">
-        <img src="images/carma-logo.png" class="logo" alt="Carma Logo">
+        <img src="images/carma-logo.png" class="logo" alt="Drop N Go Logo">
         <span class="site-name">CARMA</span>
       </div>
+
 
       <!-- Center navigation links -->
       <ul>
@@ -27,6 +28,7 @@
         <li><a href="history.html">History</a></li>
         <li><a href="about.html">About Us</a></li>
       </ul>
+
 
       <!-- Right side nav -->
       <div class="nav-right">
@@ -49,8 +51,10 @@
           </div>
         </div>
 
+
   <img src="images/speed.jpg" class="user-pic" alt="User" onclick="toggleMenu()">
       </div>
+
 
       <!-- Profile dropdown -->
       <div class="sub-menu-wrap" id="subMenu">
@@ -84,6 +88,7 @@
       </div>
     </nav>
 
+
     <section class="driver-section">
       <div class="driver-container">
         <!-- Left card -->
@@ -92,6 +97,8 @@
           <p class="label">Your Driver</p>
           <h2 class="driver-name">....</h2>
           <button id="viewDriverBtn" class="view-btn">View Driver Profile</button>
+
+
 
 
           <div class="driver-info">
@@ -110,6 +117,7 @@
           </div>
         </div>
 
+
         <!-- Right details -->
         <div class="driver-details">
           <img src="..." alt="Driver Car" class="car-photo">
@@ -122,8 +130,10 @@
           </div>
         </div>
 
+
       </div>
     </section>
+
 
     <!-- Confirmation Popup -->
 <div class="overlay" id="confirmationPopup">
@@ -141,6 +151,8 @@
 </div>
 
 
+
+
     <!-- ===== FOOTER SECTION ===== -->
   <footer class="site-footer">
     <div class="social-icons">
@@ -151,6 +163,7 @@
       <a href="#"><img src="images/youtube.png" alt="YouTube"></a>
     </div>
 
+
     <ul class="footer-nav">
       <li><a href="index.html">Home</a></li>
       <li><a href="list-of-carpools.html">Rides</a></li>
@@ -158,26 +171,71 @@
       <li><a href="about.html">Our Team</a></li>
     </ul>
 
+
     <p class="footer-copy">Copyright ©2025 | Designed by <span>Carma</span></p>
   </footer>
+
 
   <script src="js/script.js"></script>
   <script src="js/driverprofile.js"></script>
 
-  <script>
+
+ <script>
 document.addEventListener("DOMContentLoaded", () => {
   const viewBtn = document.getElementById("viewDriverBtn");
 
-  const driverId = "U0001";
 
-  viewBtn.addEventListener("click", () => {
-    if (driverId) {
-      window.location.href = `viewprofile.html?driverId=${driverId}`;
-    } else {
-      alert("Driver ID not found.");
-    }
-  });
+  // Read rideId from URL (passed from carpool list)
+  const urlParams = new URLSearchParams(window.location.search);
+  const rideId = urlParams.get("rideId");
+
+
+  if (!rideId) {
+    console.error("No ride ID in URL");
+    return;
+  }
+
+
+  // Fetch all rides
+  fetch(`includes/fetch_carpool.php`)
+    .then(response => response.json())
+    .then(data => {
+      console.log("Fetched ride data:", data);
+
+
+      // Find the ride that matches the rideId from URL
+      const ride = data.find(r => r.rideId === rideId);
+
+
+      if (!ride) {
+        console.error("Ride not found in data");
+        return;
+      }
+
+
+      const driverId = ride.driverId || ride.driverInfo?.userID;
+
+
+      // Update UI with correct driver
+      document.querySelector(".driver-name").textContent = ride.name;
+      document.querySelector(".driver-photo").src = ride.photo || "images/default-driver.png";
+
+
+      // Set the button click to the correct driver
+      viewBtn.addEventListener("click", () => {
+        if (driverId) {
+          window.location.href = `viewprofile.html?driverId=${driverId}`;
+        } else {
+          alert("Driver ID not found for this ride.");
+        }
+      });
+    })
+    .catch(err => {
+      console.error("Error fetching ride details:", err);
+    });
 });
 </script>
+
+
   </body>
 </html>

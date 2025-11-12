@@ -2,95 +2,120 @@ document.addEventListener("DOMContentLoaded", async () => {
   const urlParams = new URLSearchParams(window.location.search);
   const driverId = urlParams.get("driverId");
 
+
+  const container = document.getElementById("driverProfile");
+
+
   if (!driverId) {
-    document.getElementById("driverProfile").innerHTML =
-      "<p>No driver ID provided.</p>";
+    container.innerHTML = "<p>No driver ID provided.</p>";
     return;
   }
+
 
   try {
     const response = await fetch(`includes/fetch_driver.php?driverId=${driverId}`);
     const data = await response.json();
 
+
     if (data.error) {
-      document.getElementById("driverProfile").innerHTML = `<p>${data.error}</p>`;
+      container.innerHTML = `<p>${data.error}</p>`;
       return;
     }
 
+
     const driver = data.driver_info || {};
     const vehicles = data.vehicles || [];
-    const rides = data.rides || [];
-    const reviews = data.reviews || [];
 
-    let html = `
+
+    // Generate star rating
+    const ratingStars = driver.rating
+      ? Array.from({ length: 5 }, (_, i) =>
+          i < driver.rating ? "&#9733;" : "&#9734;"
+        ).join("")
+      : "N/A";
+
+
+    // Vehicle list (concatenated if multiple)
+    const vehicleInfo = vehicles.length
+      ? vehicles.map(v => `${v.carMake || "Unknown"} ${v.carModel || ""} - ${v.color || "N/A"}`).join(", ")
+      : "No registered vehicles";
+
+
+    const plateInfo = vehicles.length
+      ? vehicles.map(v => v.plateNo || "N/A").join(", ")
+      : "N/A";
+
+
+    container.innerHTML = `
       <div class="profile-container">
         <div class="profile-header">
           <div class="user-basic">
             <img src="${driver.picture || 'images/default-driver.png'}" class="profile-photo" alt="Driver Photo">
             <div>
               <h2>${driver.name || "Unnamed Driver"}</h2>
-              <p>${driver.email || "No email provided"}</p>
-              <div class="rating">${"★".repeat(driver.rating || 0)}</div>
+              <p>Driver | ${driver.email || "No email provided"}</p>
+              <div class="rating">${ratingStars}</div>
             </div>
           </div>
         </div>
 
+
         <div class="profile-details">
           <div class="detail-group">
-            <label>Phone</label>
+            <label>Full Name</label>
+            <p>${driver.name || "N/A"}</p>
+          </div>
+
+
+          <div class="detail-group">
+            <label>Nickname</label>
+            <p>${driver.nickname || "N/A"}</p>
+          </div>
+
+
+          <div class="detail-group">
+            <label>Contact Number</label>
             <p>${driver.phoneNo || "N/A"}</p>
           </div>
+
+
           <div class="detail-group">
-            <label>Occupation</label>
-            <p>${driver.occupation || "N/A"}</p>
+            <label>Alternate Number</label>
+            <p>${driver.altPhoneNo || "N/A"}</p>
           </div>
+
+
           <div class="detail-group">
-            <label>Verified</label>
-            <p>${driver.isVerified ? "Yes" : "No"}</p>
+            <label>Gender</label>
+            <p>${driver.gender || "N/A"}</p>
           </div>
-        </div>
 
-        <div class="profile-section">
-          <h3>Vehicle(s)</h3>
-          ${
-            vehicles.length
-              ? "<ul>" +
-                vehicles.map(
-                    v => `<li>${v.carMake || "Unknown"} ${v.carModel || ""} (${v.plateNo || "No Plate"})</li>`
-                  ).join("") +
-                "</ul>"
-              : "<p>No registered vehicles.</p>"
-          }
 
-          <h3>Rides Offered</h3>
-          ${
-            rides.length
-              ? "<ul>" +
-                rides.map(
-                    r => `<li>From ${r.stationedAt || "?"} to ${r.destination || "?"} on ${r.date || "?"}</li>`
-                  ).join("") +
-                "</ul>"
-              : "<p>No rides found.</p>"
-          }
+          <div class="detail-group">
+            <label>Role</label>
+            <p>${driver.role || "Driver"}</p>
+          </div>
 
-          <h3>Reviews</h3>
-          ${
-            reviews.length
-              ? "<ul>" +
-                reviews.map(
-                    rev => `<li>"${rev.comment || "No comment"}" - ${rev.passengerName || "Anonymous"}</li>`
-                  ).join("") +
-                "</ul>"
-              : "<p>No reviews yet.</p>"
-          }
+
+          <div class="detail-group">
+            <label>Vehicle</label>
+            <p>${vehicleInfo}</p>
+          </div>
+
+
+          <div class="detail-group">
+            <label>Plate Number</label>
+            <p>${plateInfo}</p>
+          </div>
         </div>
       </div>
     `;
-
-    document.getElementById("driverProfile").innerHTML = html;
   } catch (err) {
     console.error("Error fetching driver profile:", err);
-    document.getElementById("driverProfile").innerHTML =
-      "<p>Error loading profile data.</p>";
+    container.innerHTML = "<p>Error loading profile data.</p>";
   }
 });
+
+
+
+

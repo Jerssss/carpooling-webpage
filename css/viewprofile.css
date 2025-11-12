@@ -1,56 +1,69 @@
 .profile-page {
   background: linear-gradient(90deg, #f0f0f0 0%, #f8e396 50%, #FFB300 100%);
   min-height: 100vh;
-  display: flex;
-  justify-content: center;
-  align-items: flex-start;
+  width: 100%;
   padding: 60px 0;
   font-family: "Poppins", sans-serif;
+  display: flex;
+  justify-content: center;
+  box-sizing: border-box;
 }
+
 
 .profile-container {
   background: #fff;
-  width: 90%;
-  max-width: 1000px;
+  width: 95%; /* wider */
+  max-width: 1400px; /* stretches more on large screens */
   border-radius: 12px;
   box-shadow: 0 4px 12px rgba(0,0,0,0.1);
   overflow: hidden;
+  display: flex;
+  flex-direction: column;
 }
+
 
 .profile-header {
   background-color: #2C2C2C;
   padding: 30px 40px;
   display: flex;
-  justify-content: space-between;
+  flex-wrap: wrap;
+  justify-content: flex-start; /* align items to the left */
   align-items: center;
+  gap: 30px;
   color: #fff;
 }
+
 
 .user-basic {
   display: flex;
   align-items: center;
   gap: 20px;
+  flex: 1 1 300px;
 }
 
+
 .profile-photo {
-  width: 80px;
-  height: 80px;
+  width: 120px; /* larger */
+  height: 120px;
   border-radius: 50%;
   object-fit: cover;
   border: 3px solid #FFC800;
 }
 
+
 .user-basic h2 {
   margin-bottom: 5px;
-  font-size: 22px;
+  font-size: 26px;
   font-weight: 600;
   color: #fff;
 }
 
+
 .user-basic p {
   color: #ccc;
-  font-size: 14px;
+  font-size: 16px;
 }
+
 
 .rating {
   margin-top: 8px;
@@ -59,19 +72,27 @@
   letter-spacing: 3px;
 }
 
+
 .profile-details, .profile-section {
   padding: 30px 40px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
 }
 
+
 .detail-group {
+  flex: 1 1 250px; /* responsive width */
   margin-bottom: 20px;
 }
+
 
 .detail-group label {
   font-weight: 600;
   font-size: 14px;
   color: #2C2C2C;
 }
+
 
 .detail-group p {
   background: #f7f7f7;
@@ -84,32 +105,65 @@
   transition: 0.3s ease;
 }
 
+
 .detail-group p:hover {
   border-color: #FFB300;
   box-shadow: 0 0 6px rgba(255, 179, 0, 0.3);
 }
+
 
 ul {
   margin: 0;
   padding-left: 20px;
 }
 
+
 li {
   margin: 6px 0;
 }
+
 
 h3 {
   margin-top: 30px;
   color: #2C2C2C;
 }
 
+
+@media (max-width: 1024px) {
+  .profile-photo {
+    width: 100px;
+    height: 100px;
+  }
+
+
+  .user-basic h2 {
+    font-size: 22px;
+  }
+
+
+  .profile-details, .profile-section {
+    flex-direction: column;
+  }
+
+
+  .detail-group {
+    flex: 1 1 100%;
+  }
+}
+
+
 @media (max-width: 768px) {
   .profile-photo {
-    width: 70px;
-    height: 70px;
+    width: 80px;
+    height: 80px;
   }
+
 
   .user-basic h2 {
     font-size: 18px;
   }
 }
+
+
+
+
