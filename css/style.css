@@ -51,6 +51,7 @@ nav ul {
   justify-content: center;
   flex: 1;
   list-style: none;
+  z-index: 10000;
 }
 
 nav li {
@@ -234,6 +235,7 @@ nav ul li a:hover::after {
     overflow: hidden;
     transition: max-height 0.4s ease;
     z-index: 9999;
+    pointer-events: none;
 }
 
 .sub-menu-wrap.open-menu {
@@ -301,6 +303,68 @@ nav ul li a:hover::after {
 
 .sub-menu-link:hover p {
     font-weight: 600;
+}
+
+/* Hamburger (hidden on large screens) */
+.hamburger {
+  display: none;
+  flex-direction: column;
+  cursor: pointer;
+  gap: 5px;
+}
+
+.hamburger div {
+  width: 25px;
+  height: 3px;
+  background-color: #fff;
+  border-radius: 2px;
+  transition: all 0.3s ease;
+}
+
+/* Hamburger animation when open */
+.hamburger.open div:nth-child(1) {
+  transform: rotate(45deg) translate(5px, 5px);
+}
+.hamburger.open div:nth-child(2) {
+  opacity: 0;
+}
+.hamburger.open div:nth-child(3) {
+  transform: rotate(-45deg) translate(5px, -5px);
+}
+
+/* Responsive Menu */
+@media screen and (max-width: 900px) {
+  nav ul {
+    display: none;
+    position: absolute;
+    top: 100%;
+    left: 0;
+    width: 100%;
+    flex-direction: column;
+    background: #2C2C2C;
+    padding: 10px 0;
+    gap: 0;
+    z-index: 999;
+  }
+
+  nav ul.show {
+    display: flex;
+    z-index: 10000;
+  }
+
+  nav li {
+    margin: 10px 0;
+    text-align: center;
+  }
+
+  .nav-right {
+    gap: 15px;
+    padding-left: 0;
+  }
+
+  .hamburger {
+    display: flex;
+  }
 }
 
 /* ===== FOOTER ===== */
