@@ -33,7 +33,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const emailEl = document.getElementById("email");
   const pickupTimeEl = document.getElementById("pickupTime");
 
-  const userId = "U0001"; // later use session variable
+  const userId = "U0004"; // later use session variable
   const rideId = localStorage.getItem("selectedRideId") || "R0001";
 
   // Load user info from DB
@@ -43,7 +43,7 @@ document.addEventListener("DOMContentLoaded", () => {
       if (data.success && data.user) {
         const u = data.user;
         fullNameEl.value = u.name || "";
-        idNumberEl.value = u.userID || "";
+        idNumberEl.value = u.idNo || "";
         emailEl.value = u.email || "";
         pickupTimeEl.value = data.pickupTime || "";
       }
