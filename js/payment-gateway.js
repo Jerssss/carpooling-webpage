@@ -34,10 +34,20 @@ document.addEventListener("DOMContentLoaded", () => {
   const pickupTimeEl = document.getElementById("pickupTime");
 
   const userId = "U0004"; // later use session variable
-  const rideId = localStorage.getItem("selectedRideId") || "R0001";
+  // const rideId = localStorage.getItem("selectedRideId") || "R0001";
+
+  // Function to get query string parameters
+  function getQueryParam(param) {
+    const urlParams = new URLSearchParams(window.location.search);
+    return urlParams.get(param);
+  }
+
+  // Get rideId from URL, fallback to default
+  const rideId = getQueryParam("rideId") || "R0001";
+
 
   // Load user info from DB
-  fetch(`includes/get_user_info.php?userId=${userId}`)
+  fetch(`includes/get_user_info.php?userId=${userId}&rideId=${rideId}`)
     .then((res) => res.json())
     .then((data) => {
       if (data.success && data.user) {
@@ -45,7 +55,7 @@ document.addEventListener("DOMContentLoaded", () => {
         fullNameEl.value = u.name || "";
         idNumberEl.value = u.idNo || "";
         emailEl.value = u.email || "";
-        pickupTimeEl.value = data.pickupTime || "";
+        pickupTimeEl.value = data.departureTime || "";
       }
     })
     .catch((err) => console.error("Error loading user info:", err));
