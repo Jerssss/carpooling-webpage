@@ -156,3 +156,12 @@ document.addEventListener("DOMContentLoaded", async () => {
     });
   }
 });
+
+document.addEventListener("DOMContentLoaded", () => {
+  fetch('includes/get_user_name.php')
+    .then(response => response.text())
+    .then(name => {
+      document.getElementById("userName").textContent = name;
+    })
+    .catch(err => console.error("Failed to load user name:", err));
+});
