@@ -8,8 +8,6 @@ $client = new MongoDB\Client("mongodb://localhost:27017/");
 $ridesCollection = $client->carpooling_data->rides;
 $usersCollection = $client->carpooling_data->users;
 
-// QUERYING. Imagine niyo 'to as a "Prepared Statement" like in SQL
-
 // Use aggregation to "join" rides db with users db. SQL equivalent of pipline: left join on
 $pipeline = [
     [
