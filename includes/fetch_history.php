@@ -3,30 +3,60 @@ require __DIR__ . '/../vendor/autoload.php';
 header('Content-Type: application/json');
 
 try {
-    // MongoDB connection
     $client = new MongoDB\Client("mongodb://localhost:27017/");
     $collection = $client->carpooling_data->history;
 
-    // Fetch all history records sorted by date (newest first)
-    $cursor = $collection->find([], ['sort' => ['date' => -1]]);
+    if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+        $data = json_decode(file_get_contents('php://input'), true);
+        $historyId = $data['historyId'] ?? null;
 
+        if (!$historyId) {
+            echo json_encode(["success" => false, "error" => "Missing historyId"]);
+            exit;
+        }
+
+        // Handle rating update
+        if (isset($data['rating'])) {
+            $rating = (int)$data['rating'];
+            $collection->updateOne(
+                ['historyId' => $historyId],
+                ['$set' => ['rating' => $rating]]
+            );
+            echo json_encode(["success" => true, "rating" => $rating]);
+            exit;
+        }
+
+        // Handle report_description update
+        if (isset($data['report_description'])) {
+            $description = trim($data['report_description']);
+            $collection->updateOne(
+                ['historyId' => $historyId],
+                ['$set' => ['report_description' => $description]]
+            );
+            echo json_encode(["success" => true, "report_description" => $description]);
+            exit;
+        }
+    }
+
+    // Fetch history records (GET)
+    $cursor = $collection->find([], ['sort' => ['date' => -1]]);
     $historyRecords = [];
 
     foreach ($cursor as $doc) {
-        // Convert BSONDocument to associative array properly
         $record = json_decode(json_encode($doc), true);
-
-        // Push only the fields that exist in your JSON
         $historyRecords[] = [
-            'carModel'        => $record['carModel'] ?? '',
-            'name'            => $record['name'] ?? '', // driver name
-            'pickup'          => $record['pickupLocation'] ?? '',
-            'dropoff'         => $record['dropoffLocation'] ?? '',
-            'distance'        => $record['distance'] ?? '',
-            'date'            => $record['date'] ?? '',
-            'time'            => $record['time'] ?? '',
-            'fare'            => $record['fare'] ?? 0,
-            'status'          => $record['status'] ?? '',
+            'historyId'          => $record['historyId'] ?? '',
+            'carModel'           => $record['carModel'] ?? '',
+            'name'               => $record['name'] ?? '',
+            'pickup'             => $record['pickupLocation'] ?? '',
+            'dropoff'            => $record['dropoffLocation'] ?? '',
+            'distance'           => $record['distance'] ?? '',
+            'date'               => $record['date'] ?? '',
+            'time'               => $record['time'] ?? '',
+            'fare'               => $record['fare'] ?? 0,
+            'status'             => $record['status'] ?? '',
+            'rating'             => $record['rating'] ?? 0,
+            'report_description' => $record['report_description'] ?? ''
         ];
     }
 
