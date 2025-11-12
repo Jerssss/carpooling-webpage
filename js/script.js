@@ -2,16 +2,44 @@
 let subMenu = document.getElementById("subMenu");
 
 function toggleMenu() {
+    // Close other dropdowns
+    const dropdown = document.getElementById("notificationsDropdown");
+    const navLinks = document.querySelector('nav ul');
+
+    if (dropdown) dropdown.classList.remove('show');
+    if (navLinks) navLinks.classList.remove('show');
+
+    // Toggle profile dropdown
     subMenu.classList.toggle("open-menu");
 }
 
 function toggleNotifications() {
     const dropdown = document.getElementById("notificationsDropdown");
-    if (dropdown) {
-        dropdown.classList.toggle("show");
-    } else {
-        console.warn("No notifications dropdown found to toggle.");
-    }
+    const navLinks = document.querySelector('nav ul');
+
+    if (!dropdown) return console.warn("No notifications dropdown found to toggle.");
+
+    // Close other dropdowns
+    subMenu.classList.remove('open-menu');
+    if (navLinks) navLinks.classList.remove('show');
+
+    // Toggle notifications dropdown
+    dropdown.classList.toggle("show");
+}
+
+function toggleMobileMenu() {
+    const navLinks = document.querySelector('nav ul');
+    const dropdown = document.getElementById("notificationsDropdown");
+
+    // Close other dropdowns
+    subMenu.classList.remove('open-menu');
+    if (dropdown) dropdown.classList.remove('show');
+
+    // Toggle mobile menu
+    navLinks.classList.toggle('show');
+
+    const hamburger = document.getElementById('hamburger');
+    hamburger.classList.toggle('open');
 }
 
 function initializeNotificationTabs() {
@@ -57,11 +85,24 @@ document.addEventListener('DOMContentLoaded', () => {
     initializeNotificationTabs();
 });
 
+// Close all dropdowns if clicking outside
 document.addEventListener('click', function (e) {
     const dropdown = document.getElementById("notificationsDropdown");
     const insideBell = e.target.closest('.nav-bell');
+    const insideProfile = e.target.closest('.user-pic');
+    const insideHamburger = e.target.closest('.hamburger');
+    const navLinks = document.querySelector('nav ul');
+
+    if (subMenu.classList.contains('open-menu') && !insideProfile) {
+        subMenu.classList.remove('open-menu');
+    }
     if (dropdown && dropdown.classList.contains('show') && !insideBell) {
         dropdown.classList.remove('show');
+    }
+    if (navLinks && navLinks.classList.contains('show') && !insideHamburger) {
+        navLinks.classList.remove('show');
+        const hamburger = document.getElementById('hamburger');
+        if (hamburger) hamburger.classList.remove('open');
     }
 });
 
@@ -114,4 +155,13 @@ document.addEventListener("DOMContentLoaded", async () => {
       window.location.href = `payment-gateway.html?rideId=${rideId}`;
     });
   }
+});
+
+document.addEventListener("DOMContentLoaded", () => {
+  fetch('includes/get_user_name.php')
+    .then(response => response.text())
+    .then(name => {
+      document.getElementById("userName").textContent = name;
+    })
+    .catch(err => console.error("Failed to load user name:", err));
 });

@@ -75,7 +75,7 @@ h1 {
 
 /* ========== MEET OUR TEAM SECTION ========== */
 .team-section {
-  background: #f7f6fc;
+  background: #fff; /* changed from #f7f6fc to white for consistency */
   padding: 100px 10%;
   text-align: center;
 }
@@ -84,7 +84,7 @@ h1 {
   font-size: 2.8rem;
   font-weight: 800;
   margin-bottom: 12px;
-  background: linear-gradient(90deg, #312972, #8d80a1);
+  background: linear-gradient(90deg, #FFD84D 0%, #FFB300 50%, #FF6F00 100%); /* changed gradient to match other pages */
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
 }
@@ -114,20 +114,20 @@ h1 {
   height: 180px;
   object-fit: cover;
   border-radius: 50%;
-  box-shadow: 0 8px 25px rgba(49, 41, 114, 0.15);
+  box-shadow: 0 8px 25px rgba(255, 179, 0, 0.15); 
   margin-bottom: 15px;
   transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
 
 .team-member:hover img {
   transform: scale(1.08);
-  box-shadow: 0 12px 35px rgba(49, 41, 114, 0.3);
+  box-shadow: 0 12px 35px rgba(255, 179, 0, 0.3); 
 }
 
 .team-member h3 {
   font-size: 1.1rem;
   font-weight: 600;
-  color: #312972;
+  color: #FFB300; 
 }
 
 /* ========== RESPONSIVE DESIGN ========== */

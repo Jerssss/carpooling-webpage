@@ -1,6 +1,6 @@
 .carpool-section {
     padding: 60px 80px;
-    background-color: #f8f2f7;
+    background-color: #fff;
     text-align: center;
   }
   
@@ -21,7 +21,6 @@
   
   /* === Search + Filter Bar === */
   .search-filter {
-    position: sticky;
     top: 10px;
     z-index: 100;
     display: flex;

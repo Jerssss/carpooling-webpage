@@ -1,17 +1,17 @@
 <!DOCTYPE html>
 <html>
-    <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>CARMA | Payment </title>
-        <link rel="stylesheet" href="css/style.css">
-        <link rel="stylesheet" href="css/notifications.css">
-        <link rel="stylesheet" href="css/payment-gateway.css">
-        <script src="js/script.js?v=2" defer></script>
-    </head>
+  <head>
+      <meta charset="UTF-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <title>CARMA | Payment </title>
+      <link rel="stylesheet" href="css/style.css">
+      <link rel="stylesheet" href="css/notifications.css">
+      <link rel="stylesheet" href="css/payment-gateway.css">
+      <script src="js/script.js?v=2" defer></script>
+  </head>
 
-    <body>
-        <nav>
+  <body>
+    <nav>
       <!-- Left side nav -->
       <div class="nav-left">
         <img src="images/carma-logo.png" class="logo" alt="Drop N Go Logo">
@@ -28,6 +28,13 @@
 
       <!-- Right side nav -->
       <div class="nav-right">
+        <!-- Hamburger Menu -->
+        <div class="hamburger" id="hamburger" onclick="toggleMobileMenu()">
+          <div></div>
+          <div></div>
+          <div></div>
+        </div>
+
         <div class="nav-bell">
           <img src="images/bell.png" class="bell-icon" onclick="toggleNotifications()">
           <div id="notificationsContainer">
@@ -37,39 +44,9 @@
                 <span id="unreadTab">Unread</span>
               </div>
               <div class="notif-list" id="notifList">
-                <div class="notif-item unread">
-                  <img src="images/person-icon.png" alt="driver">
+                <div class="notif-item">
                   <div class="notif-content">
-                    <p><strong>Dr. Taejin Cheon</strong> bound to SLU-Maryheights campus has arrived, with plate no. <strong>XYZ 123</strong>.</p>
-                    <span class="time">2 sec</span>
-                  </div>
-                </div>
-                <div class="notif-item unread">
-                  <img src="images/person-icon.png" alt="driver">
-                  <div class="notif-content">
-                    <p><strong>Dr. Taejin Cheon</strong> bound to SLU-Maryheights campus is on the way, with plate no. <strong>XYZ 123</strong>.</p>
-                    <span class="time">10 min</span>
-                  </div>
-                </div>
-                <div class="notif-item unread">
-                  <img src="images/person-icon.png" alt="driver">
-                  <div class="notif-content">
-                    <p>Hey there, we have a <strong>50% off</strong> on your first carpool for the day. Book now!</p>
-                    <span class="time">2h</span>
-                  </div>
-                </div>
-                <div class="notif-item read">
-                  <img src="images/person-icon.png" alt="driver">
-                  <div class="notif-content">
-                    <p><strong>Jorge Terre</strong> has dropped you off at your destination SLU-Maryheights campus, with plate no. <strong>ABC 321</strong>.</p>
-                    <span class="time">2d</span>
-                  </div>
-                </div>
-                <div class="notif-item read">
-                  <img src="images/person-icon.png" alt="driver">
-                  <div class="notif-content">
-                    <p><strong>Jorge Terre</strong> bound to SLU-Maryheights campus has arrived, with plate no. <strong>ABC 321</strong>.</p>
-                    <span class="time">2d</span>
+                    <p>Loading notifications...</p>
                   </div>
                 </div>
               </div>
@@ -85,7 +62,7 @@
         <div class="sub-menu">
           <div class="user-info">
             <img src="images/speed.jpg">
-            <h2>Darren Watkins</h2>
+            <h2 id="userName">Loading...</h2>
           </div>
           <hr>
           <a href="profile.html" class="sub-menu-link">
@@ -112,95 +89,132 @@
       </div>
     </nav>
 
-         <!-- Start of payment section -->
-          <section class="payment-container">
-  <h2>Select Payment Method</h2>
+    <!-- Start of payment section -->
+    <section class="payment-container">
+      <h2>Select Payment Method</h2>
 
-  <div class="payment-tabs">
-    <button class="tab active" id="gcash-tab">GCash</button>
-    <button class="tab" id="cash-tab">Cash</button>
-  </div>
-
-  <!-- GRID CONTAINER -->
-  <div class="payment-grid">
-    <!-- LEFT: USER DETAILS -->
-    <aside class="user-details">
-      <h4>Your Details</h4>
-
-      <div class="detail-group">
-        <label for="fullName">Full Name</label>
-        <input type="text" id="fullName" name="fullName" readonly>
+      <div class="payment-tabs">
+        <button class="tab active" id="gcash-tab">GCash</button>
+        <button class="tab" id="cash-tab">Cash</button>
       </div>
 
-      <div class="detail-group">
-        <label for="idNumber">ID Number</label>
-        <input type="text" id="idNumber" name="idNumber" readonly>
-      </div>
+      <!-- GRID CONTAINER -->
+      <div class="payment-grid">
+        <!-- LEFT: USER DETAILS -->
+        <aside class="user-details">
+          <h4>Your Details</h4>
 
-      <div class="detail-group">
-        <label for="email">Email</label>
-        <input type="email" id="email" name="email" readonly>
-      </div>
-
-      <div class="detail-group">
-        <label for="pickupTime">Pickup / Meetup Time</label>
-        <input type="text" id="pickupTime" name="pickupTime" readonly>
-      </div>
-
-      <p class="muted-note">These fields are retrieved from your account / booking.</p>
-    </aside>
-
-    <!-- CENTER: FORM CONTENT -->
-    <div class="payment-content">
-      <!-- GCash FORM -->
-      <div id="gcash-content">
-        <form class="payment-form" id="paymentForm">
-          <h3>Transaction Details</h3>
-
-          <label>Pickup Type</label>
-          <select id="pickupType" name="pickupType" required>
-            <option value="pickup">Pickup</option>
-            <option value="meetup">Meetup</option>
-          </select>
-
-          <label>Pickup/Meetup Location</label>
-          <input type="text" id="pickupLocation" name="pickupLocation" placeholder="Enter Location" required>
-
-          <div class="proof-section">
-            <div class="ref-number">
-              <label>GCash Reference Number</label>
-              <input type="text" id="referenceNumber" name="referenceNumber" placeholder="Enter GCash Reference No" required>
-            </div>
-
-            <div class="upload-proof">
-              <label>Upload Screenshot</label>
-              <input type="file" id="proofScreenshot" name="proofScreenshot" accept="image/*" required>
-            </div>
+          <div class="detail-group">
+            <label for="fullName">Full Name</label>
+            <input type="text" id="fullName" name="fullName" readonly>
           </div>
 
-          <button type="submit" class="confirm-btn">Confirm Payment</button>
-        </form>
+          <div class="detail-group">
+            <label for="idNumber">ID Number</label>
+            <input type="text" id="idNumber" name="idNumber" readonly>
+          </div>
+
+          <div class="detail-group">
+            <label for="email">Email</label>
+            <input type="email" id="email" name="email" readonly>
+          </div>
+
+          <div class="detail-group">
+            <label for="pickupTime">Pickup / Meetup Time</label>
+            <input type="text" id="pickupTime" name="pickupTime" readonly>
+          </div>
+
+          <p class="muted-note">These fields are retrieved from your account / booking.</p>
+        </aside>
+
+        <!-- CENTER: FORM CONTENT -->
+        <div class="payment-content">
+          <!-- GCash FORM -->
+          <div id="gcash-content">
+            <form class="payment-form" id="paymentForm">
+              <h3>Transaction Details</h3>
+
+              <label>Pickup Type</label>
+              <select id="pickupType" name="pickupType" required>
+                <option value="pickup">Pickup</option>
+                <option value="meetup">Meetup</option>
+              </select>
+
+              <label>Pickup/Meetup Location</label>
+              <input type="text" id="pickupLocation" name="pickupLocation" placeholder="Enter Location" required>
+
+              <div class="proof-section">
+                <div class="ref-number">
+                  <label>GCash Reference Number</label>
+                  <input type="text" id="referenceNumber" name="referenceNumber" placeholder="Enter GCash Reference No" required>
+                </div>
+
+                <div class="upload-proof">
+                  <label>Upload Screenshot</label>
+                  <input type="file" id="proofScreenshot" name="proofScreenshot" accept="image/*" required>
+                </div>
+              </div>
+
+              <button type="submit" class="confirm-btn">Confirm Payment</button>
+            </form>
+          </div>
+
+          <!-- CASH FORM -->
+          <div id="cash-content" class="hidden">
+            <form class="payment-form" id="cashForm">
+              <h3>Transaction Details</h3>
+
+              <label>Pickup Type</label>
+              <select id="cashPickupType" name="pickupType" required>
+                <option value="pickup">Pickup</option>
+                <option value="meetup">Meetup</option>
+              </select>
+
+              <label>Pickup/Meetup Location</label>
+              <input type="text" id="cashPickupLocation" name="pickupLocation" placeholder="Enter Location" required>
+
+              <button type="submit" class="confirm-btn">Confirm Payment</button>
+            </form>
+          </div>
+        </div>
+
+        <!-- RIGHT: IMAGE -->
+        <div class="payment-image">
+          <div id="gcash-image">
+            <img src="images/sample-gcashqr.png" alt="GCash QR" class="qr-code">
+            <p class="gcash-label">Scan or pay via GCash</p>
+            <p class="gcash-name">CARMA Transport Services</p>
+            <p class="gcash-number">0912 345 6789</p>
+          </div>
+
+          <div id="cash-image" class="hidden">
+            <img src="images/cash.png" alt="Cash" class="qr-code">
+            <p class="gcash-label">Please prepare the exact fare upon meetup.</p>
+          </div>
+        </div>
       </div>
+    </section>
 
-      <!-- CASH FORM -->
-      <div id="cash-content" class="hidden">
-        <form class="payment-form" id="cashForm">
-          <h3>Transaction Details</h3>
-
-          <label>Pickup Type</label>
-          <select id="cashPickupType" name="pickupType" required>
-            <option value="pickup">Pickup</option>
-            <option value="meetup">Meetup</option>
-          </select>
-
-          <label>Pickup/Meetup Location</label>
-          <input type="text" id="cashPickupLocation" name="pickupLocation" placeholder="Enter Location" required>
-
-          <button type="submit" class="confirm-btn">Confirm Payment</button>
-        </form>
+    <!-- Footer section -->
+    <footer class="site-footer">
+      <div class="social-icons">
+          <a href="#"><img src="images/facebook-app-symbol.png" alt="Facebook"></a>
+          <a href="#"><img src="images/instagram.png" alt="Instagram"></a>
+          <a href="#"><img src="images/twitter.png" alt="Twitter"></a>
+          <a href="#"><img src="images/google.png" alt="Google"></a>
+          <a href="#"><img src="images/youtube.png" alt="YouTube"></a>
       </div>
-    </div>
+      <ul class="footer-nav">
+        <li><a href="index.html">Home</a></li>
+        <li><a href="list-of-carpools.html">Rides</a></li>
+        <li><a href="history.html">History</a></li>
+        <li><a href="about.html">Our Team</a></li>
+      </ul>
+      <p class="footer-copy">Copyright ©2025 | Designed by <span>Carma</span></p>
+    </footer>
+    <!-- End of footer section -->
 
+<<<<<<< HEAD
     <!-- RIGHT: IMAGE -->
     <div class="payment-image">
       <div id="gcash-image">
@@ -238,4 +252,8 @@
         <!-- End of footer section -->
         <script src="js/payment-gateway.js"></script>
     </body>
+=======
+    <script src="js/payment-gateway.js"></script>
+  </body>
+>>>>>>> cbfd9ad1351d776d1cfe30e44f950dd117075d43
 </html>
