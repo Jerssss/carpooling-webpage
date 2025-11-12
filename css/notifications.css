@@ -1,4 +1,6 @@
-/* notifications.css */
+/* ===============================
+   NOTIFICATIONS DROPDOWN STYLES
+   =============================== */
 .nav-bell {
     position: static;
     display: inline-flex;
@@ -7,7 +9,7 @@
     overflow: visible;
 }
 
-nav .nav-bell { 
+nav .nav-bell {
     display: inline-flex;
     align-items: center;
     line-height: 1;
@@ -24,6 +26,7 @@ nav img.bell-icon {
     padding: 0;
 }
 
+/* ==== Dropdown Container ==== */
 #notificationsContainer {
     position: absolute;
     top: 100%;
@@ -42,7 +45,7 @@ nav img.bell-icon {
     flex-direction: column;
     background: #fff4ce;
     border-radius: 12px;
-    box-shadow: 0 8px 24px rgba(0,0,0,0.12);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
 
     opacity: 0;
     transform: translateY(-8px);
@@ -58,10 +61,13 @@ nav img.bell-icon {
     pointer-events: auto;
 }
 
+/* ==== Tabs ==== */
 .notif-tabs {
     display: flex;
     padding: 10px;
     border-bottom: 1px solid #ccc;
+    background: #fff;
+    border-radius: 12px 12px 0 0;
 }
 
 .notif-tabs span {
@@ -72,6 +78,7 @@ nav img.bell-icon {
     cursor: pointer;
     font-weight: 600;
     color: #FFC800;
+    transition: background 0.2s ease, color 0.2s ease;
 }
 
 .notif-tabs span.active {
@@ -79,6 +86,7 @@ nav img.bell-icon {
     color: #e89453;
 }
 
+/* ==== Notification List ==== */
 .notif-list {
     display: flex;
     flex-direction: column;
@@ -90,6 +98,16 @@ nav img.bell-icon {
     display: flex;
     padding: 10px;
     border-bottom: 1px solid #eee;
+    background: #fff;
+    transition: background 0.2s ease;
+}
+
+.notif-item.unread {
+    background: #fffbea;
+}
+
+.notif-item:hover {
+    background: #fffae0;
 }
 
 .notif-item img {
@@ -100,17 +118,127 @@ nav img.bell-icon {
     object-fit: cover;
 }
 
+.notif-content {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
 .notif-content p {
     margin: 0;
     font-size: 14px;
+    color: #333;
+    line-height: 1.4;
 }
 
 .notif-content .time {
     font-size: 12px;
     color: #FFC800;
+    margin-top: 4px;
 }
 
 .notif-item.read p,
 .notif-item.read .time {
     color: #b0b0b0;
+}
+
+/* ===============================
+   RESPONSIVE DESIGN
+   =============================== */
+
+@media (max-width: 1024px) {
+    #notificationsContainer {
+        right: 5%;
+        width: 300px;
+    }
+
+    .notif-content p {
+        font-size: 13px;
+    }
+
+    .notif-item img {
+        width: 36px;
+        height: 36px;
+    }
+}
+
+@media (max-width: 768px) {
+    #notificationsContainer {
+        right: 2%;
+        width: 90vw;
+        top: 110%;
+    }
+
+    .notifications-dropdown {
+        border-radius: 10px;
+        box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+    }
+
+    .notif-tabs {
+        padding: 8px;
+    }
+
+    .notif-tabs span {
+        font-size: 14px;
+        padding: 6px;
+    }
+
+    .notif-list {
+        max-height: 350px;
+    }
+
+    .notif-item {
+        padding: 8px;
+    }
+
+    .notif-item img {
+        width: 32px;
+        height: 32px;
+        margin-right: 8px;
+    }
+
+    .notif-content p {
+        font-size: 13px;
+    }
+
+    .notif-content .time {
+        font-size: 11px;
+    }
+}
+
+@media (max-width: 480px) {
+    #notificationsContainer {
+        right: 0;
+        left: 0;
+        margin: 0 auto;
+        width: 95vw;
+    }
+
+    .notifications-dropdown {
+        margin-top: 5px;
+        border-radius: 8px;
+    }
+
+    .notif-tabs {
+        flex-direction: row;
+        justify-content: space-evenly;
+    }
+
+    .notif-item {
+        padding: 6px;
+    }
+
+    .notif-item img {
+        width: 28px;
+        height: 28px;
+    }
+
+    .notif-content p {
+        font-size: 12px;
+    }
+
+    .notif-content .time {
+        font-size: 10px;
+    }
 }
