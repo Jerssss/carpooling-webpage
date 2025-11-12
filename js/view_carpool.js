@@ -63,7 +63,6 @@ document.addEventListener("DOMContentLoaded", () => {
     // Book button handler (TO BE DONE LATER)
     document.getElementById('bookBtn').addEventListener('click', () => {
         const rideId = document.getElementById('bookBtn').getAttribute('data-rideid');
-        // TODO: Implement booking logic
     });
 
     // Cancel button handler
