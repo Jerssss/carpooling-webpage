@@ -1,5 +1,6 @@
 # 9467_IT312-TeamArc_MidtermProject
 
+Skip to Line 56 for project setup
 
 
 ## Getting started
@@ -53,41 +54,155 @@ When you're ready to make this README your own, just edit this file and use the 
 Every project is different, so consider which of these sections apply to yours. The sections used in the template are suggestions for most open source projects. Also keep in mind that while a README can be too long and detailed, too long is better than too short. If you think your README is too long, consider utilizing another form of documentation rather than cutting out information.
 
 ## Name
-Choose a self-explaining name for your project.
+CARMA - A Carpooling Web Application for SLU Maryheights Students
 
 ## Description
-Let people know what your project can do specifically. Provide context and add a link to any reference visitors might be unfamiliar with. A list of Features or a Background subsection can also be added here. If there are alternatives to your project, this is a good place to list differentiating factors.
+Current web application features include the following: Displaying the list of available car pools (Retrieved from the MongoDB database using PHP), Viewing a car pool and reading its pertinent information (Also retrieved from MongoDB using PHP), Booking a car pool, getting redirected to a payment section and injecting the transaction details into the MongoDB database.
+Tech Stack includes: vanilla HTML and CSS, JavaScript, PHP (VERSION 8.4.0), MongoDB Compass, WAMP server, and DOM API
 
 ## Badges
-On some READMEs, you may see small images that convey metadata, such as whether or not all the tests are passing for the project. You can use Shields to add some to your README. Many services also have instructions for adding a badge.
+N/A
 
 ## Visuals
-Depending on what you are making, it can be a good idea to include screenshots or even a video (you'll frequently see GIFs rather than actual videos). Tools like ttygif can help, but check out Asciinema for a more sophisticated method.
+N/A
 
 ## Installation
-Within a particular ecosystem, there may be a common way of installing things, such as using Yarn, NuGet, or Homebrew. However, consider the possibility that whoever is reading your README is a novice and would like more guidance. Listing specific steps helps remove ambiguity and gets people to using your project as quickly as possible. If it only runs in a specific context like a particular programming language version or operating system or has dependencies that have to be installed manually, also add a Requirements subsection.
+Since we made use of MongoDB NoSQL, which isn't a built in feature of PHP, there is a specific setup that needs to be followed in order for the web application to be tested on one's end.
+
+Software that must be installed:
+1. MongoDB Compass
+2. WAMP Server
+3. Composer (Download link: https://getcomposer.org/download/)
+4. MongoDB PHP Driver (Download link : https://pecl.php.net/package/mongodb)
+
+MongoDB Compass Database Setup
+1. Ensure that the connection string used the default port (Connection String : mongodb://localhost:27017/)
+2. Within the connection, there must be a database named as : carpooling_data
+3. Within the carpooling_data database, the following collections must be named:
+    - bookings
+    - history
+    - notifications
+    - payments
+    - reviews
+    - rides
+    - users
+    - vehicles
+    (In the submission bin, we have included the json files to be exported in the said collections)
+
+WAMP Setup
+1. This project must be placed in the www folder of the WAMP64 directory
+2. Open the project in Visual Studio Code from there
+
+Composer Setup
+1. Simply download composer through the download link : https://getcomposer.org/download/
+2. Follow the installation steps through there
+3. In the case where you get stopped by an error such as PHP not being found, follow these steps:
+    - Open your wamp folder
+    - Go to bin
+    - Go to PHP
+    - Select PHP version 8.4.0
+    - Copy the file path
+    - Open environment variables
+    - Paste the filepath on to "Path" on both user variables and environtment variables
+    - Move up
+4. In the case where an error "dll not found" still persists:
+    - Open your wamp folder
+    - Go to bin
+    - Go to PHP
+    - PHP version 8.4.0
+    - Look for the php.ini file
+    - CTRL + F and search this line "zend_extension="E:/wamp64/bin/php/php8.4.0/zend_ext/php_xdebug-3.4.0beta1-8.4-x86_64.dll" "
+        - If this can't be found, simply search "zend_extension" and look for a similar looking line
+    - Once found, comment it out by adding a semicolon ; at the start of the line 
+    (;E:/wamp64/bin/php/php8.4.0/zend_ext/php_xdebug-3.4.0beta1-8.4-x86_64.dll)
+    - Save the php.ini file
+
+    JUST TO BE SAFE (Also edit your php.ini in your Apache file)
+    - Open your wamp folder
+    - Go to bin
+    - Go to Apache
+    - Apache version 2.4.62.1
+    - Look for the php.ini file
+    - CTRL + F and search this line "zend_extension="E:/wamp64/bin/php/php8.4.0/zend_ext/php_xdebug-3.4.0beta1-8.4-x86_64.dll" "
+        - If this can't be found, simply search "zend_extension" and look for a similar looking line
+    - Once found, comment it out by adding a semicolon ; at the start of the line 
+    (;E:/wamp64/bin/php/php8.4.0/zend_ext/php_xdebug-3.4.0beta1-8.4-x86_64.dll)
+    - Save the php.ini file
+
+
+PHP MongoDB Driver Setup
+1. Install the PHP MongoDB Driver through this link : https://pecl.php.net/package/mongodb
+2. Under "Available Releases", click on the DLL hyperlink of mongodb-2.1.4.tgz
+3. Under "DLL list", click on the download link that is suited to your PC. In our case, we downloaded 8.4 Thread Safe (TS) x64
+4. A zip file should download. Once downloaded, extract the zip file
+5. Open the extracted zip file and copy "php_mongodb.dll"
+6. Open your wamp64 folder and do the following steps:
+    - Go to bin
+    - Go to PHP
+    - PHP version 8.4.0
+    - Go to "ext" folder and paste the .dll file inside
+
+The next step is to enable the MongoDB extension:
+    - If you are still inside the ext folder, simply go back 
+    - Look for php.ini file and open it
+    - CTRL + F Search for "extension"
+    - Look for this header:
+    ;;;;;;;;;;;;;;;;;;;;;;
+    ; Dynamic Extensions ;
+    ;;;;;;;;;;;;;;;;;;;;;;
+    - Go to the bottom of ALL the extensions written there and type this "extension=mongodb"
+    - Save the file
+
+JUST TO BE SAFE, also repeat this process in the Apache folder
+   - Open your wamp folder
+    - Go to bin
+    - Go to Apache
+    - Apache version 2.4.62.1
+    - Look for the php.ini file
+    - Look for this header:
+    ;;;;;;;;;;;;;;;;;;;;;;
+    ; Dynamic Extensions ;
+    ;;;;;;;;;;;;;;;;;;;;;;
+    - Go to the bottom of ALL the extensions written there and type this "extension=mongodb"
+    - Save the file
+    - Save the php file
+
+
+Actually Testing the Project
+- Once all the previous setups are done, open wamp server and connect to MongoDB
+- Just to be safe, be sure that there is a vendor folder in the project. If none, open the terminal and write "composer install"
 
 ## Usage
-Use examples liberally, and show the expected output if you can. It's helpful to have inline the smallest example of usage that you can demonstrate, while providing links to more sophisticated examples if they are too long to reasonably include in the README.
+- This project cannot be run directly in visual studio code, and needs to be run by searching the URL in your browser.
+If the previous steps have been completed, search this:
+http://localhost/9467_it312-teamarc_midtermproject/index.html
+
+- Bugs may occur. In the case of events where the "View" button disappears, reload the page or open a new browser window and search the URL again
+- In the case where no data suddenly loads, keep reloading the page
+- If no data really loads, test the php file to see if data is actually being retrieved from the database:
+http://localhost/9467_it312-teamarc_midtermproject/includes/fetch_carpool.php
+    - If an error is shown instead of the JSON file, review the previous setup steps again
+
 
 ## Support
-Tell people where they can go to for help. It can be any combination of an issue tracker, a chat room, an email address, etc.
+N/A
 
 ## Roadmap
-If you have ideas for releases in the future, it is a good idea to list them in the README.
+N/A
 
 ## Contributing
-State if you are open to contributions and what your requirements are for accepting them.
-
-For people who want to make changes to your project, it's helpful to have some documentation on how to get started. Perhaps there is a script that they should run or some environment variables that they need to set. Make these steps explicit. These instructions could also be useful to your future self.
-
-You can also document commands to lint the code or run tests. These steps help to ensure high code quality and reduce the likelihood that the changes inadvertently break something. Having instructions for running tests is especially helpful if it requires external setup, such as starting a Selenium server for testing in a browser.
+N/A
 
 ## Authors and acknowledgment
-Show your appreciation to those who have contributed to the project.
+- Adame, Noelle Lorraine
+- Ang-angco, Jeremiah
+- Ferrer, Geoff Denuel
+- Grabanzor, Giana Kristy
+- Molina, Bernard Sebasthian
+- Terre, Jorge Frederic
 
 ## License
-For open source projects, say how it is licensed.
+N/A
 
 ## Project status
-If you have run out of energy or time for your project, put a note at the top of the README saying that development has slowed down or stopped completely. Someone may choose to fork your project or volunteer to step in as a maintainer or owner, allowing your project to keep going. You can also make an explicit request for maintainers.
+TO BE FURTHER POLISHED
