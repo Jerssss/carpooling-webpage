@@ -56,7 +56,7 @@ async function loadNotifications(userId, filter = 'all') {
             item.innerHTML = `
                 <img src="images/person-icon.png" alt="driver">
                 <div class="notif-content">
-                    <p>${escapeHtml(n.message)}</p>
+                    <p>${(n.message)}</p>
                     <span class="time">${timeAgoISO(n.timestamp)}</span>
                 </div>
             `;
