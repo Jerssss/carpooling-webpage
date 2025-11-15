@@ -22,7 +22,7 @@ if (!$driverId) {
 }
 
 try {
-    // 1️⃣ Get basic driver info using userID (NOT ObjectId)
+    // Get basic driver info using userID (NOT ObjectId)
     $driver = $users->findOne(['userID' => $driverId]);
 
     if (!$driver) {
@@ -30,19 +30,19 @@ try {
         exit;
     }
 
-    // 2️⃣ Get driver's vehicles (ownerId matches userID)
+    // Get driver's vehicles (ownerId matches userID)
     $driverVehicles = $vehicles->find(['ownerId' => $driverId])->toArray();
 
-    // 3️⃣ Get driver's rides
+    // Get driver's rides
     $driverRides = $rides->find(['driverId' => $driverId])->toArray();
 
-    // 4️⃣ Get reviews for this driver
+    // Get reviews for this driver
     $driverReviews = $reviews->find(['driverId' => $driverId])->toArray();
 
-    // 5️⃣ Get all bookings where this driver is the driver
+    // Get all bookings where this driver is the driver
     $driverBookings = $bookings->find(['driverId' => $driverId])->toArray();
 
-    // 6️⃣ Combine all
+    // Combine all
     $driverProfile = [
         "driver_info" => $driver,
         "vehicles" => $driverVehicles,

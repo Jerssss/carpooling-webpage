@@ -19,7 +19,6 @@ if (!$userId) {
 
 $collection = $db->notifications;
 
-// Query by passengerId (per your DB)
 $q = ['passengerId' => $userId];
 if ($filter === 'unread') {
     $q['isRead'] = false;

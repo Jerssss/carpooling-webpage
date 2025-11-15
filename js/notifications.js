@@ -131,10 +131,3 @@ function timeAgoISO(iso) {
     if (diff < 86400) return `${Math.floor(diff/3600)}h`;
     return `${Math.floor(diff/86400)}d`;
 }
-
-function escapeHtml(str) {
-    if (!str) return '';
-    return str.replace(/[&<>"'`=\/]/g, function (s) {
-        return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;','/':'&#x2F;','`':'&#x60;','=':'&#x3D;'}[s];
-    });
-}
