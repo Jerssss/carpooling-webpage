@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CARMA | Profile</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/profile.css">
+    <link rel="stylesheet" href="css/notifications.css">
+    <script src="js/script.js" defer></script>
+    <script src="js/notifications.js" defer></script>
+  </head>
+  <body>
+    <nav>
+    <!-- Left side nav -->
+    <div class="nav-left">
+      <img src="../images/carma-logo.png" class="logo" alt="Drop N Go Logo">
+      <span class="site-name">CARMA</span>
+    </div>
+
+    <!-- Center navigation links -->
+    <ul>
+      <li><a href="index.html">Home</a></li>
+      <li><a href="list-of-carpools.html">Rides</a></li>
+      <li><a href="history.html">History</a></li>
+      <li><a href="about.html">About Us</a></li>
+    </ul>
+
+    <!-- Right side nav -->
+    <div class="nav-right">
+      <!-- Hamburger Menu -->
+      <div class="hamburger" id="hamburger" onclick="toggleMobileMenu()">
+        <div></div>
+        <div></div>
+        <div></div>
+      </div>
+
+      <div class="nav-bell">
+        <img src="../images/bell.png" class="bell-icon" alt="Notifications" onclick="toggleNotifications()">
+        <div id="notificationsContainer">
+          <div class="notifications-dropdown" id="notificationsDropdown">
+            <div class="notif-tabs">
+              <span class="active" id="allTab">All</span>
+              <span id="unreadTab">Unread</span>
+            </div>
+            <div class="notif-list" id="notifList">
+              <div class="notif-item">
+                <div class="notif-content">
+                  <p>Loading notifications...</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <img src="../images/speed.jpg" class="user-pic" alt="User" onclick="toggleMenu()">
+    </div>
+
+    <!-- Profile dropdown -->
+    <div class="sub-menu-wrap" id="subMenu">
+      <div class="sub-menu">
+        <div class="user-info">
+          <img src="../images/speed.jpg" alt="User">
+          <h2 id="userName">Loading...</h2>
+        </div>
+        <hr>
+        <a href="profile.html" class="sub-menu-link">
+          <img src="../images/user.png" alt="usericon">
+          <p>Edit Profile</p>
+          <span>&gt;</span>
+        </a>
+        <a href="#" class="sub-menu-link">
+          <img src="../images/settings.png" alt="settings">
+          <p>Settings</p>
+          <span>&gt;</span>
+        </a>
+        <a href="#" class="sub-menu-link">
+          <img src="../images/question.png" alt="helpsicon">
+          <p>Help &amp; Support</p>
+          <span>&gt;</span>
+        </a>
+        <a href="#" class="sub-menu-link">
+          <img src="../images/user-logout.png" alt="userlogouticon">
+          <p>Logout</p>
+          <span>&gt;</span>
+        </a>
+      </div>
+    </div>
+  </nav>
+
+    <section class="profile-page">
+      <div class="profile-container">
+        <div class="profile-header">
+          <div class="user-basic">
+            <img src="../images/speed.jpg" alt="Profile Picture" class="profile-photo">
+            <div>
+              <h2>Lorraine Adame</h2>
+              <p>lolen10@gmail.com</p>
+            </div>
+          </div>
+          <button class="edit-btn" type="button">Edit</button>
+        </div>
+
+        <form class="profile-form">
+          <div class="form-group">
+            <label>Full Name</label>
+            <input type="text" placeholder="Enter full name">
+          </div>
+
+          <div class="form-group">
+            <label>Nickname</label>
+            <input type="text" placeholder="Enter nickname">
+          </div>
+
+          <div class="form-group">
+            <label>Contact Number</label>
+            <input type="text" placeholder="Enter contact number">
+          </div>
+
+          <div class="form-group">
+            <label>Contact Number</label>
+            <input type="text" placeholder="Enter alternate number">
+          </div>
+
+          <div class="form-group">
+            <label>Gender</label>
+            <input type="text" placeholder="Enter gender">
+          </div>
+
+          <div class="form-group">
+            <label>Role (Teacher/Student)</label>
+            <input type="text" placeholder="Enter role">
+          </div>
+        </form>
+      </div>
+    </section>
+  </body>
+</html>

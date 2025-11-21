@@ -1,0 +1,239 @@
+/* ========== GLOBAL RESET ========== */
+* {
+    padding: 0;
+    margin: 0;
+    box-sizing: border-box;
+    font-family: 'Poppins', sans-serif;
+}
+
+:root {
+    --accent-color: #FFC800; /* yellow for Ride button */
+    --light-color: #fff;
+}
+
+/* ========== HERO SECTION ========== */
+.hero {
+    width: 100%;
+    min-height: 100vh;
+    color: #fff;
+    display: flex;
+    flex-direction: column;
+    position: relative;
+    z-index: 1;
+    overflow: hidden;
+}
+
+/* ========== BACKGROUND VIDEO ========== */
+#bg-video {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    z-index: 0;
+    filter: brightness(0.6);
+    pointer-events: none;
+}
+
+/* ========== HEADER TEXT ========== */
+header {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 10%;
+    min-height: 600px;
+    position: relative;
+    z-index: 2;
+}
+
+.left {
+    max-width: 50%;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    margin-left: -60px;
+}
+
+.left h1 {
+    font-size: 60px;
+    line-height: 150%;
+    font-weight: 800;
+    letter-spacing: -1px;
+    margin-bottom: 16px;
+    background: linear-gradient(90deg, #FFD84D 0%, #FFB300 50%, #FF6F00 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.left p {
+    font-size: 20px;
+    line-height: 1.6;
+    color: #f0f0f0;
+    margin-bottom: 30px;
+}
+
+/* ========== BUTTON ========== */
+.btn {
+    background: linear-gradient(90deg, #FFD84D 0%, #FFB300 50%, #FF6F00 100%);
+    color: #000;
+    padding: 14px 38px;
+    border-radius: 10px;
+    text-decoration: none;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 12px rgba(255, 167, 38, 0.4);
+}
+
+.btn:hover {
+    background: linear-gradient(90deg, #FFE082 0%, #FFC107 50%, #FF9800 100%);
+    transform: translateY(-3px);
+    box-shadow: 0 8px 20px rgba(255, 167, 38, 0.6);
+}
+
+/* ========== SERVICES SECTION ========== */
+.services-section {
+  background-color: #fff;
+  text-align: center;
+  padding: 100px 10%;
+  font-family: 'Poppins', sans-serif;
+}
+
+.services-header h2 {
+  font-size: 2.5rem;
+  font-weight: 700;
+  color: #000;
+  margin-bottom: 10px;
+}
+
+.services-header p {
+  color: #555;
+  font-size: 1rem;
+  margin-bottom: 60px;
+}
+
+.services-container {
+  display: flex;
+  justify-content: center;
+  gap: 30px;
+  flex-wrap: wrap;
+}
+
+.service-card {
+  background-color: #fff4f1;
+  border-radius: 16px;
+  padding: 40px 25px;
+  width: 300px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+  transition: all 0.3s ease;
+}
+
+.service-card:hover {
+  transform: translateY(-8px);
+  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+}
+
+.service-card h3 {
+  font-size: 1.4rem;
+  font-weight: 600;
+  margin-bottom: 15px;
+  color: #111;
+}
+
+.service-card p {
+  font-size: 0.95rem;
+  color: #555;
+  line-height: 1.6;
+}
+
+/* ========== TEAM SECTION ========== */
+.team-section {
+  background-color: #fff;
+  text-align: center;
+  padding: 100px 10%;
+  font-family: 'Poppins', sans-serif;
+}
+
+.team-header h2 {
+  font-size: 2.5rem;
+  font-weight: 700;
+  color: #000;
+  margin-bottom: 10px;
+}
+
+.team-header p {
+  color: #555;
+  font-size: 1rem;
+  margin-bottom: 60px;
+}
+
+.team-container {
+  display: flex;
+  justify-content: center;
+  gap: 30px;
+  flex-wrap: wrap;
+}
+
+.team-card {
+  background-color: #fff4f1;
+  border-radius: 16px;
+  width: 280px;
+  padding: 25px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+  transition: all 0.3s ease;
+}
+
+.team-card:hover {
+  transform: translateY(-8px);
+  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+}
+
+.team-card img {
+  width: 100%;
+  height: 280px;
+  border-radius: 16px;
+  object-fit: cover;
+  margin-bottom: 20px;
+}
+
+.team-card h3 {
+  font-size: 1.2rem;
+  font-weight: 600;
+  color: #111;
+  margin-bottom: 8px;
+}
+
+.team-card p {
+  color: #666;
+  font-size: 0.95rem;
+}
+
+/* ========== MEET OUR TEAM CTA SECTION ========== */
+.team-cta-section {
+  background-color: #fff;
+  text-align: center;
+  padding: 100px 10%;
+  font-family: 'Poppins', sans-serif;
+}
+
+.team-cta h2 {
+  font-size: 2.5rem;
+  font-weight: 700;
+  color: #000;
+  margin-bottom: 10px;
+}
+
+.team-cta p {
+  color: #555;
+  font-size: 1rem;
+  margin-bottom: 30px;
+}
+
+/* Center the Learn More button */
+.team-cta .btn {
+  display: inline-block;
+  margin-top: 10px;
+  text-align: center;
+  padding: 14px 40px;
+}

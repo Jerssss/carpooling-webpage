@@ -167,6 +167,39 @@ JUST TO BE SAFE, also repeat this process in the Apache folder
     - Save the file
     - Save the php file
 
+## Quick WAMP MongoDB Setup (Concise)
+1) Install Composer and MongoDB driver
+    - Install Composer from https://getcomposer.org/download/
+    - Download `php_mongodb.dll` matching your PHP (x64, Thread Safe) from https://pecl.php.net/package/mongodb
+
+2) Copy the driver DLL
+    - Place `php_mongodb.dll` into `wamp64/bin/php/<your-php-version>/ext/`
+
+3) Enable the extension in php.ini
+    - Edit `wamp64/bin/php/<your-php-version>/php.ini`
+    - Under Dynamic Extensions, add: `extension=mongodb`
+    - Also add the same line in `wamp64/bin/apache/<your-apache-version>/bin/php.ini` if present
+
+4) Restart WAMP services
+    - Restart all services from the WAMP tray icon
+
+5) Verify installation
+    - Create a `phpinfo()` page under `www` or visit an existing PHP page
+    - Confirm section `mongodb` appears
+
+6) Install PHP library via Composer
+    - Open terminal in the project root and run:
+      - `composer install`
+      - If already installed, `composer dump-autoload -o`
+
+7) Test DB connectivity
+    - Visit `http://localhost/9467_it312-teamarc_midtermproject/passenger-side/includes/test_mongo_connection.php`
+    - You should see a successful connection response
+
+8) Common fixes
+    - If you see a missing DLL error, ensure the correct VC runtime is installed and that `ext` path matches your PHP version
+    - If Composer can’t find PHP, add `wamp64/bin/php/<your-php-version>` to your PATH (User and System)
+
 
 Actually Testing the Project
 - Once all the previous setups are done, open wamp server and connect to MongoDB
