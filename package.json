@@ -1,0 +1,27 @@
+{
+  "name": "9467_it312-teamarc_midtermproject",
+  "version": "1.0.0",
+  "description": "Skip to Line 56 for project setup",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://gitlab.com/dnuel18/9467_it312-teamarc_midtermproject.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://gitlab.com/dnuel18/9467_it312-teamarc_midtermproject/issues"
+  },
+  "homepage": "https://gitlab.com/dnuel18/9467_it312-teamarc_midtermproject#readme",
+  "dependencies": {
+    "cors": "^2.8.5",
+    "dotenv": "^17.2.3",
+    "express": "^5.1.0",
+    "mongodb": "^7.0.0"
+  }
+}
