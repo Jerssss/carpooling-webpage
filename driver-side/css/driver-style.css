@@ -45,18 +45,22 @@ nav {
   letter-spacing: 1px;
 }
 
-/* Center: navigation links */
+/* Center: navigation links - properly centered */
 nav ul {
-  display: flex;
-  justify-content: center;
-  flex: 1;
   list-style: none;
+  display: flex;
+  gap: 40px;
+  position: absolute;      /* position independently to center */
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  margin: 0;
+  padding: 0;
   z-index: 10000;
 }
 
 nav li {
   display: inline-block;
-  margin: 0 18px;
   font-size: 18px;
   letter-spacing: 1px;
 }
@@ -77,18 +81,18 @@ nav ul li a.active {
 
 /* underline animation */
 nav ul li a::after {
-    content: "";
-    position: absolute;
-    bottom: -4px;
-    left: 0;
-    width: 0;
-    height: 2px;
-    background-color: #FFC800; /* yellow underline */
-    transition: width 0.3s ease;
+  content: "";
+  position: absolute;
+  bottom: -4px;
+  left: 0;
+  width: 0;
+  height: 2px;
+  background-color: #FFC800; /* yellow underline */
+  transition: width 0.3s ease;
 }
 
 nav ul li a:hover::after {
-    width: 100%;
+  width: 100%;
 }
 
 /* Right: bell + profile */
@@ -96,7 +100,6 @@ nav ul li a:hover::after {
   display: flex;
   align-items: center;
   gap: 30px;
-  padding-left: 65px;
   margin-right: 15px;
 }
 
@@ -107,7 +110,7 @@ nav ul li a:hover::after {
 }
 
 .bell-icon {
-  width: 40px;           /* match profile size */
+  width: 40px;
   height: 40px;
   cursor: pointer;
   object-fit: cover;
@@ -119,9 +122,22 @@ nav ul li a:hover::after {
 
 .bell-icon:hover {
   background-color: #3a3a3a;
-  transform: scale(1.1);   /* subtle hover enlarge */
+  transform: scale(1.1);
 }
 
+.user-pic {
+  width: 40px;
+  height: 40px;
+  cursor: pointer;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid #ffb300;
+  transition: transform 0.3s ease;
+}
+
+.user-pic:hover {
+  transform: scale(1.05);
+}
 
 /* ===== NOTIFICATION DROPDOWN ===== */
 #notificationsContainer {
@@ -132,7 +148,7 @@ nav ul li a:hover::after {
   display: none;
   position: absolute;
   right: 0;
-  top: 5x;
+  top: 5px;
   width: 350px;
   background: #fff;
   border-radius: 10px;
@@ -206,103 +222,90 @@ nav ul li a:hover::after {
 .notif-list::-webkit-scrollbar {
   width: 6px;
 }
+
 .notif-list::-webkit-scrollbar-thumb {
   background-color: #ccc;
   border-radius: 10px;
 }
 
-/* Profile image */
-.user-pic {
-  width: 40px;
-  height: 40px;
-  cursor: pointer;
-  border-radius: 50%;
-  object-fit: cover;
-  border: 2px solid #ffb300;
-  transition: transform 0.3s ease;
-}
-.user-pic:hover {
-  transform: scale(1.05);
-}
-
 /* ========== DROPDOWN MENU (WHITE) ========== */
 .sub-menu-wrap {
-    position: absolute;
-    top: 100%;
-    right: 5%;
-    width: 320px;
-    max-height: 0;
-    overflow: hidden;
-    transition: max-height 0.4s ease;
-    z-index: 9999;
-    pointer-events: none;
+  position: absolute;
+  top: 100%;
+  right: 5%;
+  width: 320px;
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.4s ease;
+  z-index: 9999;
+  pointer-events: none;
 }
 
 .sub-menu-wrap.open-menu {
-    max-height: 400px;
-    pointer-events: auto;
+  max-height: 400px;
+  pointer-events: auto;
 }
 
 .sub-menu {
-    background: #fff;
-    padding: 20px;
-    margin: 10px;
-    border-radius: 10px;
-    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+  background: #fff;
+  padding: 20px;
+  margin: 10px;
+  border-radius: 10px;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
 }
 
 .user-info {
-    display: flex;
-    align-items: center;
-    text-align: center;
+  display: flex;
+  align-items: center;
+  text-align: center;
 }
 
 .user-info img {
-    width: 60px;
-    border-radius: 50%;
-    margin-right: 15px;
+  width: 60px;
+  border-radius: 50%;
+  margin-right: 15px;
 }
 
 .user-info h2 {
-    font-weight: 500;
+  font-weight: 500;
 }
 
 .sub-menu hr {
-    border: 0;
-    height: 1px;
-    width: 100%;
-    background: #ccc;
-    margin: 15px 0 10px;
+  border: 0;
+  height: 1px;
+  width: 100%;
+  background: #ccc;
+  margin: 15px 0 10px;
 }
 
 .sub-menu-link {
-    display: flex;
-    align-items: center;
-    text-decoration: none;
-    color: #525252;
-    margin: 12px 0;
-    transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  text-decoration: none;
+  color: #525252;
+  margin: 12px 0;
+  transition: all 0.3s ease;
 }
 
 .sub-menu-link img {
-    width: 40px;
-    background-color: #ffedc2;
-    border-radius: 50%;
-    padding: 8px;
-    margin-right: 15px;
+  width: 40px;
+  background-color: #ffedc2;
+  border-radius: 50%;
+  padding: 8px;
+  margin-right: 15px;
 }
 
 .sub-menu-link span {
-    font-size: 22px;
-    transition: transform 0.3s ease;
+  font-size: 22px;
+  transition: transform 0.3s ease;
 }
 
 .sub-menu-link:hover span {
-    transform: translateX(5px);
+  transform: translateX(5px);
 }
 
 .sub-menu-link:hover p {
-    font-weight: 600;
+  font-weight: 600;
 }
 
 /* Hamburger (hidden on large screens) */
@@ -321,13 +324,14 @@ nav ul li a:hover::after {
   transition: all 0.3s ease;
 }
 
-/* Hamburger animation when open */
 .hamburger.open div:nth-child(1) {
   transform: rotate(45deg) translate(5px, 5px);
 }
+
 .hamburger.open div:nth-child(2) {
   opacity: 0;
 }
+
 .hamburger.open div:nth-child(3) {
   transform: rotate(-45deg) translate(5px, -5px);
 }
@@ -451,7 +455,7 @@ nav ul li a:hover::after {
 }
 
 .view-btn:hover {
-  background-color: #e5a200; /* slightly darker amber */
+  background-color: #e5a200;
   transform: translateY(-2px);
   box-shadow: 0 6px 18px rgba(0,0,0,0.15);
 }
@@ -461,7 +465,6 @@ nav ul li a:hover::after {
   box-shadow: 0 3px 10px rgba(0,0,0,0.1);
 }
 
-/* Optional: add a small left arrow for back buttons */
 .view-btn.back {
   font-size: 15px;
   padding: 8px 20px;
