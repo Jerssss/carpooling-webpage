@@ -9,15 +9,17 @@
   <link rel="stylesheet" href="css/list-of-carpools.css">
   <script src="js/script.js" defer></script>
   <script src="js/notifications.js" defer></script>
-  <script src="js/fetch_carpool.js"></script>
-  <script src="js/search_filter.js"></script>
+  <script src="js/fetch_carpool.js" defer></script>
+  <script src="js/search_filter.js" defer></script>
+  <!-- Optional: Font Awesome for icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 </head>
 
 <body>
   <nav>
     <!-- Left side nav -->
     <div class="nav-left">
-      <img src="../images/carma-logo.png" class="logo" alt="Drop N Go Logo">
+      <img src="../images/carma-logo.png" class="logo" alt="Carma">
       <span class="site-name">CARMA</span>
     </div>
 
@@ -31,11 +33,8 @@
 
     <!-- Right side nav -->
     <div class="nav-right">
-      <!-- Hamburger Menu -->
       <div class="hamburger" id="hamburger" onclick="toggleMobileMenu()">
-        <div></div>
-        <div></div>
-        <div></div>
+        <div></div><div></div><div></div>
       </div>
 
       <div class="nav-bell">
@@ -47,11 +46,7 @@
               <span id="unreadTab">Unread</span>
             </div>
             <div class="notif-list" id="notifList">
-              <div class="notif-item">
-                <div class="notif-content">
-                  <p>Loading notifications...</p>
-                </div>
-              </div>
+              <div class="notif-item"><div class="notif-content"><p>Loading notifications...</p></div></div>
             </div>
           </div>
         </div>
@@ -92,45 +87,42 @@
     </div>
   </nav>
 
-    <section class="carpool-section">
-      <h1>List of Carpools in Your Area</h1>
+  <section class="carpool-section">
+    <h1>List of Carpools in Your Area</h1>
       
-<div class="search-filter">
-  <input type="text" id="searchInput" placeholder="Destination or Driver">
+    <div class="search-filter">
+      <input type="text" id="searchInput" placeholder="Destination or Driver">
 
-  <div class="filter-group">
-    <select id="forFilter">
-      <option value="">All Types</option>
-      <option value="pickup">Pickup</option>
-      <option value="meetup">Meetup</option>
-    </select>
+      <div class="filter-group">
+        <select id="forFilter">
+          <option value="">All Types</option>
+          <option value="pickup">Pickup</option>
+          <option value="meetup">Meetup</option>
+        </select>
 
-    <select id="seatsFilter">
-      <option value="">All Seats</option>
-      <option value="1">1 seat available</option>
-      <option value="2">2 seats available</option>
-      <option value="3">3 seats available</option>
-    </select>
+        <select id="seatsFilter">
+          <option value="">All Seats</option>
+          <option value="1">1 seat available</option>
+          <option value="2">2 seats available</option>
+          <option value="3">3 seats available</option>
+        </select>
 
-    <select id="roleFilter"> 
-      <option value="">All Roles</option> 
-      <option value="student">Student</option> 
-      <option value="faculty">Faculty</option> 
-    </select>
-  </div>
-</div>  
+        <select id="roleFilter"> 
+          <option value="">All Roles</option> 
+          <option value="student">Student</option> 
+          <option value="faculty">Faculty</option> 
+        </select>
+      </div>
+    </div>  
 
-  <div class="cards-container">
-      <!-- Start of container class containing car pool cards -->
-     <div class="carpool-container"> <!-- Calling the script file-->
-      <!-- Generates the dynamic content with the class name "carpool-container". Don't be confused bat empty dito -->
+    <div class="cards-container">
+      <div class="carpool-container">
+        <!-- Dynamic cards injected here -->
+      </div>
     </div>
-  </div>
-</section>
+  </section>
 
-
-  <!-- Start of footer section -->
-   <footer class="site-footer">
+  <footer class="site-footer">
     <div class="social-icons">
       <a href="#"><img src="../images/facebook-app-symbol.png" alt="Facebook"></a>
       <a href="#"><img src="../images/instagram.png" alt="Instagram"></a>
@@ -148,8 +140,5 @@
 
     <p class="footer-copy">Copyright ©2025 | Designed by <span>Carma</span></p>
   </footer>
-  <!-- End of footer section -->
-   
-    <script src="js/fetch_carpool.js"></script>
 </body>
 </html>
