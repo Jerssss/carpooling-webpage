@@ -15,6 +15,65 @@ main {
   text-align: center;
 }
 
+.ride-controls {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  gap: 15px;
+  width: 100%;
+  max-width: 420px;
+  margin-bottom: 20px;
+}
+
+.search-bar {
+  display: flex;
+  align-items: center;
+  background: #fff8d6;
+  border-radius: 15px;
+  padding: 8px 12px;
+  gap: 8px;
+  flex: 1;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
+
+.search-bar img {
+  width: 18px;
+  height: 18px;
+}
+
+.search-bar input {
+  border: none;
+  outline: none;
+  background: transparent;
+  font-size: 14px;
+  width: 100%;
+}
+
+.filter-dropdown {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  background: #fff8d6;
+  border-radius: 15px;
+  padding: 8px 12px;
+  cursor: pointer;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
+
+.filter-dropdown img {
+  width: 18px;
+  height: 18px;
+}
+
+.filter-dropdown select {
+  border: none;
+  outline: none;
+  background: transparent;
+  font-size: 14px;
+  cursor: pointer;
+}
+
+
 .ride-list {
   width: 100%;
   display: grid;

@@ -91,11 +91,32 @@
   </nav>
 
   <main>
-    <section class="booked-rides">
-      <h2>Your Rides</h2>
-      <div id="rideHistoryContainer" class="ride-list"></div>
-    </section>
-  </main>
+  <section class="booked-rides">
+    <h2>Your Rides</h2>
+
+    <!-- SEARCH & FILTER ON TOP -->
+    <div class="ride-controls">
+      <div class="search-bar">
+        <img src="../images/search-icon.png" alt="Search">
+        <input type="text" placeholder="Search rides...">
+      </div>
+
+      <div class="filter-dropdown">
+        <img src="../images/filter-icon.png" alt="Filter">
+        <select>
+          <option value="">All Cars</option>
+          <option value="sedan">Sedan</option>
+          <option value="suv">SUV</option>
+          <option value="van">Van</option>
+        </select>
+      </div>
+    </div>
+
+    <!-- RIDE CARDS -->
+    <div id="rideHistoryContainer" class="ride-list"></div>
+  </section>
+</main>
+
 
   <footer class="site-footer">
     <div class="social-icons">
