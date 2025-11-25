@@ -1,0 +1,155 @@
+/* GENERAL */
+body {
+    font-family: 'Poppins', Arial, sans-serif;
+    margin: 0;
+    background-color: #f5efed;
+    color: #333;
+    font-size: 18px; /* GLOBAL FONT SIZE ↑ */
+}
+
+.container {
+    display: flex;
+    gap: 35px; /* bigger spacing */
+    padding: 35px; /* bigger padding */
+    max-width: 1800px; /* wider layout */
+    margin: auto;
+}
+
+/* LEFT SIDE — HISTORY */
+.history-section {
+    width: 33%;
+}
+
+.history-section h2 {
+    margin-bottom: 20px;
+    font-size: 50px;  /* ↑ bigger heading */
+    font-weight: 1000;
+}
+
+.history-card {
+    background: #ffffff;
+    padding: 25px; /* bigger card padding */
+    margin-bottom: 20px;
+    border-radius: 20px; /* rounder */
+    cursor: pointer;
+    box-shadow: 0 6px 18px rgba(0,0,0,0.10);
+    transition: 0.2s;
+}
+
+.history-card:hover {
+    transform: translateY(-4px);
+}
+
+.history-date {
+    font-weight: 700;
+    font-size: 20px; /* bigger date */
+}
+
+.history-text {
+    font-size: 15px;
+    margin-top: 8px;
+    color: #666;
+}
+
+/* RIGHT SIDE — FEEDBACK LIST */
+.feedback-section {
+    width: 67%;
+}
+
+.feedback-section h2 {
+    margin: 0;
+    font-size: 24px; /* bigger main date */
+    font-weight: bold;
+}
+
+.feedback-section p {
+    margin: 8px 0 30px;
+    font-size: 18px; /* bigger */
+    color: #666;
+}
+
+/* FEEDBACK CARD */
+.feedback-card {
+    display: flex;
+    align-items: center;
+    padding: 25px; /* bigger card */
+    background: #ffffff;
+    margin-bottom: 20px;
+    border-radius: 20px;
+    cursor: pointer;
+    box-shadow: 0 6px 18px rgba(0,0,0,0.10);
+    transition: 0.2s;
+}
+
+.feedback-card:hover {
+    transform: translateY(-4px);
+}
+
+.feedback-card .avatar {
+    width: 70px;  /* bigger avatar */
+    height: 70px;
+    background: #d9d9d9;
+    border-radius: 50%;
+}
+
+.feedback-card .info {
+    flex: 1;
+    margin-left: 20px;
+}
+
+.feedback-card .name {
+    font-size: 20px; /* bigger name */
+    font-weight: 600;
+}
+
+.feedback-card .contact,
+.feedback-card .location {
+    font-size: 14px; /* bumped up */
+    color: #666;
+    margin-top: 3px;
+}
+
+.feedback-card .rating {
+    font-size: 26px; /* bigger stars */
+    color: #ffcc00;
+    font-weight: bold;
+}
+
+/* MODAL */
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 200;
+    inset: 0;
+    background-color: rgba(0,0,0,0.45);
+}
+
+.modal-content {
+    background: white;
+    margin: 8% auto;
+    padding: 35px; /* bigger modal */
+    border-radius: 20px;
+    width: 50%; /* bigger modal width */
+    box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+    animation: fadeIn 0.25s ease;
+    position: relative;
+}
+
+.close-button {
+    position: absolute;
+    top: 12px;
+    right: 18px;
+    font-size: 34px; /* bigger X */
+    cursor: pointer;
+}
+
+#modal-rating {
+    margin-top: 12px;
+    color: #ffcc00;
+    font-size: 22px;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(-10px); }
+    to { opacity: 1; transform: translateY(0); }
+}

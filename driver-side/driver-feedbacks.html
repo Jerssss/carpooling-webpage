@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Driver Feedbacks</title>
+    <link rel="stylesheet" href="css/driver-style.css">
+    <link rel="stylesheet" href="css/driver-feedbacks.css">
+</head>
+<body>
+    <!-- NAVBAR -->
+    <nav>
+        <div class="nav-left">
+            <img src="../images/carma-logo.png" class="logo" />
+            <span class="site-name">Carma</span>
+        </div>
+        <ul>
+            <li><a href="../driver-side/driver-landing.html">Home</a></li>
+            <li><a href="../driver-side/driver-schedule-carpool.html">Schedule</a></li>
+            <li><a href="../driver-side/driver-feedbacks.html" class="active">Feedbacks</a></li>
+        </ul>
+        <div class="nav-right">
+            <div id="notificationsContainer" class="nav-bell">
+                <img src="../images/bell.png" class="bell-icon" />
+            </div>
+            <img src="../images/bod.jpg" class="user-pic" />
+        </div>
+    </nav>
+
+    <div class="container">
+        <div class="history-section">
+            <h2>History</h2>
+            <div class="history-card" data-feedback="Body text for 11/24/2025. Add main takeaway points, quotes, anecdotes, or even a very short story.">
+                <div class="history-date">11/24/2025</div>
+                <div class="history-text">Maryheights - Camp 7</div>
+            </div>
+            <div class="history-card" data-feedback="Body text for 11/23/2025.">
+                <div class="history-date">11/23/2025</div>
+                <div class="history-text">Maryheights - Camp 7</div>
+            </div>
+            <div class="history-card" data-feedback="Body text for 11/22/2025.">
+                <div class="history-date">11/22/2025</div>
+                <div class="history-text">Maryheights - Camp 7</div>
+            </div>
+        </div>
+
+        <div class="feedback-section">
+            <h2 id="feedback-date">11/25/2025</h2>
+            <p id="feedback-time">4:30 PM - 5:30 PM</p>
+
+            <div class="feedback-card" data-name="Lorraine Adame" data-feedback="Had a wonderful ride experience. Smooth drive and polite driver." data-rating="4">
+                <div class="avatar"></div>
+                <div class="info">
+                    <div class="name">Lorraine Adame</div>
+                    <div class="contact">09231232242</div>
+                    <div class="location">Studio Coffee Camp 7</div>
+                </div>
+                <div class="rating">★★★★☆</div>
+            </div>
+
+            <div class="feedback-card" data-name="ishowspeed" data-feedback="Driver was on time and very friendly." data-rating="4">
+                <div class="avatar"></div>
+                <div class="info">
+                    <div class="name">ishowspeed</div>
+                    <div class="contact">09231232242</div>
+                    <div class="location">Studio Coffee Camp 7</div>
+                </div>
+                <div class="rating">★★★★☆</div>
+            </div>
+
+            <div class="feedback-card" data-name="Loq" data-feedback="Smooth and comfortable ride. Appreciated the music choices." data-rating="4">
+                <div class="avatar"></div>
+                <div class="info">
+                    <div class="name">Loq</div>
+                    <div class="contact">09231232242</div>
+                    <div class="location">Studio Coffee Camp 7</div>
+                </div>
+                <div class="rating">★★★★☆</div>
+            </div>
+
+            <div class="feedback-card" data-name="Gianana" data-feedback="Friendly driver, overall good experience." data-rating="4">
+                <div class="avatar"></div>
+                <div class="info">
+                    <div class="name">Gianana</div>
+                    <div class="contact">09231232242</div>
+                    <div class="location">Studio Coffee Camp 7</div>
+                </div>
+                <div class="rating">★★★★☆</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal -->
+    <div id="feedback-modal" class="modal">
+        <div class="modal-content">
+            <span class="close-button">&times;</span>
+            <h3 id="modal-name">Passenger Name</h3>
+            <p id="modal-feedback">Feedback description here...</p>
+            <div id="modal-rating">Rating: ★★★★☆</div>
+        </div>
+    </div>
+
+    <script>
+        const modal = document.getElementById("feedback-modal");
+        const modalName = document.getElementById("modal-name");
+        const modalFeedback = document.getElementById("modal-feedback");
+        const modalRating = document.getElementById("modal-rating");
+        const closeButton = document.querySelector(".close-button");
+
+        document.querySelectorAll(".feedback-card").forEach(card => {
+            card.addEventListener("click", () => {
+                modalName.textContent = card.dataset.name;
+                modalFeedback.textContent = card.dataset.feedback;
+
+                const rating = parseInt(card.dataset.rating);
+                modalRating.textContent = "Rating: " + "★".repeat(rating) + "☆".repeat(5 - rating);
+
+                modal.style.display = "block";
+            });
+        });
+
+        closeButton.addEventListener("click", () => {
+            modal.style.display = "none";
+        });
+
+        window.addEventListener("click", (event) => {
+            if(event.target === modal) {
+                modal.style.display = "none";
+            }
+        });
+    </script>
+
+    <!-- ===== FOOTER SECTION ===== -->
+    <footer class="site-footer">
+      <div class="social-icons">
+        <a href="#"><img src="../images/facebook-app-symbol.png" alt="Facebook"></a>
+        <a href="#"><img src="../images/instagram.png" alt="Instagram"></a>
+        <a href="#"><img src="../images/twitter.png" alt="Twitter"></a>
+        <a href="#"><img src="../images/google.png" alt="Google"></a>
+        <a href="#"><img src="../images/youtube.png" alt="YouTube"></a>
+      </div>
+
+            <ul class="footer-nav">
+              <li><a href="../driver-side/driver-landing.html">Home</a></li>
+              <li><a href="../driver-side/driver-schedule-carpool.html">Schedule</a></li>
+              <li><a href="#">Feedbacks</a></li>
+              <li><a href="../passenger-side/about.html">Our Team</a></li>
+            </ul>
+
+      <p class="footer-copy">Copyright ©2025 | Designed by <span>Carma</span></p>
+    </footer>
+</body>
+</html>
