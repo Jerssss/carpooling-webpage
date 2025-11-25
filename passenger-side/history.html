@@ -204,6 +204,11 @@
   #cancelReport:hover {
     background-color: #aaa;
   }
+
+  .ride-actions .star.hovered {
+      color: #ffcc00 !important;
+      transform: scale(1.2);
+    }
   </style>
 
   <script>
@@ -309,7 +314,7 @@
         container.appendChild(rideCard);
       });
 
-      // Star rating interactivity
+      // STAR CLICK LOGIC (existing)
       container.addEventListener("click", async (e) => {
         if (!e.target.classList.contains("star")) return;
 
@@ -329,27 +334,38 @@
         showNotification(`You successfully rated this ride ${value} ${value === 1 ? "star" : "stars"}`);
       });
 
-      // Report button functionality
+      // STAR HOVER LOGIC (ADDED)
+      container.addEventListener("mouseover", e => {
+        if (!e.target.classList.contains("star")) return;
+        const star = e.target;
+        const value = parseInt(star.dataset.value);
+        const stars = star.parentNode.querySelectorAll(".star");
+        stars.forEach(s => s.classList.toggle("hovered", parseInt(s.dataset.value) <= value));
+      });
+
+      container.addEventListener("mouseout", e => {
+        if (!e.target.classList.contains("star")) return;
+        const stars = e.target.parentNode.querySelectorAll(".star");
+        stars.forEach(s => s.classList.remove("hovered"));
+      });
+
+      // REPORT BUTTON & MODAL LOGIC (existing)
       container.addEventListener("click", e => {
         const reportBtn = e.target.closest(".report-btn");
         if (!reportBtn) return;
-
         const card = reportBtn.closest(".ride-card");
         selectedHistoryId = card.querySelector(".star")?.dataset.historyid;
         reportText.value = "";
         modal.style.display = "flex";
       });
 
-      // Close modal
       closeModal.onclick = () => modal.style.display = "none";
       cancelReport.onclick = () => modal.style.display = "none";
       window.onclick = e => { if (e.target == modal) modal.style.display = "none"; };
 
-      // Submit report
       submitReport.onclick = async () => {
         const description = reportText.value.trim();
         if (!description) return alert("Please enter a description.");
-
         try {
           const response = await fetch("includes/fetch_history.php", {
             method: "POST",
