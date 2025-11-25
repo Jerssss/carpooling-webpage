@@ -4,24 +4,69 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login | Carpool</title>
+
+    <link rel="stylesheet" href="css/style.css">
     <link rel="stylesheet" href="css/login.css">
 </head>
 <body>
-    <div class="login-container">
-        <h2>Login</h2>
-        <form action="#" method="POST" class="login-form">
-            <div class="form-group">
-                <label for="username">Username</label>
-                <input type="text" id="username" name="username" placeholder="Enter username" required>
-            </div>
 
-            <div class="form-group">
-                <label for="password">Password</label>
-                <input type="password" id="password" name="password" placeholder="Enter password" required>
-            </div>
+    <!-- NAVBAR -->
+    <nav>
+        <div class="nav-left">
+            <img src="../images/carma-logo.png" class="logo" alt="Carma Logo">
+            <span class="site-name">CARMA</span>
+        </div>
+        <div class="nav-right"></div>
+    </nav>
 
-            <button type="submit">Login</button>
-        </form>
+    <!-- PAGE WRAPPER -->
+    <div class="page-wrapper">
+        <div class="background-shape"></div>
+
+        <!-- LOGIN FORM -->
+        <div class="login-container">
+            <h2>Welcome Back</h2>
+            <p class="subtitle">Please login to continue</p>
+
+            <form action="#" method="POST" class="login-form">
+                <div class="form-group">
+                    <label for="username">Username</label>
+                    <input type="text" id="username" name="username" placeholder="Enter username" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="password">Password</label>
+                    <input type="password" id="password" name="password" placeholder="Enter password" required>
+                </div>
+
+                <button type="submit">Login</button>
+
+                <p class="signup-text">
+                    Don't have an account? <a href="#">Register</a>
+                </p>
+            </form>
+        </div>
     </div>
+
+    <!-- ===== FOOTER SECTION ===== -->
+  <footer class="site-footer">
+    <div class="social-icons">
+      <a href="#"><img src="../images/facebook-app-symbol.png" alt="Facebook"></a>
+      <a href="#"><img src="../images/instagram.png" alt="Instagram"></a>
+      <a href="#"><img src="../images/twitter.png" alt="Twitter"></a>
+      <a href="#"><img src="../images/google.png" alt="Google"></a>
+      <a href="#"><img src="../images/youtube.png" alt="YouTube"></a>
+    </div>
+
+    <ul class="footer-nav">
+      <li><a href="index.html">Home</a></li>
+      <li><a href="list-of-carpools.html">Rides</a></li>
+      <li><a href="history.html">History</a></li>
+      <li><a href="about.html">Our Team</a></li>
+    </ul>
+
+    <p class="footer-copy">Copyright ©2025 | Designed by <span>Carma</span></p>
+  </footer>
+
 </body>
 </html>
