@@ -1,0 +1,474 @@
+* {
+    padding: 0;
+    margin: 0;
+    box-sizing: border-box;
+    font-family: 'Poppins', sans-serif;
+}
+
+:root {
+    --accent-color: #1a1a1a;   
+    --light-color: #fff;
+}
+
+/* ===== NAVIGATION BAR ===== */
+nav {
+  background: #2C2C2C;
+  width: 100%;
+  padding: 20px 3%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  position: relative;
+  z-index: 10;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+}
+
+/* Left: logo + site name */
+.nav-left {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.logo {
+  width: 45px;
+  height: 45px;
+  object-fit: contain;
+  border-radius: 20%;
+}
+
+.site-name {
+  padding-left: 5px;
+  color: #ffb300;
+  font-weight: 700;
+  font-size: 22px;
+  letter-spacing: 1px;
+}
+
+/* Center: navigation links */
+nav ul {
+  display: flex;
+  justify-content: center;
+  flex: 1;
+  list-style: none;
+  z-index: 10000;
+}
+
+nav li {
+  display: inline-block;
+  margin: 0 18px;
+  font-size: 18px;
+  letter-spacing: 1px;
+}
+
+nav ul li a {
+  color: #fff;
+  text-decoration: none;
+  transition: color 0.3s;
+  font-weight: 600;
+  position: relative;
+}
+
+nav ul li a:hover,
+nav ul li a.active {
+  color: #ffb300;
+  font-weight: 600;
+}
+
+/* underline animation */
+nav ul li a::after {
+    content: "";
+    position: absolute;
+    bottom: -4px;
+    left: 0;
+    width: 0;
+    height: 2px;
+    background-color: #FFC800; /* yellow underline */
+    transition: width 0.3s ease;
+}
+
+nav ul li a:hover::after {
+    width: 100%;
+}
+
+/* Right: bell + profile */
+.nav-right {
+  display: flex;
+  align-items: center;
+  gap: 30px;
+  padding-left: 65px;
+  margin-right: 15px;
+}
+
+.nav-bell {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.bell-icon {
+  width: 40px;           /* match profile size */
+  height: 40px;
+  cursor: pointer;
+  object-fit: cover;
+  padding: 5px;
+  border-radius: 50%;
+  background-color: #2a2a2a;
+  transition: background-color 0.3s, transform 0.2s;
+}
+
+.bell-icon:hover {
+  background-color: #3a3a3a;
+  transform: scale(1.1);   /* subtle hover enlarge */
+}
+
+
+/* ===== NOTIFICATION DROPDOWN ===== */
+#notificationsContainer {
+  position: relative;
+}
+
+.notifications-dropdown {
+  display: none;
+  position: absolute;
+  right: 0;
+  top: 5x;
+  width: 350px;
+  background: #fff;
+  border-radius: 10px;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+  overflow: hidden;
+  z-index: 1000;
+  animation: fadeIn 0.3s ease;
+}
+
+.notifications-dropdown.show {
+  display: block;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(-10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.notif-tabs {
+  display: flex;
+  justify-content: space-around;
+  padding: 10px 0;
+  border-bottom: 1px solid #eee;
+  background-color: #f9f9f9;
+}
+
+.notif-tabs span {
+  cursor: pointer;
+  color: #777;
+  font-weight: 500;
+  padding: 6px 10px;
+  border-radius: 5px;
+  transition: 0.3s;
+}
+
+.notif-tabs span.active {
+  background: #ffb300;
+  color: #fff;
+}
+
+.notif-list {
+  max-height: 300px;
+  overflow-y: auto;
+}
+
+.notif-item {
+  display: flex;
+  padding: 10px;
+  border-bottom: 1px solid #eee;
+}
+
+.notif-item img {
+  width: 45px;
+  height: 45px;
+  border-radius: 50%;
+  margin-right: 10px;
+  object-fit: cover;
+}
+
+.notif-content p {
+  font-size: 13px;
+  margin-bottom: 4px;
+  color: #333;
+}
+
+.notif-content .time {
+  font-size: 11px;
+  color: #888;
+}
+
+.notif-list::-webkit-scrollbar {
+  width: 6px;
+}
+.notif-list::-webkit-scrollbar-thumb {
+  background-color: #ccc;
+  border-radius: 10px;
+}
+
+/* Profile image */
+.user-pic {
+  width: 40px;
+  height: 40px;
+  cursor: pointer;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid #ffb300;
+  transition: transform 0.3s ease;
+}
+.user-pic:hover {
+  transform: scale(1.05);
+}
+
+/* ========== DROPDOWN MENU (WHITE) ========== */
+.sub-menu-wrap {
+    position: absolute;
+    top: 100%;
+    right: 5%;
+    width: 320px;
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.4s ease;
+    z-index: 9999;
+    pointer-events: none;
+}
+
+.sub-menu-wrap.open-menu {
+    max-height: 400px;
+    pointer-events: auto;
+}
+
+.sub-menu {
+    background: #fff;
+    padding: 20px;
+    margin: 10px;
+    border-radius: 10px;
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+}
+
+.user-info {
+    display: flex;
+    align-items: center;
+    text-align: center;
+}
+
+.user-info img {
+    width: 60px;
+    border-radius: 50%;
+    margin-right: 15px;
+}
+
+.user-info h2 {
+    font-weight: 500;
+}
+
+.sub-menu hr {
+    border: 0;
+    height: 1px;
+    width: 100%;
+    background: #ccc;
+    margin: 15px 0 10px;
+}
+
+.sub-menu-link {
+    display: flex;
+    align-items: center;
+    text-decoration: none;
+    color: #525252;
+    margin: 12px 0;
+    transition: all 0.3s ease;
+}
+
+.sub-menu-link img {
+    width: 40px;
+    background-color: #ffedc2;
+    border-radius: 50%;
+    padding: 8px;
+    margin-right: 15px;
+}
+
+.sub-menu-link span {
+    font-size: 22px;
+    transition: transform 0.3s ease;
+}
+
+.sub-menu-link:hover span {
+    transform: translateX(5px);
+}
+
+.sub-menu-link:hover p {
+    font-weight: 600;
+}
+
+/* Hamburger (hidden on large screens) */
+.hamburger {
+  display: none;
+  flex-direction: column;
+  cursor: pointer;
+  gap: 5px;
+}
+
+.hamburger div {
+  width: 25px;
+  height: 3px;
+  background-color: #fff;
+  border-radius: 2px;
+  transition: all 0.3s ease;
+}
+
+/* Hamburger animation when open */
+.hamburger.open div:nth-child(1) {
+  transform: rotate(45deg) translate(5px, 5px);
+}
+.hamburger.open div:nth-child(2) {
+  opacity: 0;
+}
+.hamburger.open div:nth-child(3) {
+  transform: rotate(-45deg) translate(5px, -5px);
+}
+
+/* Responsive Menu */
+@media screen and (max-width: 900px) {
+  nav ul {
+    display: none;
+    position: absolute;
+    top: 100%;
+    left: 0;
+    width: 100%;
+    flex-direction: column;
+    background: #2C2C2C;
+    padding: 10px 0;
+    gap: 0;
+    z-index: 999;
+  }
+
+  nav ul.show {
+    display: flex;
+    z-index: 10000;
+  }
+
+  nav li {
+    margin: 10px 0;
+    text-align: center;
+  }
+
+  .nav-right {
+    gap: 15px;
+    padding-left: 0;
+  }
+
+  .hamburger {
+    display: flex;
+  }
+}
+
+/* ===== FOOTER ===== */
+.site-footer {
+  background-color: #1A1A1A;
+  color: #ccc;
+  text-align: center;
+  padding: 40px 0 20px;
+  font-family: 'Poppins', sans-serif;
+}
+
+.site-footer .social-icons {
+  margin-bottom: 20px;
+}
+
+.site-footer .social-icons a {
+  display: inline-block;
+  margin: 0 10px;
+  background-color: #fff;
+  border-radius: 50%;
+  padding: 10px;
+  width: 45px;
+  height: 45px;
+  transition: transform 0.3s ease, background-color 0.3s ease;
+}
+
+.site-footer .social-icons a:hover {
+  transform: scale(1.1);
+  background-color: #ffb300;
+}
+
+.site-footer .social-icons img {
+  width: 25px;
+  height: 25px;
+}
+
+.site-footer .footer-nav {
+  list-style: none;
+  padding: 0;
+  margin: 20px 0;
+}
+
+.site-footer .footer-nav li {
+  display: inline-block;
+  margin: 0 15px;
+}
+
+.site-footer .footer-nav li a {
+  color: #ccc;
+  text-decoration: none;
+  font-size: 18px;
+  transition: color 0.3s ease;
+}
+
+.site-footer .footer-nav li a:hover {
+  color: #fff;
+}
+
+.site-footer .footer-copy {
+  font-size: 15px;
+  margin-top: 15px;
+  color: #bfbfbf;
+}
+
+.site-footer .footer-copy span {
+  color: #FFB300;
+  font-weight: 600;
+}
+
+.view-btn {
+  background-color: #FFB300; /* golden amber */
+  color: #fff;
+  border: none;
+  border-radius: 50px;
+  padding: 10px 25px;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.view-btn:hover {
+  background-color: #e5a200; /* slightly darker amber */
+  transform: translateY(-2px);
+  box-shadow: 0 6px 18px rgba(0,0,0,0.15);
+}
+
+.view-btn:active {
+  transform: translateY(0);
+  box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+}
+
+/* Optional: add a small left arrow for back buttons */
+.view-btn.back {
+  font-size: 15px;
+  padding: 8px 20px;
+}
+
+.view-btn.back::before {
+  content: "←";
+  margin-right: 8px;
+  font-weight: bold;
+}
