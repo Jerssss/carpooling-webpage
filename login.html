@@ -25,13 +25,11 @@
 
         <!-- LOGIN FORM -->
         <div class="login-container">
-            <h2>Welcome Back</h2>
-            <p class="subtitle">Please login to continue</p>
-
-            <form action="#" method="POST" class="login-form">
+            <h2>Login</h2>
+                <form id="loginForm" method="POST" class="login-form">
                 <div class="form-group">
-                    <label for="username">Username</label>
-                    <input type="text" id="username" name="username" placeholder="Enter username" required>
+                    <label for="username">Email</label>
+                    <input type="email" id="username" name="email" placeholder="Enter email" required>
                 </div>
 
                 <div class="form-group">
@@ -39,13 +37,22 @@
                     <input type="password" id="password" name="password" placeholder="Enter password" required>
                 </div>
 
-                <button type="submit">Login</button>
-
+                <div class="form-group">
+                    <label for="role">Role</label>
+                    <select name="role" id="role" required>
+                        <option value="passenger">Passenger</option>
+                        <option value="driver">Driver</option>
+                        <option value="admin">Admin</option>
+                    </select>
+                </div>
                 <p class="signup-text">
                     Don't have an account? <a href="#" id="register-link">Register</a>
                 </p>
             </form>
+                    <button type="submit">Login</button>
+            </form>
         </div>
+
     </div>
 
     <!-- MODAL -->
@@ -76,11 +83,11 @@
             <li><a href="passenger-side/history.html">History</a></li>
             <li><a href="passenger-side/about.html">Our Team</a></li>
         </ul>
-
         <p class="footer-copy">Copyright ©2025 | Designed by <span>Carma</span></p>
     </footer>
 
-    <!-- SCRIPT -->
-    <script src="login.js"></script>
+  <!-- Add the login JS -->
+<script src="admin-side/nodejs/login.js"></script>
+
 </body>
 </html>
