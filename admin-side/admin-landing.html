@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta-name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CARMA | Admin Dashboard</title>
+    <link rel="stylesheet" href="../driver-side/css/driver-style.css">
+    <link rel="stylesheet" href="../admin-side/css/admin-landing.css">
+</head>
+
+<body>
+
+    <!-- NAVBAR -->
+    <nav>
+        <div class="nav-left">
+            <img src="../images/carma-logo.png" class="logo" />
+            <span class="site-name">Carma</span>
+        </div>
+        <ul>
+            <li><a href="#" class="active">Dashboard</a></li>
+        </ul>
+        <div class="nav-right">
+            <div id="notificationsContainer" class="nav-bell">
+                <img src="../images/bell.png" class="bell-icon" />
+            </div>
+            <img src="../images/bod.jpg" class="user-pic" />
+        </div>
+    </nav>
+
+    <div class="admin-container">
+
+        <!-- LEFT PANEL -->
+        <div class="left-panel">
+            <h2>Admin Dashboard</h2>
+
+            <h3>Sections</h3>
+            <div class="section-list">
+                <div class="section-card active" data-target="user-accounts">
+                    User Accounts
+                </div>
+                <div class="section-card" data-target="vehicle-registrations">
+                    Vehicle Registrations
+                </div>
+                <div class="section-card" data-target="reports-complaints">
+                    Reports & Complaints
+                </div>
+                <div class="section-card" data-target="active-rides">
+                    Active Rides
+                </div>
+            </div>
+        </div>
+
+        <!-- RIGHT PANEL -->
+        <div class="right-panel">
+
+            <!-- USER ACCOUNTS WINDOW -->
+            <div id="user-accounts" class="content-window active">
+                <h1>User Accounts</h1>
+                <p class="time">Showing all passengers & car owners</p>
+
+                <h2 class="section-title">Registered Users</h2>
+
+                <div class="user-list">
+
+                    <div class="user-card">
+                        <img src="images/user1.jpg" class="profile-img">
+                        <div class="info">
+                            <p class="name">John Doe</p>
+                            <p class="role">Passenger</p>
+                        </div>
+                        <button class="view-btn">View Details</button>
+                    </div>
+
+                    <div class="user-card">
+                        <img src="images/user2.jpg" class="profile-img">
+                        <div class="info">
+                            <p class="name">Sarah Cruz</p>
+                            <p class="role">Car Owner</p>
+                        </div>
+                        <button class="view-btn">View Details</button>
+                    </div>
+
+                    <div class="user-card">
+                        <img src="images/user3.jpg" class="profile-img">
+                        <div class="info">
+                            <p class="name">Michael Tan</p>
+                            <p class="role">Passenger</p>
+                        </div>
+                        <button class="view-btn">View Details</button>
+                    </div>
+
+                    <div class="user-card">
+                        <img src="images/user4.jpg" class="profile-img">
+                        <div class="info">
+                            <p class="name">Carla Santos</p>
+                            <p class="role">Car Owner</p>
+                        </div>
+                        <button class="view-btn">View Details</button>
+                    </div>
+
+                </div>
+            </div>
+
+            <!-- VEHICLE REGISTRATIONS WINDOW -->
+            <div id="vehicle-registrations" class="content-window">
+                <h1>Pending Vehicle Registrations</h1>
+                <p class="time">Review and approve car owner documents</p>
+
+                <h2 class="section-title">Pending Vehicles</h2>
+
+                <div class="vehicle-list">
+
+                    <div class="vehicle-card">
+                        <p class="owner">Owner: <b>Sarah Cruz</b></p>
+                        <p class="value">Toyota Vios 2019</p>
+                        <p class="value">Plate: ABC-2345</p>
+
+                        <div class="btn-row">
+                            <button class="approve-btn">Approve</button>
+                            <button class="reject-btn">Reject</button>
+                        </div>
+                    </div>
+
+                    <div class="vehicle-card">
+                        <p class="owner">Owner: <b>Mark Rivera</b></p>
+                        <p class="value">Honda City 2021</p>
+                        <p class="value">Plate: ZXY-8765</p>
+
+                        <div class="btn-row">
+                            <button class="approve-btn">Approve</button>
+                            <button class="reject-btn">Reject</button>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+            <!-- REPORTS & COMPLAINTS WINDOW -->
+            <div id="reports-complaints" class="content-window">
+                <h1>Reports & Complaints</h1>
+                <p class="time">Displaying all submitted reports</p>
+
+                <h2 class="section-title">Recent Reports</h2>
+
+                <div class="report-list">
+
+                    <div class="user-card">
+                        <img src="images/user5.jpg" class="profile-img">
+                        <div class="info">
+                            <p class="name">Jenny Salazar</p>
+                            <p class="role">Reported: Unsafe Driving</p>
+                            <p class="num">Driver: Mark Dizon</p>
+                        </div>
+                        <button class="view-btn">Review</button>
+                    </div>
+
+                    <div class="user-card">
+                        <img src="images/user6.jpg" class="profile-img">
+                        <div class="info">
+                            <p class="name">Alex Lim</p>
+                            <p class="role">Reported: Overpricing</p>
+                            <p class="num">Driver: Carla Santos</p>
+                        </div>
+                        <button class="view-btn">Review</button>
+                    </div>
+
+                    <div class="user-card">
+                        <img src="images/user7.jpg" class="profile-img">
+                        <div class="info">
+                            <p class="name">Faye Robles</p>
+                            <p class="role">Reported: Harassment</p>
+                            <p class="num">Passenger: Unknown</p>
+                        </div>
+                        <button class="view-btn">Review</button>
+                    </div>
+
+                </div>
+            </div>
+
+            <!-- ACTIVE RIDES WINDOW -->
+            <div id="active-rides" class="content-window">
+                <h1>Active Rides</h1>
+                <p class="time">Monitoring ongoing carpools</p>
+
+                <h2 class="section-title">Currently Active</h2>
+
+                <div class="ride-list">
+
+                    <div class="user-card">
+                        <img src="images/user8.jpg" class="profile-img">
+                        <div class="info">
+                            <p class="name">Driver: Noel Ramirez</p>
+                            <p class="loc">Route: SM North → UP Diliman</p>
+                            <p class="num">4 passengers onboard</p>
+                        </div>
+                        <button class="view-btn">View Ride</button>
+                    </div>
+
+                    <div class="user-card">
+                        <img src="images/user9.jpg" class="profile-img">
+                        <div class="info">
+                            <p class="name">Driver: Liza Ramos</p>
+                            <p class="loc">Route: Makati → BGC</p>
+                            <p class="num">2 passengers onboard</p>
+                        </div>
+                        <button class="view-btn">View Ride</button>
+                    </div>
+
+                    <div class="user-card">
+                        <img src="images/user10.jpg" class="profile-img">
+                        <div class="info">
+                            <p class="name">Driver: Patrick Sy</p>
+                            <p class="loc">Route: Cubao → Taft</p>
+                            <p class="num">3 passengers onboard</p>
+                        </div>
+                        <button class="view-btn">View Ride</button>
+                    </div>
+
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+<script>
+    // Panel switching
+    const buttons = document.querySelectorAll(".section-card");
+    const windows = document.querySelectorAll(".content-window");
+
+    buttons.forEach(btn => {
+        btn.addEventListener("click", () => {
+            buttons.forEach(a => a.classList.remove("active"));
+            btn.classList.add("active");
+
+            windows.forEach(win => win.classList.remove("active"));
+            document.getElementById(btn.dataset.target)?.classList.add("active");
+        });
+    });
+</script>
+
+<footer class="site-footer">
+    <div class="social-icons">
+      <a href="#"><img src="../images/facebook-app-symbol.png" alt="Facebook"></a>
+      <a href="#"><img src="../images/instagram.png" alt="Instagram"></a>
+      <a href="#"><img src="../images/twitter.png" alt="Twitter"></a>
+      <a href="#"><img src="../images/google.png" alt="Google"></a>
+      <a href="#"><img src="../images/youtube.png" alt="YouTube"></a>
+    </div>
+
+    <ul class="footer-nav">
+      <li><a href="index.html">Home</a></li>
+      <li><a href="list-of-carpools.html">Rides</a></li>
+      <li><a href="history.html">History</a></li>
+      <li><a href="about.html">Our Team</a></li>
+    </ul>
+
+    <p class="footer-copy">Copyright ©2025 | Designed by <span>Carma</span></p>
+  </footer>
+</body>
+</html>

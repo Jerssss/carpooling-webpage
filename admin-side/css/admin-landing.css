@@ -1,0 +1,280 @@
+/* === GLOBAL === */
+html, body {
+    height: 100%;
+    margin: 0;
+}
+
+body {
+    background: #F3EBE9;
+    font-family: "Poppins", sans-serif;
+
+    /* Make footer stick at bottom */
+    display: flex;
+    flex-direction: column;
+}
+
+.admin-container {
+    flex: 1;                  /* take remaining height */
+    display: flex;
+    gap: 25px;
+    padding: 40px 4%;
+}
+
+/* === LEFT PANEL === */
+.left-panel {
+    width: 28%;
+    padding: 20px;
+}
+
+.left-panel h2 {
+    font-size: 28px;
+    font-weight: 700;
+    margin-bottom: 25px;
+}
+
+.left-panel h3 {
+    margin-top: 15px;
+    margin-bottom: 10px;
+    font-size: 18px;
+    opacity: 0.7;
+}
+
+.section-list {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.section-card {
+    background: #fff;
+    padding: 18px;
+    border-radius: 14px;
+    border: 2px solid #E0E0E0;
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+.section-card:hover,
+.section-card.active {
+    transform: translateX(4px);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+}
+
+/* === RIGHT PANEL === */
+.right-panel {
+    width: 72%;
+    background: #fff;
+    border-radius: 12px;
+    padding: 40px 45px;
+    box-shadow: 0 4px 18px rgba(0,0,0,0.1);
+
+    /* Make content scroll without breaking footer */
+    min-height: fit-content;
+    padding-bottom: 80px;   /* space above footer */
+}
+
+/* === CONTENT WINDOWS === */
+.content-window { 
+    display: none; 
+}
+.content-window.active { 
+    display: block; 
+}
+
+.content-window h1 {
+    font-size: 30px;
+    font-weight: 700;
+    margin-bottom: 5px;
+}
+
+.time {
+    font-size: 14px;
+    margin-bottom: 20px;
+    opacity: 0.7;
+}
+
+.section-title {
+    font-size: 20px;
+    font-weight: 600;
+    margin-top: 20px;
+    margin-bottom: 10px;
+    color: #333;
+}
+
+/* === USER LIST === */
+.user-list {
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+}
+
+.user-card {
+    background: #fff;
+    padding: 15px 18px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    border: 2px solid #E0E0E0;
+    transition: 0.2s;
+}
+
+.user-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 3px 12px rgba(0,0,0,0.1);
+}
+
+.profile-img {
+    width: 58px;
+    height: 58px;
+    border-radius: 12px;
+    object-fit: cover;
+    background: #dcdcdc;
+}
+
+.info .name {
+    font-weight: 700;
+    font-size: 16px;
+}
+
+.info .role {
+    font-size: 13px;
+    opacity: 0.75;
+}
+
+/* View button */
+.view-btn {
+    margin-left: auto;
+    padding: 8px 16px;
+    border-radius: 8px;
+    background: #FFC800;
+    border: none;
+    cursor: pointer;
+    font-weight: 600;
+    transition: 0.2s;
+}
+
+.view-btn:hover {
+    background: #e2ae00;
+}
+
+/* === VEHICLE LIST === */
+.vehicle-list {
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+}
+
+.vehicle-card {
+    background: #fff;
+    padding: 20px;
+    border-radius: 12px;
+    border: 2px solid #E0E0E0;
+    transition: 0.2s;
+}
+
+.vehicle-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 3px 12px rgba(0,0,0,0.1);
+}
+
+.owner {
+    font-size: 15px;
+    font-weight: 600;
+}
+
+.value {
+    font-size: 14px;
+    opacity: 0.8;
+}
+
+.btn-row {
+    display: flex;
+    gap: 12px;
+    margin-top: 12px;
+}
+
+.approve-btn,
+.reject-btn {
+    padding: 8px 14px;
+    border-radius: 8px;
+    border: none;
+    cursor: pointer;
+    color: #fff;
+    font-weight: 600;
+    transition: 0.2s;
+}
+
+.approve-btn {
+    background: #00b762;
+}
+.approve-btn:hover {
+    background: #00944f;
+}
+
+.reject-btn {
+    background: #ff3b3b;
+}
+.reject-btn:hover {
+    background: #d92f2f;
+}
+
+/* === FOOTER === */
+footer {
+    background: #fff;
+    padding: 18px;
+    text-align: center;
+    border-top: 2px solid #E0E0E0;
+    margin-top: auto; /* Push footer to bottom */
+}
+
+/* === REPORTS & COMPLAINTS === */
+.report-list {
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+}
+
+.report-card {
+    background: #fff;
+    padding: 20px;
+    border-radius: 12px;
+    border: 2px solid #E0E0E0;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    transition: 0.2s;
+}
+
+.report-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 3px 12px rgba(0,0,0,0.1);
+}
+
+.report-title {
+    font-size: 16px;
+    font-weight: 600;
+}
+
+.report-details {
+    font-size: 14px;
+    opacity: 0.75;
+}
+
+.report-status {
+    margin-top: 6px;
+    font-size: 13px;
+    font-weight: 600;
+    color: #666;
+}
+
+
+/* RESPONSIVE */
+@media (max-width: 1050px) {
+    .admin-container {
+        flex-direction: column;
+    }
+    .left-panel, .right-panel {
+        width: 100%;
+    }
+}
