@@ -21,11 +21,11 @@ window.addEventListener('click', function(e){
     }
 });
 
-// Placeholder for modal buttons
+// Redirect to respective registration pages
 document.getElementById('driver-btn').addEventListener('click', function(){
-    alert('Go to driver registration page');
+    window.location.href = 'registration-driver.html';
 });
 
 document.getElementById('passenger-btn').addEventListener('click', function(){
-    alert('Go to passenger registration page');
+    window.location.href = 'registration-passenger.html';
 });
