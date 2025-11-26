@@ -193,7 +193,7 @@ JUST TO BE SAFE, also repeat this process in the Apache folder
       - If already installed, `composer dump-autoload -o`
 
 7) Test DB connectivity
-    - Visit `http://localhost/9467_it312-teamarc_midtermproject/passenger-side/includes/test_mongo_connection.php`
+    - Visit `http://localhost/9467_it312-teamarc_midtermproject/includes/test_mongo_connection.php`
     - You should see a successful connection response
 
 8) Common fixes

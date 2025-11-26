@@ -121,7 +121,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
   // Fetch only the driver’s name from your PHP file
   try {
-    const response = await fetch(`includes/view_carpool.php?rideId=${rideId}`);
+    const response = await fetch(`../includes/view_carpool.php?rideId=${rideId}`);
     const data = await response.json();
 
     if (!data || data.error) {
@@ -158,7 +158,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 });
 
 document.addEventListener("DOMContentLoaded", () => {
-  fetch('includes/get_user_name.php')
+  fetch('../includes/get_user_name.php')
     .then(response => response.text())
     .then(name => {
       document.getElementById("userName").textContent = name;

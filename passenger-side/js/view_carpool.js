@@ -11,7 +11,7 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     // Fetch ride details
-    fetch(`includes/view_carpool.php?rideId=${rideId}`)
+    fetch(`../includes/view_carpool.php?rideId=${rideId}`)
         .then(response => {
             if (!response.ok) {
                 throw new Error('Ride not found');

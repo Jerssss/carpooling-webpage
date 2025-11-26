@@ -13,7 +13,7 @@ async function loadReceipt(rideId) {
         });
 
         // Fetch receipt data from API
-        const response = await fetch(`includes/receipt.php?rideId=${rideId}`);
+        const response = await fetch(`../includes/receipt.php?rideId=${rideId}`);
         const result = await response.json();
 
         if (result.error) {

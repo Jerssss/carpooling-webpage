@@ -47,7 +47,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
   // Load user info from DB
-  fetch(`includes/get_user_info.php?userId=${userId}&rideId=${rideId}`)
+  fetch(`../includes/get_user_info.php?userId=${userId}&rideId=${rideId}`)
     .then((res) => res.json())
     .then((data) => {
       if (data.success && data.user) {
@@ -76,7 +76,7 @@ document.addEventListener("DOMContentLoaded", () => {
       formData.append("rideId", rideId);
       formData.append("amount", 50);
 
-      fetch("includes/payment_handler.php", {
+      fetch("../includes/payment_handler.php", {
         method: "POST",
         body: formData,
       })
@@ -112,7 +112,7 @@ document.addEventListener("DOMContentLoaded", () => {
       formData.append("rideId", rideId);
       formData.append("amount", 50);
 
-      fetch("includes/payment_handler.php", {
+      fetch("../includes/payment_handler.php", {
         method: "POST",
         body: formData,
       })

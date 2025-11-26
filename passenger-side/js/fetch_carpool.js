@@ -1,7 +1,7 @@
 document.addEventListener("DOMContentLoaded", () => {
     const container = document.querySelector('.carpool-container');
 
-    fetch('includes/fetch_carpool.php')
+    fetch('../includes/fetch_carpool.php')
     .then(response => response.json())
     .then(data => {
       container.innerHTML = '';

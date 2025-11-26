@@ -252,7 +252,7 @@
     let selectedHistoryId = null;
 
     try {
-      const response = await fetch("includes/fetch_history.php");
+      const response = await fetch("../includes/fetch_history.php");
       const rides = await response.json();
 
       if (!rides || rides.length === 0) {
@@ -346,7 +346,7 @@
 
         stars.forEach(s => s.classList.toggle("selected", parseInt(s.dataset.value) <= value));
 
-        await fetch("includes/fetch_history.php", {
+        await fetch("../includes/fetch_history.php", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ historyId, rating: value })
@@ -388,7 +388,7 @@
         const description = reportText.value.trim();
         if (!description) return alert("Please enter a description.");
         try {
-          const response = await fetch("includes/fetch_history.php", {
+          const response = await fetch("../includes/fetch_history.php", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ historyId: selectedHistoryId, report_description: description })

@@ -13,7 +13,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
 
   try {
-    const response = await fetch(`includes/fetch_driver.php?driverId=${driverId}`);
+    const response = await fetch(`../includes/fetch_driver.php?driverId=${driverId}`);
     const data = await response.json();
 
 

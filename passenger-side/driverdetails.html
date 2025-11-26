@@ -200,7 +200,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
   // Fetch all rides
-  fetch(`includes/fetch_carpool.php`)
+  fetch(`../includes/fetch_carpool.php`)
     .then(response => response.json())
     .then(data => {
       console.log("Fetched ride data:", data);

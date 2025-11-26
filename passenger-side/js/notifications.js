@@ -28,7 +28,7 @@ async function loadNotifications(userId, filter = 'all') {
      </div>`;
 
     try {
-        const url = `includes/fetch_notifications.php?userId=${encodeURIComponent(userId)}${filter === 'unread' ? '&filter=unread' : ''}`;
+        const url = `../includes/fetch_notifications.php?userId=${encodeURIComponent(userId)}${filter === 'unread' ? '&filter=unread' : ''}`;
         const res = await fetch(url);
         if (!res.ok) throw new Error('Network response not ok');
 
@@ -93,7 +93,7 @@ async function markAsRead(notifId) {
     try {
         const form = new FormData();
         form.append('notifId', notifId);
-        const res = await fetch('includes/mark_read.php', { method: 'POST', body: form });
+        const res = await fetch('../includes/mark_read.php', { method: 'POST', body: form });
         const json = await res.json();
         return json.success === true;
     } catch (err) {

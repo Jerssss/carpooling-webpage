@@ -14,7 +14,7 @@ document.addEventListener("DOMContentLoaded", () => {
       });
   
       try {
-        const response = await fetch(`includes/fetch_carpool.php?${params.toString()}`);
+        const response = await fetch(`../includes/fetch_carpool.php?${params.toString()}`);
         const data = await response.json();
         renderCarpools(data);
       } catch (error) {
