@@ -42,31 +42,45 @@
                 <button type="submit">Login</button>
 
                 <p class="signup-text">
-                    Don't have an account? <a href="#">Register</a>
+                    Don't have an account? <a href="#" id="register-link">Register</a>
                 </p>
             </form>
         </div>
     </div>
 
-    <!-- ===== FOOTER SECTION ===== -->
-  <footer class="site-footer">
-    <div class="social-icons">
-    <a href="#"><img src="images/facebook-app-symbol.png" alt="Facebook"></a>
-    <a href="#"><img src="images/instagram.png" alt="Instagram"></a>
-    <a href="#"><img src="images/twitter.png" alt="Twitter"></a>
-    <a href="#"><img src="images/google.png" alt="Google"></a>
-    <a href="#"><img src="images/youtube.png" alt="YouTube"></a>
+    <!-- MODAL -->
+    <div class="modal" id="register-modal">
+        <div class="modal-content">
+            <span class="close-button" id="close-modal">&times;</span>
+            <h3>Register as</h3>
+            <div class="modal-buttons">
+                <button class="modal-option" id="driver-btn">Driver</button>
+                <button class="modal-option" id="passenger-btn">Passenger</button>
+            </div>
+        </div>
     </div>
 
-    <ul class="footer-nav">
-    <li><a href="passenger-side/index.html">Home</a></li>
-    <li><a href="passenger-side/list-of-carpools.html">Rides</a></li>
-    <li><a href="passenger-side/history.html">History</a></li>
-    <li><a href="passenger-side/about.html">Our Team</a></li>
-    </ul>
+    <!-- ===== FOOTER SECTION ===== -->
+    <footer class="site-footer">
+        <div class="social-icons">
+            <a href="#"><img src="images/facebook-app-symbol.png" alt="Facebook"></a>
+            <a href="#"><img src="images/instagram.png" alt="Instagram"></a>
+            <a href="#"><img src="images/twitter.png" alt="Twitter"></a>
+            <a href="#"><img src="images/google.png" alt="Google"></a>
+            <a href="#"><img src="images/youtube.png" alt="YouTube"></a>
+        </div>
 
-    <p class="footer-copy">Copyright ©2025 | Designed by <span>Carma</span></p>
-  </footer>
+        <ul class="footer-nav">
+            <li><a href="passenger-side/index.html">Home</a></li>
+            <li><a href="passenger-side/list-of-carpools.html">Rides</a></li>
+            <li><a href="passenger-side/history.html">History</a></li>
+            <li><a href="passenger-side/about.html">Our Team</a></li>
+        </ul>
 
+        <p class="footer-copy">Copyright ©2025 | Designed by <span>Carma</span></p>
+    </footer>
+
+    <!-- SCRIPT -->
+    <script src="login.js"></script>
 </body>
 </html>
