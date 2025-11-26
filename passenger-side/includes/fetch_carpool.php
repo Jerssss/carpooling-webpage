@@ -1,5 +1,6 @@
 <?php
-require_once __DIR__ . '/db_connect.php'; // uses corrected vendor path
+// Use the shared root includes DB connector
+require_once __DIR__ . '/../../includes/db_connect.php';
 
 function normalize_asset_path($path, $default) {
     if (!is_string($path) || $path === '') return $default;
@@ -8,7 +9,6 @@ function normalize_asset_path($path, $default) {
     if (strpos($path, 'images/') === 0) return '../' . $path;
     return $path;
 }
-
 
 // Reuse existing DB handle
 $ridesCollection = $db->rides;

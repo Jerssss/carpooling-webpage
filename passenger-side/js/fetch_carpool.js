@@ -1,7 +1,10 @@
 document.addEventListener("DOMContentLoaded", () => {
     const container = document.querySelector('.carpool-container');
 
-    fetch('../includes/fetch_carpool.php')
+    const BASE = '/9467_it312-teamarc_midtermproject';
+    const endpoint = `${BASE}/passenger-side/includes/fetch_carpool.php`;
+
+    fetch(endpoint)
     .then(response => response.json())
     .then(data => {
       container.innerHTML = '';
@@ -10,16 +13,18 @@ document.addEventListener("DOMContentLoaded", () => {
         const card = document.createElement('div');
         card.classList.add('carpool-card');
 
+        const photoUrl = (carpool.photo || '../images/profile_pics/default-pic.png').replace(/^\.\.\//, `${BASE}/`);
+
         card.innerHTML = `
-        <img src="../images/${carpool.photo || 'default.png'}" alt="${carpool.name || 'Driver Photo'}">
+        <img src="${photoUrl}" alt="${carpool.name || 'Driver Photo'}">
         <div class="carpool-info">
           <h3>${carpool.name || 'Unnamed Driver'}</h3>
           <p class="occupation"><strong>${carpool.occupation || 'N/A'}</strong></p>
-          <p><img src="../images/stationed.png" alt="Stationed At"> ${carpool.stationedAt || 'N/A'}</p>
-          <p><img src="../images/destination.png" alt="Destination"> ${carpool.destination || 'N/A'}</p>
-          <p><img src="../images/car-seat.png" alt="Seats"> ${carpool.availableSeats ?? 'N/A'} seats</p>
-          <p><img src="../images/clock-icon.png" alt="Time"> ${carpool.leavingTime || 'N/A'}</p>
-          <p><img src="../images/pickup.png" alt="For"> ${carpool.for || 'N/A'}</p>
+          <p><img src="${BASE}/images/stationed.png" alt="Stationed At"> ${carpool.stationedAt || 'N/A'}</p>
+          <p><img src="${BASE}/images/destination.png" alt="Destination"> ${carpool.destination || 'N/A'}</p>
+          <p><img src="${BASE}/images/car-seat.png" alt="Seats"> ${carpool.availableSeats ?? 'N/A'} seats</p>
+          <p><img src="${BASE}/images/clock-icon.png" alt="Time"> ${carpool.leavingTime || 'N/A'}</p>
+          <p><img src="${BASE}/images/pickup.png" alt="For"> ${carpool.for || 'N/A'}</p>
         </div>
         <div class="card-footer">
           <span class="status-dot ${(carpool.status || '').toLowerCase() === 'available' ? 'green' : 'red'}"></span>

@@ -4,13 +4,13 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>CARMA | Driver Details</title>
-    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="../css/style.css">
     <link rel="stylesheet" href="css/driverdetails.css">
     <link rel="stylesheet" href="css/notifications.css">
     <link rel="stylesheet" href="css/bookingconfirmation.css">
     <script src="js/notifications.js" defer></script>
-    <script src="js/view_carpool.js"></script>
-    <script src="js/driverprofile.js"></script>
+    <script src="js/view_carpool.js" defer></script>
+    <script src="js/driverprofile.js" defer></script>
   </head>
   <body>
     <nav>
@@ -180,7 +180,6 @@
 
 
   <script src="js/script.js"></script>
-  <script src="js/driverprofile.js"></script>
 
 
  <script>
@@ -199,8 +198,10 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
 
+  const BASE = '/9467_it312-teamarc_midtermproject';
+
   // Fetch all rides
-  fetch(`../includes/fetch_carpool.php`)
+  fetch(`${BASE}/passenger-side/includes/fetch_carpool.php`)
     .then(response => response.json())
     .then(data => {
       console.log("Fetched ride data:", data);

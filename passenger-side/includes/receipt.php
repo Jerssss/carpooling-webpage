@@ -1,8 +1,7 @@
 <?php
 header('Content-Type: application/json');
-header('Access-Control-Allow-Origin: *');
-
-require_once __DIR__ . '/db_connect.php';
+// Use the shared root DB connector
+require_once __DIR__ . '/../../includes/db_connect.php';
 
 try {
     // Connect to MongoDB

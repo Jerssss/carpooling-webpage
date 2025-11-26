@@ -2,11 +2,7 @@
 // includes/fetch_notifications.php
 // Returns notifications for a passenger (newest first). Supports filter=unread.
 
-set_include_path(__DIR__ . '/../');
-ob_start();
-require 'db_connect.php';
-ob_end_clean();
-
+require_once __DIR__ . '/db_connect.php';
 header('Content-Type: application/json; charset=utf-8');
 
 $userId = $_GET['userId'] ?? null;

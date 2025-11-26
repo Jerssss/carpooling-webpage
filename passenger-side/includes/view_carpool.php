@@ -1,5 +1,6 @@
 <?php
-require_once __DIR__ . '/db_connect.php';
+// Use the shared root includes DB connector
+require_once __DIR__ . '/../../includes/db_connect.php';
 
 function normalize_asset_path($path, $default) {
     if (!is_string($path) || $path === '') return $default;
@@ -18,7 +19,6 @@ if (!$rideId) {
     echo json_encode(['error' => 'No ride ID has been found']);
     exit;
 }
-
 
 // Collections
 $ridesCollection = $db->rides;

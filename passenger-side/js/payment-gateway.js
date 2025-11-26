@@ -1,6 +1,7 @@
 // payment-gateway.js
 
 document.addEventListener("DOMContentLoaded", () => {
+  const BASE = '/9467_it312-teamarc_midtermproject';
   // === Tab Switching ===
   const gcashTab = document.getElementById("gcash-tab");
   const cashTab = document.getElementById("cash-tab");
@@ -47,7 +48,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
   // Load user info from DB
-  fetch(`../includes/get_user_info.php?userId=${userId}&rideId=${rideId}`)
+  fetch(`${BASE}/includes/get_user_info.php?userId=${userId}&rideId=${rideId}`)
     .then((res) => res.json())
     .then((data) => {
       if (data.success && data.user) {
@@ -75,8 +76,16 @@ document.addEventListener("DOMContentLoaded", () => {
       formData.append("userId", userId);
       formData.append("rideId", rideId);
       formData.append("amount", 50);
+      formData.append("method", "GCash");
 
-      fetch("../includes/payment_handler.php", {
+      // Debug: log form data keys to verify file presence
+      try {
+        for (const [k, v] of formData.entries()) {
+          console.debug('paymentForm field:', k, (v && v.name) ? `(file: ${v.name})` : v);
+        }
+      } catch {}
+
+      fetch(`${BASE}/passenger-side/includes/payment_handler.php`, {
         method: "POST",
         body: formData,
       })
@@ -111,8 +120,16 @@ document.addEventListener("DOMContentLoaded", () => {
       formData.append("userId", userId);
       formData.append("rideId", rideId);
       formData.append("amount", 50);
+      formData.append("method", "Cash");
 
-      fetch("../includes/payment_handler.php", {
+      // Debug: log cash form fields
+      try {
+        for (const [k, v] of formData.entries()) {
+          console.debug('cashForm field:', k, (v && v.name) ? `(file: ${v.name})` : v);
+        }
+      } catch {}
+
+      fetch(`${BASE}/passenger-side/includes/payment_handler.php`, {
         method: "POST",
         body: formData,
       })
@@ -120,7 +137,7 @@ document.addEventListener("DOMContentLoaded", () => {
         .then((data) => {
           if (data.success) {
             alert("Cash booking recorded!");
-            window.location.href = "receipt.html";
+            window.location.href = `receipt.html?rideId=${rideId}`;
           } else {
             alert(data.message);
           }

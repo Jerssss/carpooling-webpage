@@ -1,4 +1,5 @@
 document.addEventListener("DOMContentLoaded", async () => {
+  const BASE = '/9467_it312-teamarc_midtermproject';
   const urlParams = new URLSearchParams(window.location.search);
   const driverId = urlParams.get("driverId");
 
@@ -13,7 +14,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
 
   try {
-    const response = await fetch(`../includes/fetch_driver.php?driverId=${driverId}`);
+    const response = await fetch(`${BASE}/passenger-side/includes/fetch_driver.php?driverId=${driverId}`);
     const data = await response.json();
 
 

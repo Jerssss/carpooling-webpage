@@ -1,7 +1,7 @@
 <?php
-// Shared MongoDB connection for passenger-side.
-// Adjusted path after project restructure (HTML/PHP moved under passenger-side/).
-require_once __DIR__ . '/../../vendor/autoload.php';
+// Shared MongoDB connection (root includes).
+// Composer autoload path relative to this file.
+require_once __DIR__ . '/../vendor/autoload.php';
 
 use MongoDB\Client;
 
@@ -11,8 +11,8 @@ try {
     // Ping to validate connection; suppress output to keep JSON endpoints clean.
     $db->command(['ping' => 1]);
 } catch (Throwable $e) {
-    // Fail hard early so downstream scripts can catch via include failure if desired.
     http_response_code(500);
-    die('MongoDB connection failed: ' . $e->getMessage());
+    // Keep output minimal to avoid corrupting JSON responses.
+    die('MongoDB connection failed');
 }
 ?>

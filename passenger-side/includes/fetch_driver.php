@@ -1,5 +1,7 @@
 <?php
-require_once __DIR__ . '/db_connect.php';
+// Use the shared root includes DB connector
+require_once __DIR__ . '/../../includes/db_connect.php';
+header('Content-Type: application/json; charset=utf-8');
 
 function normalize_asset_path($path, $default) {
     if (!is_string($path) || $path === '') return $default;
@@ -28,7 +30,6 @@ try {
     $driver = $users->findOne(['userID' => $driverId]);
 
     if (!$driver) {
-        header('Content-Type: application/json');
         echo json_encode(["error" => "Driver not found"]);
         exit;
     }

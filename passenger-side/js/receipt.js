@@ -13,7 +13,8 @@ async function loadReceipt(rideId) {
         });
 
         // Fetch receipt data from API
-        const response = await fetch(`../includes/receipt.php?rideId=${rideId}`);
+        const BASE = '/9467_it312-teamarc_midtermproject';
+        const response = await fetch(`${BASE}/passenger-side/includes/receipt.php?rideId=${rideId}`);
         const result = await response.json();
 
         if (result.error) {
@@ -95,6 +96,7 @@ function getPaymentIdFromURL() {
 
 // Initialize receipt when page loads
 document.addEventListener('DOMContentLoaded', function() {
+    const BASE = '/9467_it312-teamarc_midtermproject';
     const rideId = getPaymentIdFromURL();
     
     if (rideId) {

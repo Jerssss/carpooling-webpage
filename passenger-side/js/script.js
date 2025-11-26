@@ -107,6 +107,7 @@ document.addEventListener('click', function (e) {
 });
 
 document.addEventListener("DOMContentLoaded", async () => {
+  const BASE = '/9467_it312-teamarc_midtermproject';
   const bookBtn = document.getElementById("bookBtn");
   const popup = document.getElementById("confirmationPopup");
   const popupCancel = document.getElementById("cancelBooking");
@@ -121,7 +122,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
   // Fetch only the driver’s name from your PHP file
   try {
-    const response = await fetch(`../includes/view_carpool.php?rideId=${rideId}`);
+    const response = await fetch(`${BASE}/passenger-side/includes/view_carpool.php?rideId=${rideId}`);
     const data = await response.json();
 
     if (!data || data.error) {

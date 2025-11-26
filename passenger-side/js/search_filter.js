@@ -1,5 +1,6 @@
 document.addEventListener("DOMContentLoaded", () => {
-    const container = document.querySelector(".carpool-container");
+  const container = document.querySelector(".carpool-container");
+  const BASE = '/9467_it312-teamarc_midtermproject';
     const searchInput = document.getElementById("searchInput");
     const forFilter = document.getElementById("forFilter");
     const seatFilter = document.getElementById("seatsFilter");
@@ -14,7 +15,7 @@ document.addEventListener("DOMContentLoaded", () => {
       });
   
       try {
-        const response = await fetch(`../includes/fetch_carpool.php?${params.toString()}`);
+        const response = await fetch(`${BASE}/passenger-side/includes/fetch_carpool.php?${params.toString()}`);
         const data = await response.json();
         renderCarpools(data);
       } catch (error) {
@@ -32,8 +33,9 @@ document.addEventListener("DOMContentLoaded", () => {
       carpools.forEach((carpool) => {
         const card = document.createElement("div");
         card.classList.add("carpool-card");
+        const photoUrl = (carpool.photo || '../images/profile_pics/default-pic.png').replace(/^\.\.\//, `${BASE}/`);
         card.innerHTML = `
-          <img src="${carpool.photo}" alt="Driver Photo">
+          <img src="${photoUrl}" alt="Driver Photo">
           <div class="carpool-info">
             <h3>${carpool.name}</h3>
             <p><strong>Occupation:</strong> ${carpool.occupation}</p>

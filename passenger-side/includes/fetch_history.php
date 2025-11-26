@@ -1,5 +1,6 @@
 <?php
-require_once __DIR__ . '/db_connect.php';
+// Use the shared root includes DB connector
+require_once __DIR__ . '/../../includes/db_connect.php';
 header('Content-Type: application/json');
 
 try {

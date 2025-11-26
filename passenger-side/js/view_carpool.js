@@ -1,4 +1,5 @@
 document.addEventListener("DOMContentLoaded", () => {
+    const BASE = '/9467_it312-teamarc_midtermproject';
     // Get rideId from URL 
     const urlParams = new URLSearchParams(window.location.search);
     const rideId = urlParams.get('rideId');
@@ -11,7 +12,7 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     // Fetch ride details
-    fetch(`../includes/view_carpool.php?rideId=${rideId}`)
+    fetch(`${BASE}/passenger-side/includes/view_carpool.php?rideId=${rideId}`)
         .then(response => {
             if (!response.ok) {
                 throw new Error('Ride not found');
@@ -22,7 +23,8 @@ document.addEventListener("DOMContentLoaded", () => {
             console.log('Ride details:', ride);
             
             // Update driver photo
-            document.querySelector('.driver-photo').src = ride.driverPhoto || '../images/profile_pics/default-pic.png';
+            const driverPhoto = (ride.driverPhoto || '../images/profile_pics/default-pic.png').replace(/^\.\.\//, `${BASE}/`);
+            document.querySelector('.driver-photo').src = driverPhoto;
             // document.querySelector('.driver-photo').alt = ride.driverName || '../images/profile_pics/default-pic.png';
             
             // Update driver name
@@ -39,7 +41,8 @@ document.addEventListener("DOMContentLoaded", () => {
                 `<strong>Departure time:</strong> ${ride.departureTime}`;
             
             // Update car photo
-            document.querySelector('.car-photo').src = ride.carPhoto || '../images/car_pics/default_car.png';
+            const carPhoto = (ride.carPhoto || '../images/car_pics/default_car.png').replace(/^\.\.\//, `${BASE}/`);
+            document.querySelector('.car-photo').src = carPhoto;
             // document.querySelector('.car-photo').alt = `${ride.carMake} ${ride.carModel}` || '../images/car_pics/default_car.png';
             
             // Update ride details
