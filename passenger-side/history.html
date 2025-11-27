@@ -62,20 +62,16 @@
           <h2 id="userName">Loading...</h2>
         </div>
         <hr>
-
         <a href="profile.html" class="sub-menu-link">
           <img src="../images/user.png" alt="usericon">
           <p>Edit Profile</p><span>&gt;</span>
         </a>
-
         <a href="#" class="sub-menu-link">
           <img src="../images/settings.png"><p>Settings</p><span>&gt;</span>
         </a>
-
         <a href="#" class="sub-menu-link">
           <img src="../images/question.png"><p>Help & Support</p><span>&gt;</span>
         </a>
-
         <a href="#" class="sub-menu-link">
           <img src="../images/user-logout.png"><p>Logout</p><span>&gt;</span>
         </a>
@@ -104,7 +100,13 @@
         </div>
       </div>
 
-      <div id="rideHistoryContainer" class="ride-list"></div>
+      <!-- Upcoming Rides -->
+      <h3 class="ride-section-title">Upcoming Rides</h3>
+      <div id="upcomingRidesContainer" class="ride-list"></div>
+
+      <!-- Finished Rides -->
+      <h3 class="ride-section-title">Finished Rides</h3>
+      <div id="finishedRidesContainer" class="ride-list"></div>
     </section>
   </main>
 
@@ -126,23 +128,6 @@
 
     <p class="footer-copy">Copyright ©2025 | Designed by <span>Carma</span></p>
   </footer>
-
-  <!-- Report Modal -->
-  <div id="reportModal" class="modal">
-    <div class="modal-content">
-      <span id="closeReportModal" class="close">&times;</span>
-      <h3>Report a Problem</h3>
-      <textarea id="reportText" rows="5" placeholder="Describe your issue..."></textarea>
-
-      <div class="modal-buttons">
-        <button id="cancelReport">Cancel</button>
-        <button id="submitReport">Submit</button>
-      </div>
-    </div>
-  </div>
-
-  <!-- Notification Toast -->
-  <div id="notification" class="notification-toast"></div>
 
 </body>
 </html>

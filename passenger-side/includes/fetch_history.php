@@ -1,66 +1,74 @@
 <?php
-// Use the shared root includes DB connector
 require_once __DIR__ . '/../../includes/db_connect.php';
-header('Content-Type: application/json');
+header('Content-Type: application/json; charset=utf-8');
+
+$ridesCol = $db->rides;
+$bookingsCol = $db->bookings;
+$paymentsCol = $db->payments;
 
 try {
-    $collection = $db->history;
+    // Fetch all bookings for the user (currently all bookings)
+    $bookingDocs = $bookingsCol->find()->toArray();
+    $rideIds = array_map(fn($b) => $b['rideId'], $bookingDocs);
 
-    if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-        $data = json_decode(file_get_contents('php://input'), true);
-        $historyId = $data['historyId'] ?? null;
-
-        if (!$historyId) {
-            echo json_encode(["success" => false, "error" => "Missing historyId"]);
-            exit;
-        }
-
-        // Handle rating update
-        if (isset($data['rating'])) {
-            $rating = (int)$data['rating'];
-            $collection->updateOne(
-                ['historyId' => $historyId],
-                ['$set' => ['rating' => $rating]]
-            );
-            echo json_encode(["success" => true, "rating" => $rating]);
-            exit;
-        }
-
-        // Handle report_description update
-        if (isset($data['report_description'])) {
-            $description = trim($data['report_description']);
-            $collection->updateOne(
-                ['historyId' => $historyId],
-                ['$set' => ['report_description' => $description]]
-            );
-            echo json_encode(["success" => true, "report_description" => $description]);
-            exit;
-        }
+    if (empty($rideIds)) {
+        echo json_encode(['upcoming' => [], 'finished' => []]);
+        exit;
     }
 
-    // Fetch history records (GET)
-    $cursor = $collection->find([], ['sort' => ['date' => -1]]);
-    $historyRecords = [];
+    // Fetch rides
+    $rideDocs = $ridesCol->find(['rideId' => ['$in' => $rideIds]])->toArray();
 
-    foreach ($cursor as $doc) {
-        $record = json_decode(json_encode($doc), true);
-        $historyRecords[] = [
-            'historyId'          => $record['historyId'] ?? '',
-            'carModel'           => $record['carModel'] ?? '',
-            'name'               => $record['name'] ?? '',
-            'pickup'             => $record['pickupLocation'] ?? '',
-            'dropoff'            => $record['dropoffLocation'] ?? '',
-            'distance'           => $record['distance'] ?? '',
-            'date'               => $record['date'] ?? '',
-            'time'               => $record['time'] ?? '',
-            'fare'               => $record['fare'] ?? 0,
-            'status'             => $record['status'] ?? '',
-            'rating'             => $record['rating'] ?? 0,
-            'report_description' => $record['report_description'] ?? ''
+    // Fetch payments
+    $paymentDocs = $paymentsCol->find(['rideId' => ['$in' => $rideIds]])->toArray();
+
+    // Map rideId to all payments
+    $ridePaymentsMap = [];
+    foreach ($paymentDocs as $p) {
+        $ridePaymentsMap[$p['rideId']][] = $p;
+    }
+
+    $upcoming = [];
+    $finished = [];
+
+    $now = new DateTime();
+
+    foreach ($rideDocs as $ride) {
+        $rideDateStr = rtrim($ride['date'], ': ');
+        $startTimeStr = explode(' - ', $ride['departureTime'])[0];
+        $rideDateTime = DateTime::createFromFormat('Y-m-d h:i A', "$rideDateStr $startTimeStr");
+
+        $paymentsForRide = $ridePaymentsMap[$ride['rideId']] ?? [];
+
+        // Determine if this ride is upcoming: any payment pending
+        $statuses = array_map(fn($p) => strtolower($p['status'] ?? ''), $paymentsForRide);
+        $isUpcoming = in_array('pending', $statuses);
+
+        // Take the pickupLocation from the first payment if exists
+        $pickupLocation = $paymentsForRide[0]['pickupLocation'] ?? '';
+
+        $rideData = [
+            'rideId' => $ride['rideId'],
+            'stationedAt' => $ride['stationedAt'],
+            'destination' => $ride['destination'],
+            'price' => $ride['price'],
+            'date' => $ride['date'],
+            'departureTime' => $ride['departureTime'],
+            'pickupLocation' => $pickupLocation,
+            'status' => $statuses,
         ];
+
+        if ($isUpcoming) {
+            $upcoming[] = $rideData;
+        } else {
+            $finished[] = $rideData;
+        }
     }
 
-    echo json_encode($historyRecords, JSON_PRETTY_PRINT);
+    echo json_encode([
+        'upcoming' => $upcoming,
+        'finished' => $finished
+    ]);
 
 } catch (Exception $e) {
     echo json_encode(["error" => $e->getMessage()]);
