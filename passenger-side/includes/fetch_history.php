@@ -7,7 +7,7 @@ $bookingsCol = $db->bookings;
 $paymentsCol = $db->payments;
 
 try {
-    // Fetch all bookings for the user (currently all bookings)
+    // Fetch all bookings (you may filter by userId if needed)
     $bookingDocs = $bookingsCol->find()->toArray();
     $rideIds = array_map(fn($b) => $b['rideId'], $bookingDocs);
 
@@ -31,21 +31,18 @@ try {
     $upcoming = [];
     $finished = [];
 
-    $now = new DateTime();
-
     foreach ($rideDocs as $ride) {
-        $rideDateStr = rtrim($ride['date'], ': ');
-        $startTimeStr = explode(' - ', $ride['departureTime'])[0];
-        $rideDateTime = DateTime::createFromFormat('Y-m-d h:i A', "$rideDateStr $startTimeStr");
-
         $paymentsForRide = $ridePaymentsMap[$ride['rideId']] ?? [];
 
-        // Determine if this ride is upcoming: any payment pending
+        // Collect statuses and pickupLocations
         $statuses = array_map(fn($p) => strtolower($p['status'] ?? ''), $paymentsForRide);
+        $pickupLocations = array_map(fn($p) => $p['pickupLocation'] ?? $ride['stationedAt'], $paymentsForRide);
+
+        // Determine if ride is upcoming: any pending payment
         $isUpcoming = in_array('pending', $statuses);
 
-        // Take the pickupLocation from the first payment if exists
-        $pickupLocation = $paymentsForRide[0]['pickupLocation'] ?? '';
+        // Use the **first pickupLocation** (or fallback)
+        $pickupLocation = $pickupLocations[0] ?? $ride['stationedAt'];
 
         $rideData = [
             'rideId' => $ride['rideId'],
