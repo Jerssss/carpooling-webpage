@@ -7,7 +7,7 @@
     <link rel="stylesheet" href="css/style.css">
     <link rel="stylesheet" href="css/registration-passenger.css">
 </head>
-<body>
+<body data-role="passenger">
 
     <!-- NAVBAR -->
     <nav>
@@ -21,7 +21,7 @@
     <div class="form-container">
         <h1>Passenger Registration</h1>
 
-        <form action="#" method="POST" class="registration-form">
+        <form class="registration-form">
             <div class="form-group">
                 <label for="fullname">Full Name</label>
                 <input type="text" id="fullname" name="fullname" placeholder="Enter full name" required>
@@ -55,6 +55,8 @@
             <button type="submit" class="submit-btn">Register</button>
         </form>
     </div>
+
+    <script src="register.js" defer></script>
 
 </body>
 </html>

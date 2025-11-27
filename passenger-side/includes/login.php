@@ -15,7 +15,10 @@ try {
         // DEBUG: Show submitted values
         // echo "Email: $email, Password: $password, Role: $role<br>";
 
-        $user = $usersCollection->findOne(['email' => $email, 'role' => $role]);
+        $user = $usersCollection->findOne([
+            'email' => $email,
+            'roles' => $role  // match any element in roles array
+        ]);
 
         if (!$user) {
             echo "No user found for email '$email' with role '$role'";
@@ -27,7 +30,7 @@ try {
                     'userID' => $user->userID,
                     'name' => $user->name,
                     'email' => $user->email,
-                    'role' => $user->role
+                    'role' => $role
                 ];
 
                 // Redirect to dashboard (change path if needed)

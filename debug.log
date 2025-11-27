@@ -1,0 +1,10 @@
+Array
+(
+    [fullname] => both
+    [email] => both@carpool.com
+    [contact] => 0123456789
+    [occupation] => student
+    [password] => both123
+    [confirm-password] => both123
+    [roleType] => both
+)
