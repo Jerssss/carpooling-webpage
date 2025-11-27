@@ -1,5 +1,18 @@
 :root {
-  background-color: #fff;
+  --primary-yellow: #ffc800;
+  --secondary-yellow: #ffdb4d;
+  --background-color: #fff;
+  --text-color: #2c2c2c;
+  --card-bg: #fff9e6;
+  --card-shadow: rgba(0, 0, 0, 0.15);
+}
+
+body {
+  font-family: 'Poppins', sans-serif;
+  background-color: var(--background-color);
+  color: var(--text-color);
+  margin: 0;
+  padding: 0;
 }
 
 main {
@@ -11,14 +24,14 @@ main {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 20px;
+  gap: 25px;
   text-align: center;
 }
 
 .ride-section-title {
   font-size: 22px;
   font-weight: 700;
-  color: #c49102;
+  color: var(--primary-yellow);
   margin-top: 25px;
   margin-bottom: 15px;
   align-self: flex-start;
@@ -43,7 +56,7 @@ main {
   padding: 8px 12px;
   gap: 8px;
   flex: 1;
-  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+  box-shadow: 0 4px 10px rgba(0,0,0,0.1);
 }
 
 .search-bar img {
@@ -67,7 +80,7 @@ main {
   border-radius: 15px;
   padding: 8px 12px;
   cursor: pointer;
-  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+  box-shadow: 0 4px 10px rgba(0,0,0,0.1);
 }
 
 .filter-dropdown img {
@@ -94,39 +107,47 @@ main {
 
 .ride-card {
   position: relative;
-  background: #f8f8f8;
+  background: var(--card-bg);
   border-radius: 25px;
   width: 100%;
   max-width: 420px;
-  padding: 25px 25px 70px;
-  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
-  transition: transform 0.25s ease;
+  padding: 25px 25px 40px;
+  box-shadow: 0 10px 25px var(--card-shadow);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
 }
 
 .ride-card:hover {
-  transform: translateY(-5px);
+  transform: translateY(-8px);
+  box-shadow: 0 15px 30px rgba(0,0,0,0.25);
 }
 
 /* Ride Header */
 .ride-header {
   display: flex;
   align-items: center;
+  justify-content: center;
+  gap: 15px;
   background: linear-gradient(90deg, #ffe680, #fff8d6);
   border-radius: 15px;
   padding: 15px 20px;
-  gap: 15px;
+  width: 100%;
 }
 
 .ride-left {
   display: flex;
+  flex-direction: column;
   align-items: center;
-  gap: 15px;
+  gap: 8px;
 }
 
 .ride-icon {
-  background: #ffcc00;
-  width: 55px;
-  height: 55px;
+  background: var(--primary-yellow);
+  width: 50px;
+  height: 50px;
   border-radius: 15px;
   display: flex;
   justify-content: center;
@@ -134,8 +155,8 @@ main {
 }
 
 .ride-icon img {
-  width: 30px;
-  height: 30px;
+  width: 24px;
+  height: 24px;
 }
 
 .ride-info h2 {
@@ -145,51 +166,38 @@ main {
 }
 
 .ride-info p {
-  margin: 2px 0 0;
+  margin: 4px 0 0;
   color: #444;
   font-size: 14px;
   display: flex;
   align-items: center;
   gap: 6px;
+  justify-content: center;
 }
 
-.user-icon {
-  width: 16px;
+.ride-info p img {
+  width: 14px;
+  height: 14px;
 }
 
 /* Route */
 .ride-route {
   display: flex;
-  gap: 15px;
+  flex-direction: column;
+  gap: 12px;
   background: linear-gradient(90deg, #fff9d9, #fff3bf);
   border-radius: 15px;
   padding: 18px;
   margin-top: 18px;
-}
-
-.route-line {
-  display: flex;
-  flex-direction: column;
+  width: 100%;
   align-items: center;
-}
-
-.dot {
-  width: 12px;
-  height: 12px;
-  background: #ffcc00;
-  border-radius: 50%;
-}
-
-.line {
-  height: 35px;
-  width: 3px;
-  background: #ffcc00;
 }
 
 .route-details {
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
+  align-items: center;
+  justify-content: center;
 }
 
 .label {
@@ -205,91 +213,7 @@ main {
   color: #000;
 }
 
-/* Ride Footer */
-.ride-footer {
-  display: flex;
-  justify-content: space-between;
-  margin-top: 20px;
-  padding-bottom: 20px;
-  flex-wrap: wrap;
-  gap: 10px;
-}
-
-.info-box {
-  background: linear-gradient(180deg, #fff7cc, #fff2b3);
-  border-radius: 15px;
-  padding: 12px 18px;
-  text-align: center;
-  flex: 1;
-  min-width: 100px;
-}
-
-.icon {
-  background: #ffcc00;
-  width: 35px;
-  height: 35px;
-  border-radius: 10px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  margin: 0 auto 8px;
-}
-
-.icon img {
-  width: 18px;
-}
-
-.info-box .label {
-  font-size: 13px;
-  color: #777;
-}
-
-.info-box .value {
-  font-size: 17px;
-  font-weight: 700;
-}
-
-/* Ride Actions */
-.ride-actions {
-  position: absolute;
-  bottom: 15px;
-  right: 20px;
-  display: flex;
-  align-items: center;
-  gap: 15px;
-}
-
-.star {
-  font-size: 24px;
-  color: #ccc;
-  cursor: pointer;
-  transition: 0.25s;
-}
-
-.star.selected,
-.star:hover,
-.star.hovered {
-  color: #ffcc00;
-  transform: scale(1.2);
-}
-
-.action-btn {
-  width: 34px;
-  height: 34px;
-  cursor: pointer;
-}
-
-.action-btn img {
-  width: 100%;
-  filter: grayscale(100%) brightness(0.7);
-  transition: 0.25s;
-}
-
-.report-btn:hover img {
-  filter: brightness(1) sepia(1) saturate(8) hue-rotate(-10deg);
-  transform: scale(1.2);
-}
-
+/* Responsive */
 @media (max-width: 900px) {
   .ride-list {
     grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));

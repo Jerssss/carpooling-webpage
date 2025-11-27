@@ -7,22 +7,23 @@ $bookingsCol = $db->bookings;
 $paymentsCol = $db->payments;
 
 try {
-    // Fetch all bookings (you may filter by userId if needed)
+    // Fetch ALL bookings for this passenger
     $bookingDocs = $bookingsCol->find()->toArray();
     $rideIds = array_map(fn($b) => $b['rideId'], $bookingDocs);
 
+    // No bookings → no history
     if (empty($rideIds)) {
         echo json_encode(['upcoming' => [], 'finished' => []]);
         exit;
     }
 
-    // Fetch rides
+    // Fetch rides data
     $rideDocs = $ridesCol->find(['rideId' => ['$in' => $rideIds]])->toArray();
 
-    // Fetch payments
+    // Fetch payments for all booked rides
     $paymentDocs = $paymentsCol->find(['rideId' => ['$in' => $rideIds]])->toArray();
 
-    // Map rideId to all payments
+    // Map rideId → list of payments
     $ridePaymentsMap = [];
     foreach ($paymentDocs as $p) {
         $ridePaymentsMap[$p['rideId']][] = $p;
@@ -34,31 +35,49 @@ try {
     foreach ($rideDocs as $ride) {
         $paymentsForRide = $ridePaymentsMap[$ride['rideId']] ?? [];
 
-        // Collect statuses and pickupLocations
-        $statuses = array_map(fn($p) => strtolower($p['status'] ?? ''), $paymentsForRide);
-        $pickupLocations = array_map(fn($p) => $p['pickupLocation'] ?? $ride['stationedAt'], $paymentsForRide);
-
-        // Determine if ride is upcoming: any pending payment
-        $isUpcoming = in_array('pending', $statuses);
-
-        // Use the **first pickupLocation** (or fallback)
-        $pickupLocation = $pickupLocations[0] ?? $ride['stationedAt'];
-
-        $rideData = [
-            'rideId' => $ride['rideId'],
-            'stationedAt' => $ride['stationedAt'],
-            'destination' => $ride['destination'],
-            'price' => $ride['price'],
-            'date' => $ride['date'],
-            'departureTime' => $ride['departureTime'],
-            'pickupLocation' => $pickupLocation,
-            'status' => $statuses,
-        ];
-
-        if ($isUpcoming) {
+        // If no payments exist, treat as pending/upcoming
+        if (empty($paymentsForRide)) {
+            $rideData = [
+                'rideId' => $ride['rideId'],
+                'stationedAt' => $ride['stationedAt'],
+                'destination' => $ride['destination'],
+                'price' => $ride['price'],
+                'date' => $ride['date'],
+                'departureTime' => $ride['departureTime'],
+                'name' => "Unknown", // no payment yet
+                'pickupLocation' => $ride['stationedAt'],
+                'status' => ['pending']
+            ];
             $upcoming[] = $rideData;
-        } else {
-            $finished[] = $rideData;
+            continue;
+        }
+
+        // Otherwise, loop through payments
+        foreach ($paymentsForRide as $payment) {
+            $status = strtolower($payment['status'] ?? '');
+            $pickupLocation = $payment['pickupLocation'] ?? $ride['stationedAt'];
+            $name = $payment['name'] ?? "Unknown";
+
+            $rideData = [
+                'rideId' => $ride['rideId'],
+                'stationedAt' => $ride['stationedAt'],
+                'destination' => $ride['destination'],
+                'price' => $ride['price'],
+                'date' => $ride['date'],
+                'departureTime' => $ride['departureTime'],
+                'name' => $name,
+                'pickupLocation' => $pickupLocation,
+                'status' => [$status]
+            ];
+
+            if ($status === 'pending') {
+                $upcoming[] = $rideData;
+            } elseif ($status === 'completed') {
+                $finished[] = $rideData;
+            } else {
+                // any other status, treat as finished
+                $finished[] = $rideData;
+            }
         }
     }
 

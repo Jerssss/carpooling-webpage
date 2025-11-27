@@ -13,7 +13,7 @@ document.addEventListener("DOMContentLoaded", () => {
             if (!response.ok) {
                 throw new Error(`HTTP error! status: ${response.status}`);
             }
-            return response.text(); // first get raw text
+            return response.text();
         })
         .then(text => {
             let data;
@@ -55,26 +55,22 @@ document.addEventListener("DOMContentLoaded", () => {
         const card = document.createElement('div');
         card.classList.add('ride-card');
 
-        // Normalize paths with BASE
-        const carIcon = `${BASE}/passenger-side/images/car.png`;
-        const clockIcon = `${BASE}/passenger-side/images/clock.png`;
+        // Fix image paths
+        const carIcon = "../images/car.png";
+        const clockIcon = "../images/clock-icon.png";
 
         card.innerHTML = `
             <div class="ride-header">
                 <div class="ride-left">
                     <div class="ride-icon"><img src="${carIcon}" /></div>
                     <div class="ride-info">
-                        <h2>${ride.stationedAt}</h2>
+                        <h2>${ride.name}</h2>
                         <p><img class="user-icon" src="${clockIcon}" /> ${ride.departureTime}</p>
                     </div>
                 </div>
             </div>
 
             <div class="ride-route">
-                <div class="route-line">
-                    <div class="dot"></div>
-                    <div class="line"></div>
-                </div>
                 <div class="route-details">
                     <div>
                         <span class="label">Pickup</span>
@@ -91,7 +87,6 @@ document.addEventListener("DOMContentLoaded", () => {
                 </div>
             </div>
         `;
-
         return card;
     }
 });
