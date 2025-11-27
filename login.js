@@ -29,3 +29,7 @@ document.getElementById('driver-btn').addEventListener('click', function(){
 document.getElementById('passenger-btn').addEventListener('click', function(){
     window.location.href = 'registration-passenger.html';
 });
+
+document.getElementById('multirole-btn').addEventListener('click', function(){
+    window.location.href = 'registration-pd.html';
+});
