@@ -7,20 +7,27 @@
   const apiKey = window.GMAPS_API_KEY || 'GOOGLE_MAPS_API_KEY_HERE'; // TODO: replace
 
   const destinationInput = document.getElementById('destination');
-  const openMapBtn = document.getElementById('openMapPicker');
+  const openDestBtn = document.getElementById('openDestMapPicker');
+  const startInput = document.getElementById('start-location');
+  const openStartBtn = document.getElementById('openStartMapPicker');
+  const departureInput = document.getElementById('departure');
   const mapModal = document.getElementById('mapModal');
   const closeMapBtn = document.getElementById('closeMapPicker');
   const useLocationBtn = document.getElementById('useLocation');
   const resetMarkerBtn = document.getElementById('resetMarker');
   const destLatEl = document.getElementById('dest-lat');
   const destLngEl = document.getElementById('dest-lng');
+  const startLatEl = document.getElementById('start-lat');
+  const startLngEl = document.getElementById('start-lng');
 
   let mapsLoaded = false;
-  let autocomplete = null;
+  let autocompleteDest = null;
+  let autocompleteStart = null;
   let map = null;
   let marker = null;
   let geocoder = null;
   let initialCenter = { lat: 16.4023, lng: 120.5960 }; // Baguio City center
+  let pickerContext = 'destination'; // or 'start'
 
   function loadGoogleMaps(cb){
     if (mapsLoaded) return cb();
@@ -39,14 +46,18 @@
 
   function initAutocomplete(){
     if (!window.google || !google.maps || !google.maps.places) return;
-    autocomplete = new google.maps.places.Autocomplete(destinationInput, {
+    autocompleteDest = new google.maps.places.Autocomplete(destinationInput, {
+      fields: ['place_id', 'geometry', 'name', 'formatted_address'],
+      types: ['geocode']
+    });
+    autocompleteStart = new google.maps.places.Autocomplete(startInput, {
       fields: ['place_id', 'geometry', 'name', 'formatted_address'],
       types: ['geocode']
     });
     // Bias results to Baguio/Benguet via componentRestrictions if available
     try {
-      if (autocomplete.setComponentRestrictions) {
-        autocomplete.setComponentRestrictions({ country: ['ph'] });
+      if (autocompleteDest.setComponentRestrictions) {
+        autocompleteDest.setComponentRestrictions({ country: ['ph'] });
       }
     } catch(e) {}
 
@@ -55,11 +66,13 @@
       new google.maps.LatLng(16.2000, 120.5000), // SW approx Benguet
       new google.maps.LatLng(16.6000, 121.0000)  // NE approx
     );
-    autocomplete.setBounds(bounds);
-    autocomplete.setOptions({ strictBounds: false });
+    autocompleteDest.setBounds(bounds);
+    autocompleteDest.setOptions({ strictBounds: false });
+    autocompleteStart.setBounds(bounds);
+    autocompleteStart.setOptions({ strictBounds: false });
 
-    autocomplete.addListener('place_changed', () => {
-      const place = autocomplete.getPlace();
+    autocompleteDest.addListener('place_changed', () => {
+      const place = autocompleteDest.getPlace();
       if (!place || !place.geometry || !place.geometry.location) return;
       const location = place.geometry.location;
       const lat = location.lat();
@@ -74,6 +87,24 @@
         destinationInput.value = '';
         destLatEl.value = '';
         destLngEl.value = '';
+      }
+    });
+
+    autocompleteStart.addListener('place_changed', () => {
+      const place = autocompleteStart.getPlace();
+      if (!place || !place.geometry || !place.geometry.location) return;
+      const location = place.geometry.location;
+      const lat = location.lat();
+      const lng = location.lng();
+      startLatEl.value = lat;
+      startLngEl.value = lng;
+
+      const within = bounds.contains(new google.maps.LatLng(lat, lng));
+      if (!within) {
+        alert('Please select a starting location within Baguio/Benguet.');
+        startInput.value = '';
+        startLatEl.value = '';
+        startLngEl.value = '';
       }
     });
   }
@@ -99,8 +130,8 @@
     geocoder = geocoder || new google.maps.Geocoder();
     const mapEl = document.getElementById('map');
     // If destination has existing coords, use them as center
-    const existingLat = parseFloat(destLatEl.value);
-    const existingLng = parseFloat(destLngEl.value);
+    const existingLat = pickerContext === 'destination' ? parseFloat(destLatEl.value) : parseFloat(startLatEl.value);
+    const existingLng = pickerContext === 'destination' ? parseFloat(destLngEl.value) : parseFloat(startLngEl.value);
     const center = (!isNaN(existingLat) && !isNaN(existingLng)) ? { lat: existingLat, lng: existingLng } : initialCenter;
 
     map = new google.maps.Map(mapEl, {
@@ -118,18 +149,30 @@
 
     google.maps.event.addListener(marker, 'dragend', function(){
       const pos = marker.getPosition();
-      destLatEl.value = pos.lat();
-      destLngEl.value = pos.lng();
-      reverseGeocode(pos.lat(), pos.lng());
+      const lat = pos.lat();
+      const lng = pos.lng();
+      if (pickerContext === 'destination') {
+        destLatEl.value = lat;
+        destLngEl.value = lng;
+        reverseGeocode(lat, lng, 'destination');
+      } else {
+        startLatEl.value = lat;
+        startLngEl.value = lng;
+        reverseGeocode(lat, lng, 'start');
+      }
     });
   }
 
-  function reverseGeocode(lat, lng){
+  function reverseGeocode(lat, lng, target){
     if (!geocoder) return;
     geocoder.geocode({ location: { lat, lng } }, (results, status) => {
       if (status === 'OK' && results && results.length) {
-        // Prefer formatted_address
-        destinationInput.value = results[0].formatted_address || results[0].place_id || destinationInput.value;
+        const addr = results[0].formatted_address || results[0].place_id;
+        if (target === 'destination') {
+          destinationInput.value = addr || destinationInput.value;
+        } else {
+          startInput.value = addr || startInput.value;
+        }
       }
     });
   }
@@ -158,12 +201,19 @@
         return;
       }
 
+      // Validate departure window
+      const departureVal = data.get('departure');
+      if (!validateDeparture(departureVal)) {
+        alert('Please select a valid departure time: tomorrow between 7:30 AM and 8:00 PM, not Sunday.');
+        return;
+      }
+
       const payload = {
         startLocation: data.get('start-location'),
         destination: destinationText,
         seats: Number(data.get('seats')),
         cost: Number(data.get('cost')),
-        departure: data.get('departure'),
+        departure: departureVal,
         destLat: lat ? Number(lat) : null,
         destLng: lng ? Number(lng) : null
       };
@@ -187,16 +237,23 @@
   }
 
   // Events
-  if (openMapBtn) openMapBtn.addEventListener('click', openModal);
+  if (openDestBtn) openDestBtn.addEventListener('click', function(){ pickerContext = 'destination'; openModal(); });
+  if (openStartBtn) openStartBtn.addEventListener('click', function(){ pickerContext = 'start'; openModal(); });
   if (closeMapBtn) closeMapBtn.addEventListener('click', closeModal);
   if (useLocationBtn) useLocationBtn.addEventListener('click', function(){
     // Ensure values are set by marker
-    if (!destLatEl.value || !destLngEl.value) {
-      const pos = marker && marker.getPosition();
-      if (pos) {
-        destLatEl.value = pos.lat();
-        destLngEl.value = pos.lng();
-        reverseGeocode(pos.lat(), pos.lng());
+    const pos = marker && marker.getPosition();
+    if (pos) {
+      const lat = pos.lat();
+      const lng = pos.lng();
+      if (pickerContext === 'destination') {
+        destLatEl.value = lat;
+        destLngEl.value = lng;
+        reverseGeocode(lat, lng, 'destination');
+      } else {
+        startLatEl.value = lat;
+        startLngEl.value = lng;
+        reverseGeocode(lat, lng, 'start');
       }
     }
     closeModal();
@@ -209,14 +266,84 @@
       initAutocomplete();
     });
   });
+  startInput && startInput.addEventListener('focus', function(){
+    loadGoogleMaps(() => {
+      initAutocomplete();
+    });
+  });
 
   // Also try init on DOM ready
   document.addEventListener('DOMContentLoaded', function(){
     hookFormSubmit();
-    if (destinationInput) {
+    if (destinationInput || startInput) {
       loadGoogleMaps(() => {
         initAutocomplete();
       });
     }
+    setupDepartureConstraints();
   });
+
+  function setupDepartureConstraints(){
+    if (!departureInput) return;
+    const now = new Date();
+    const tomorrow = new Date(now.getFullYear(), now.getMonth(), now.getDate() + 1);
+    const isSunday = tomorrow.getDay() === 0; // 0 = Sunday
+
+    // Build ISO strings for datetime-local (YYYY-MM-DDTHH:MM)
+    const yyyy = tomorrow.getFullYear();
+    const mm = String(tomorrow.getMonth() + 1).padStart(2, '0');
+    const dd = String(tomorrow.getDate()).padStart(2, '0');
+    const minStr = `${yyyy}-${mm}-${dd}T07:30`;
+    const maxStr = `${yyyy}-${mm}-${dd}T20:00`;
+
+    departureInput.min = minStr;
+    departureInput.max = maxStr;
+
+    // If tomorrow is Sunday, prevent booking (disable input and button)
+    const submitBtn = document.querySelector('.submit-btn');
+    if (isSunday) {
+      departureInput.disabled = true;
+      if (submitBtn) submitBtn.disabled = true;
+      const msg = document.createElement('div');
+      msg.style.color = '#d00';
+      msg.style.marginTop = '6px';
+      msg.textContent = 'Bookings are not allowed on Sundays. Please check back tomorrow.';
+      departureInput.parentElement && departureInput.parentElement.appendChild(msg);
+    } else {
+      departureInput.disabled = false;
+      if (submitBtn) submitBtn.disabled = false;
+    }
+
+    // Validate on change to keep within window and not Sunday
+    departureInput.addEventListener('change', function(){
+      const val = departureInput.value;
+      if (!validateDeparture(val)) {
+        alert('Please choose a time tomorrow between 7:30 AM and 8:00 PM.');
+        // Reset to min
+        departureInput.value = minStr;
+      }
+    });
+  }
+
+  function validateDeparture(val){
+    if (!val) return false;
+    const selected = new Date(val);
+    if (isNaN(selected.getTime())) return false;
+    const now = new Date();
+    const tomorrow = new Date(now.getFullYear(), now.getMonth(), now.getDate() + 1);
+    if (tomorrow.getDay() === 0) return false; // Sunday
+
+    const yyyy = tomorrow.getFullYear();
+    const mm = tomorrow.getMonth();
+    const dd = tomorrow.getDate();
+    const min = new Date(yyyy, mm, dd, 7, 30, 0);
+    const max = new Date(yyyy, mm, dd, 20, 0, 0);
+
+    // Must be on the same calendar day as tomorrow
+    const sameDay = selected.getFullYear() === yyyy && selected.getMonth() === mm && selected.getDate() === dd;
+    if (!sameDay) return false;
+
+    // Within time window
+    return selected >= min && selected <= max;
+  }
 })();

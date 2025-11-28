@@ -39,7 +39,9 @@ body {
 }
 
 .form-group input {
-    padding: 14px 16px;
+    box-sizing: border-box;
+    height: 44px;
+    padding: 10px 44px 10px 16px;
     border-radius: 10px;
     border: 1px solid #d0d0d0;
     font-size: 16px;
@@ -50,6 +52,25 @@ body {
     border-color: #ffb300;
     box-shadow: 0 0 10px rgba(255,179,0,0.3);
     outline: none;
+}
+
+.input-icon-wrap {
+    position: relative;
+    display: block;
+}
+.input-icon-wrap input {
+    width: 100%;
+}
+.input-icon {
+    position: absolute;
+    right: 8px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 20px;
+    height: 20px;
+    cursor: pointer;
+    display: block;
+    z-index: 2;
 }
 
 .submit-btn {
