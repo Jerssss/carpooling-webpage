@@ -1,5 +1,6 @@
 <?php
 require_once __DIR__ . '/db_connect.php';
+require_once __DIR__ . '/session.php';
 
 header('Content-Type: application/json');
 
@@ -8,7 +9,7 @@ $usersCollection = $db->users;
 $ridesCollection = $db->rides;
 
 // Get user ID from query string
-$userId = $_GET['userId'] ?? null;
+$userId = $_SESSION['user_id'] ?? null;
 $rideId = $_GET['rideId'] ?? null;
 
 if (!$userId) {

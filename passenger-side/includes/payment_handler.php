@@ -1,6 +1,14 @@
 <?php
 // Use the shared root includes DB connector
+require_once __DIR__ . '/../../includes/session.php';
 require_once __DIR__ . '/../../includes/db_connect.php';
+
+if (!isset($_SESSION['user_id']) || $_SESSION['role'] !== 'passenger') {
+    http_response_code(401);
+    echo json_encode(['error' => 'Unauthorized']);
+    exit;
+}
+
 use MongoDB\BSON\UTCDateTime;
 header('Content-Type: application/json');
 
@@ -97,10 +105,10 @@ if (strcasecmp($method, 'GCash') === 0) {
 $paymentData = [
     'paymentId' => uniqid('P'),
     'rideId' => $_POST['rideId'] ?? '',
-    'userId' => $_POST['userId'] ?? '',
-    'name' => $_POST['fullName'] ?? '',
+    'userId' => $_SESSION['user_id'],
+    'name'   => $_SESSION['name'],
     'idNumber' => $_POST['idNumber'] ?? '',
-    'email' => $_POST['email'] ?? '',
+    'email'  => $_SESSION['email'],
     'pickupType' => $_POST['pickupType'] ?? ($_POST['cashPickupType'] ?? ''),
     'pickupTime' => $_POST['pickupTime'] ?? '',
     'pickupLocation' => $_POST['pickupLocation'] ?? ($_POST['cashPickupLocation'] ?? ''),

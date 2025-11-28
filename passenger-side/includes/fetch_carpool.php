@@ -1,6 +1,14 @@
 <?php
 // Use the shared root includes DB connector
+require_once __DIR__ . '/../../includes/session.php';
 require_once __DIR__ . '/../../includes/db_connect.php';
+
+if (!isset($_SESSION['user_id']) || $_SESSION['role'] !== 'passenger') {
+    http_response_code(401);
+    echo json_encode(['error' => 'Unauthorized']);
+    exit;
+}
+
 
 function normalize_asset_path($path, $default) {
     if (!is_string($path) || $path === '') return $default;

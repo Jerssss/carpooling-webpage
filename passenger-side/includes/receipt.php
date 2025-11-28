@@ -1,7 +1,17 @@
 <?php
 header('Content-Type: application/json');
 // Use the shared root DB connector
+require_once __DIR__ . '/../../includes/session.php';
 require_once __DIR__ . '/../../includes/db_connect.php';
+
+header('Content-Type: application/json');
+
+if (!isset($_SESSION['user_id']) || $_SESSION['role'] !== 'passenger') {
+    http_response_code(401);
+    echo json_encode(['error' => 'Unauthorized']);
+    exit;
+}
+
 
 try {
     // Connect to MongoDB
@@ -19,6 +29,12 @@ try {
     $payment = $db->payments->findOne(['rideId' => $rideId]);
     if (!$payment) {
         echo json_encode(['error' => 'No payment found for this ride ID']);
+        exit;
+    }
+
+    if ($payment['userId'] !== $_SESSION['user_id']) {
+        http_response_code(403);
+        echo json_encode(['error' => 'Forbidden']);
         exit;
     }
 
