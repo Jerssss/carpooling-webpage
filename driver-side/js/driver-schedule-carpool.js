@@ -285,42 +285,36 @@
 
   function setupDepartureConstraints(){
     if (!departureInput) return;
-    const now = new Date();
-    const tomorrow = new Date(now.getFullYear(), now.getMonth(), now.getDate() + 1);
-    const isSunday = tomorrow.getDay() === 0; // 0 = Sunday
 
-    // Build ISO strings for datetime-local (YYYY-MM-DDTHH:MM)
-    const yyyy = tomorrow.getFullYear();
-    const mm = String(tomorrow.getMonth() + 1).padStart(2, '0');
-    const dd = String(tomorrow.getDate()).padStart(2, '0');
+    // Earliest allowed date: tomorrow or next non-Sunday day if tomorrow is Sunday
+    const earliest = getEarliestAllowedDate();
+    const yyyy = earliest.getFullYear();
+    const mm = String(earliest.getMonth() + 1).padStart(2, '0');
+    const dd = String(earliest.getDate()).padStart(2, '0');
     const minStr = `${yyyy}-${mm}-${dd}T07:30`;
-    const maxStr = `${yyyy}-${mm}-${dd}T20:00`;
+
+    // Set a max (1 year ahead 20:00) – validation will still block Sundays
+    const maxDate = new Date(earliest); maxDate.setFullYear(maxDate.getFullYear() + 1); const maxY = maxDate.getFullYear(); const maxM = String(maxDate.getMonth() + 1).padStart(2,'0'); const maxD = String(maxDate.getDate()).padStart(2,'0');
+    const maxStr = `${maxY}-${maxM}-${maxD}T20:00`;
 
     departureInput.min = minStr;
     departureInput.max = maxStr;
 
-    // If tomorrow is Sunday, prevent booking (disable input and button)
-    const submitBtn = document.querySelector('.submit-btn');
-    if (isSunday) {
-      departureInput.disabled = true;
-      if (submitBtn) submitBtn.disabled = true;
+    // Info message if first selectable day was pushed because tomorrow is Sunday
+    const tomorrow = new Date(); tomorrow.setDate(tomorrow.getDate() + 1);
+    if (tomorrow.getDay() === 0) { // tomorrow is Sunday, earliest advanced
       const msg = document.createElement('div');
       msg.style.color = '#d00';
       msg.style.marginTop = '6px';
-      msg.textContent = 'Bookings are not allowed on Sundays. Please check back tomorrow.';
+      msg.textContent = `Sunday is not bookable. Earliest available: ${yyyy}-${mm}-${dd} (07:30–20:00).`;
       departureInput.parentElement && departureInput.parentElement.appendChild(msg);
-    } else {
-      departureInput.disabled = false;
-      if (submitBtn) submitBtn.disabled = false;
     }
 
-    // Validate on change to keep within window and not Sunday
     departureInput.addEventListener('change', function(){
       const val = departureInput.value;
       if (!validateDeparture(val)) {
-        alert('Please choose a time tomorrow between 7:30 AM and 8:00 PM.');
-        // Reset to min
-        departureInput.value = minStr;
+        alert('Invalid time. Use a future non-Sunday date between 07:30 AM and 08:00 PM.');
+        departureInput.value = '';
       }
     });
   }
@@ -329,21 +323,34 @@
     if (!val) return false;
     const selected = new Date(val);
     if (isNaN(selected.getTime())) return false;
+
     const now = new Date();
-    const tomorrow = new Date(now.getFullYear(), now.getMonth(), now.getDate() + 1);
-    if (tomorrow.getDay() === 0) return false; // Sunday
+    // Past or today not allowed
+    const todayMidnight = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+    if (selected < todayMidnight) return false; // past
+    if (selected.getFullYear() === now.getFullYear() && selected.getMonth() === now.getMonth() && selected.getDate() === now.getDate()) return false; // current day
 
-    const yyyy = tomorrow.getFullYear();
-    const mm = tomorrow.getMonth();
-    const dd = tomorrow.getDate();
-    const min = new Date(yyyy, mm, dd, 7, 30, 0);
-    const max = new Date(yyyy, mm, dd, 20, 0, 0);
+    // Disallow Sundays
+    if (selected.getDay() === 0) return false;
 
-    // Must be on the same calendar day as tomorrow
-    const sameDay = selected.getFullYear() === yyyy && selected.getMonth() === mm && selected.getDate() === dd;
-    if (!sameDay) return false;
+    // Must be after or equal earliest allowed (tomorrow or next non-Sunday)
+    const earliest = getEarliestAllowedDate();
+    const earliestMidnight = new Date(earliest.getFullYear(), earliest.getMonth(), earliest.getDate());
+    const selectedMidnight = new Date(selected.getFullYear(), selected.getMonth(), selected.getDate());
+    if (selectedMidnight < earliestMidnight) return false;
 
-    // Within time window
+    // Time window 07:30–20:00 local per selected day
+    const min = new Date(selected.getFullYear(), selected.getMonth(), selected.getDate(), 7, 30, 0);
+    const max = new Date(selected.getFullYear(), selected.getMonth(), selected.getDate(), 20, 0, 0);
     return selected >= min && selected <= max;
+  }
+
+  function getEarliestAllowedDate(){
+    const d = new Date();
+    d.setDate(d.getDate() + 1); // start from tomorrow
+    while (d.getDay() === 0) { // skip Sundays
+      d.setDate(d.getDate() + 1);
+    }
+    return d;
   }
 })();
