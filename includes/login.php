@@ -1,5 +1,5 @@
 <?php
-require __DIR__ . '/../../vendor/autoload.php';
+require __DIR__ . '/../vendor/autoload.php';
 session_start();
 
 try {
@@ -10,35 +10,33 @@ try {
     if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $email = $_POST['email'] ?? '';
         $password = $_POST['password'] ?? '';
-        $role = $_POST['role'] ?? 'passenger';
+        $role = $_POST['role'] ?? 'passenger'; // role from the login form
 
-        // DEBUG: Show submitted values
-        // echo "Email: $email, Password: $password, Role: $role<br>";
-
+        // Find user with matching email and role
         $user = $usersCollection->findOne([
             'email' => $email,
-            'roles' => $role  // match any element in roles array
+            'roles' => $role
         ]);
 
         if (!$user) {
             echo "No user found for email '$email' with role '$role'";
         } else {
-            // Verify password
             if (password_verify($password, $user->password)) {
-                // Login successful
+                // Session handling
                 $_SESSION['user'] = [
                     'userID' => $user->userID,
                     'name' => $user->name,
                     'email' => $user->email,
                     'role' => $role
                 ];
+                $_SESSION['login_time'] = time(); // for timeout
 
-                // Redirect to dashboard (change path if needed)
+                // Redirect based on role
                 if ($role === 'passenger') {
-                    header("Location: ../index.html"); 
+                    header("Location: ../passenger-side/index.html"); // passenger dashboard
                 } elseif ($role === 'driver') {
-                    header("Location: ../../driver-side/driver-landing.html"); 
-                }
+                    header("Location: ../driver-side/driver-landing.html"); // driver dashboard
+                } 
                 exit();
             } else {
                 echo "Password incorrect!";
@@ -48,4 +46,3 @@ try {
 } catch (Exception $e) {
     echo "Error: " . $e->getMessage();
 }
-?>

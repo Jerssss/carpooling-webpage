@@ -1,4 +1,5 @@
 document.addEventListener("DOMContentLoaded", () => {
+    console.log("admin login.js loaded");
     const loginForm = document.getElementById("loginForm");
 
     loginForm.addEventListener("submit", async (e) => {
@@ -11,6 +12,7 @@ document.addEventListener("DOMContentLoaded", () => {
         if (role === "admin") {
             // Admin login using NodeJS backend + fetch
             try {
+                console.log("Admin login via NodeJS fetch");
                 const res = await fetch("http://localhost:4000/api/admin/login", {
                     method: "POST",
                     headers: { "Content-Type": "application/json" },
@@ -32,12 +34,14 @@ document.addEventListener("DOMContentLoaded", () => {
                 alert("Server error. Try again later.");
             }
         } else if (role === "passenger") {
+            console.log("Non-admin login via PHP");
             // Passenger login via PHP
-            loginForm.action = "passenger-side/includes/login.php";
+            loginForm.action = "includes/login.php";
             loginForm.submit();
         } else if (role === "driver") {
+            console.log("Non-admin login via PHP");
             // Driver login via PHP
-            loginForm.action = "driver-side/includes/login.php";
+            loginForm.action = "includes/login.php";
             loginForm.submit();
         }
     });

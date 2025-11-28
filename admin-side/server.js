@@ -18,7 +18,7 @@ app.use(session({
     secret: "supersecretadminkey", // change to a secure random string
     resave: false,
     saveUninitialized: true,
-    cookie: { secure: false } // set true if using https
+    cookie: { maxAge: 30 * 60 * 1000  } // set true if using https
 }));
 
 const client = new MongoClient(process.env.MONGO_URI);
@@ -43,7 +43,7 @@ app.post("/api/admin/login", async (req, res) => {
 
         const user = await users.findOne({ email: email, role: "admin" });
 
-        if (!user) {
+        if (!user || !bcrypt.compareSync(password, user.password)) {
             return res.status(401).json({ message: "Admin not found" });
         }
 
