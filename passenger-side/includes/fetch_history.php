@@ -1,5 +1,13 @@
 <?php
+require_once __DIR__ . '/../../includes/session.php';
 require_once __DIR__ . '/../../includes/db_connect.php';
+
+if (!isset($_SESSION['user_id']) || $_SESSION['role'] !== 'passenger') {
+    http_response_code(401);
+    echo json_encode(['error' => 'Unauthorized']);
+    exit;
+}
+
 header('Content-Type: application/json; charset=utf-8');
 
 $ridesCol = $db->rides;
@@ -8,7 +16,12 @@ $paymentsCol = $db->payments;
 
 try {
     // Fetch ALL bookings for this passenger
-    $bookingDocs = $bookingsCol->find()->toArray();
+    $userId = $_SESSION['user_id'];
+
+    $bookingDocs = $bookingsCol->find([
+        'userId' => $userId
+    ])->toArray();
+
     $rideIds = array_map(fn($b) => $b['rideId'], $bookingDocs);
 
     // No bookings → no history

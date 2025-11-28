@@ -34,7 +34,6 @@ document.addEventListener("DOMContentLoaded", () => {
   const emailEl = document.getElementById("email");
   const pickupTimeEl = document.getElementById("pickupTime");
 
-  const userId = "U0004"; // later use session variable
   // const rideId = localStorage.getItem("selectedRideId") || "R0001";
 
   // Function to get query string parameters
@@ -48,7 +47,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
   // Load user info from DB
-  fetch(`${BASE}/includes/get_user_info.php?userId=${userId}&rideId=${rideId}`)
+  fetch(`${BASE}/includes/get_user_info.php?rideId=${rideId}`)
     .then((res) => res.json())
     .then((data) => {
       if (data.success && data.user) {
@@ -69,11 +68,7 @@ document.addEventListener("DOMContentLoaded", () => {
       const formData = new FormData(paymentForm);
 
       // Add outside fields
-      formData.append("fullName", fullNameEl.value);
-      formData.append("idNumber", idNumberEl.value);
-      formData.append("email", emailEl.value);
       formData.append("pickupTime", pickupTimeEl.value);
-      formData.append("userId", userId);
       formData.append("rideId", rideId);
       formData.append("amount", 50);
       formData.append("method", "GCash");
@@ -113,11 +108,8 @@ document.addEventListener("DOMContentLoaded", () => {
       const formData = new FormData(cashForm);
 
       // Add outside fields
-      formData.append("fullName", fullNameEl.value);
       formData.append("idNumber", idNumberEl.value);
-      formData.append("email", emailEl.value);
       formData.append("pickupTime", pickupTimeEl.value);
-      formData.append("userId", userId);
       formData.append("rideId", rideId);
       formData.append("amount", 50);
       formData.append("method", "Cash");
