@@ -13,13 +13,17 @@ try {
 
         $user = $usersCollection->findOne([
             'email' => $email,
-            'roles' => $role
+            'roles' => ['$in' => [$role]] // search the roles array using $in operator
         ]);
 
         if (!$user) {
             echo "No user found.";
             exit;
         }
+        var_dump($user);
+        echo "Password hash from DB: " . $user->password . "\n";
+        echo "Password typed: " . $password . "\n";
+
 
         if (!password_verify($password, $user->password)) {
             echo "Incorrect password.";
