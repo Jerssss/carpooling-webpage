@@ -1,10 +1,16 @@
 // Driver Schedule Carpool interactions
-// Requirements: Google Maps JavaScript API with Places library
-// API Key should be set in window.GMAPS_API_KEY or replace placeholder below
+// Overview:
+// - "Start" and "Destination" fields with Google Places Autocomplete
+// - Adds a map picker modal with a draggable pin to fine-tune locations
+// - Keeps hidden lat/lng fields synchronized with text inputs via geocoding
+// - Validates departure date/time per business rules (no sundays, future only, 07:30am–8:00pm)
+// Requirements: Google Maps JavaScript API with Places library + a valid billing account
 
 (function(){
   const BASE = '/9467_it312-teamarc_midtermproject';
-  const apiKey = window.GMAPS_API_KEY || 'GOOGLE_MAPS_API_KEY_HERE'; // TODO: replace
+  const apiKey = 'ENV_API_KEY'; // API KEY FROM JERS, PLEASE DON'T LEAK
+  const MAP_ID = 'ENV_MAP_ID_KEY'; // MAP ID FROM JERS, PLEASE DON'T LEAK
+  if (!window.GMAPS_MAP_ID) { window.GMAPS_MAP_ID = MAP_ID; }
 
   const destinationInput = document.getElementById('destination');
   const openDestBtn = document.getElementById('openDestMapPicker');
@@ -29,21 +35,32 @@
   let initialCenter = { lat: 16.4023, lng: 120.5960 }; // Baguio City center
   let pickerContext = 'destination'; // or 'start'
 
+  // Safely extract {lat, lng} from AdvancedMarkerElement or classic markers
+  function getMarkerLatLng(){
+    if (!marker || !marker.position) return null;
+    const pos = marker.position;
+    const lat = typeof pos.lat === 'function' ? pos.lat() : pos.lat;
+    const lng = typeof pos.lng === 'function' ? pos.lng() : pos.lng;
+    if (typeof lat !== 'number' || typeof lng !== 'number') return null;
+    return { lat, lng };
+  }
+
+  // Dynamically loads the Google Maps script (Places lib included).
   function loadGoogleMaps(cb){
     if (mapsLoaded) return cb();
-    if (!apiKey || apiKey === 'GOOGLE_MAPS_API_KEY_HERE') {
-      console.warn('Google Maps API key missing. Autocomplete/map disabled.');
-      return; // don't block typing; user can still submit text
-    }
     const script = document.createElement('script');
-    script.src = `https://maps.googleapis.com/maps/api/js?key=${apiKey}&libraries=places`;
+    script.src = `https://maps.googleapis.com/maps/api/js?key=${apiKey}&libraries=places,marker&v=weekly&loading=async`;
     script.async = true;
     script.defer = true;
     script.onload = function(){ mapsLoaded = true; cb(); };
-    script.onerror = function(){ console.error('Failed to load Google Maps API'); };
+    script.onerror = function(){
+      console.error('Failed to load Google Maps API');
+      showMapsError('Failed to load Google Maps API. Check network, ad blockers, and API key.');
+    };
     document.head.appendChild(script);
   }
 
+  // Wire up Places Autocomplete for both inputs; bias results to Baguio/Benguet.
   function initAutocomplete(){
     if (!window.google || !google.maps || !google.maps.places) return;
     autocompleteDest = new google.maps.places.Autocomplete(destinationInput, {
@@ -109,60 +126,119 @@
     });
   }
 
+  // Opens the map modal and initializes/centers the map + marker for current field context.
   function openModal(){
     if (!mapsLoaded) {
       loadGoogleMaps(() => {
         setupMap();
         mapModal.classList.add('open');
+        mapModal.setAttribute('aria-hidden', 'false');
+        // Move focus into modal to avoid aria-hidden focus warnings
+        const focusTarget = document.getElementById('useLocation') || mapModal;
+        focusTarget && focusTarget.focus && focusTarget.focus();
       });
     } else {
       setupMap();
       mapModal.classList.add('open');
+      mapModal.setAttribute('aria-hidden', 'false');
+      const focusTarget = document.getElementById('useLocation') || mapModal;
+      focusTarget && focusTarget.focus && focusTarget.focus();
     }
   }
 
+  // Closes the modal and restores focus to the triggering pin.
   function closeModal(){
     mapModal.classList.remove('open');
+    mapModal.setAttribute('aria-hidden', 'true');
+    // Return focus to the triggering button
+    const returnTarget = pickerContext === 'destination' ? openDestBtn : openStartBtn;
+    returnTarget && returnTarget.focus && returnTarget.focus();
   }
 
+  // Creates the map and the draggable marker. If the field already has lat/lng,
+  // centers/places the marker there; otherwise, geocodes the typed text to seed the pin.
   function setupMap(){
     if (!window.google || !google.maps) return;
+    if (google.maps.importLibrary) {
+      // Try new loader libs, but don't rely solely on them.
+      google.maps.importLibrary('maps').catch(() => {});
+      google.maps.importLibrary('marker').catch(() => {});
+    }
     geocoder = geocoder || new google.maps.Geocoder();
     const mapEl = document.getElementById('map');
+    if (mapEl) { mapEl.innerHTML = ''; }
     // If destination has existing coords, use them as center
     const existingLat = pickerContext === 'destination' ? parseFloat(destLatEl.value) : parseFloat(startLatEl.value);
     const existingLng = pickerContext === 'destination' ? parseFloat(destLngEl.value) : parseFloat(startLngEl.value);
     const center = (!isNaN(existingLat) && !isNaN(existingLng)) ? { lat: existingLat, lng: existingLng } : initialCenter;
 
-    map = new google.maps.Map(mapEl, {
+    const mapOptions = {
       center,
       zoom: 14,
       streetViewControl: false,
       mapTypeControl: false
-    });
+    };
+    if (MAP_ID) { mapOptions.mapId = MAP_ID; }
+    map = new google.maps.Map(mapEl, mapOptions);
+    if (!map) {
+      showMapsError('Google Maps not activated for this project. Enable "Maps JavaScript API" and "Places API" in Google Cloud Console.');
+      return;
+    }
 
-    marker = new google.maps.Marker({
+    // Use AdvancedMarkerElement (no classic Marker fallback per project decision).
+    if (!(google.maps.marker && google.maps.marker.AdvancedMarkerElement)) {
+      showMapsError('Advanced Markers unavailable. Provide a valid Map ID (window.GMAPS_MAP_ID) and ensure billing/APIs are enabled.');
+      return;
+    }
+    marker = new google.maps.marker.AdvancedMarkerElement({
       position: center,
       map,
-      draggable: true
+      gmpDraggable: true
     });
 
-    google.maps.event.addListener(marker, 'dragend', function(){
-      const pos = marker.getPosition();
-      const lat = pos.lat();
-      const lng = pos.lng();
+    // Update hidden lat/lng + input text when the user drags the pin.
+    marker.addListener('dragend', function(){
+      const p = getMarkerLatLng();
+      if (!p) return;
       if (pickerContext === 'destination') {
-        destLatEl.value = lat;
-        destLngEl.value = lng;
-        reverseGeocode(lat, lng, 'destination');
+        destLatEl.value = p.lat;
+        destLngEl.value = p.lng;
+        reverseGeocode(p.lat, p.lng, 'destination');
       } else {
-        startLatEl.value = lat;
-        startLngEl.value = lng;
-        reverseGeocode(lat, lng, 'start');
+        startLatEl.value = p.lat;
+        startLngEl.value = p.lng;
+        reverseGeocode(p.lat, p.lng, 'start');
       }
     });
+
+    // If we don't have coordinates yet but there is typed text, geocode it to place the pin
+    const typedValue = pickerContext === 'destination' ? (destinationInput && destinationInput.value) : (startInput && startInput.value);
+    const hasCoords = !isNaN(existingLat) && !isNaN(existingLng);
+    if (!hasCoords && typedValue && typedValue.trim().length > 0) {
+      const bbounds = getBaguioBenguetBounds();
+      geocoder.geocode({ address: typedValue, bounds: bbounds, region: 'PH' }, (results, status) => {
+        if (status === 'OK' && results && results.length) {
+          const loc = results[0].geometry.location;
+          const lat = loc.lat();
+          const lng = loc.lng();
+          setMarkerPosition(lat, lng);
+          if (pickerContext === 'destination') {
+            destLatEl.value = lat; destLngEl.value = lng;
+            // Normalize text to formatted address
+            destinationInput.value = results[0].formatted_address || destinationInput.value;
+          } else {
+            startLatEl.value = lat; startLngEl.value = lng;
+            startInput.value = results[0].formatted_address || startInput.value;
+          }
+        }
+      });
+    } else if (hasCoords) {
+      // Ensure marker snaps to saved coordinates
+      setMarkerPosition(existingLat, existingLng);
+    }
   }
 
+  // Reverse-geocode a coordinate to a formatted address and write to the proper input.
   function reverseGeocode(lat, lng, target){
     if (!geocoder) return;
     geocoder.geocode({ location: { lat, lng } }, (results, status) => {
@@ -177,15 +253,96 @@
     });
   }
 
+  // Reset the marker and map center to the default initial center (Baguio).
   function resetMarker(){
     if (!marker || !map) return;
-    marker.setPosition(initialCenter);
+    if (marker && marker.position !== undefined) {
+      marker.position = initialCenter;
+    } else if (marker && marker.setPosition) {
+      marker.setPosition(initialCenter);
+    }
     map.setCenter(initialCenter);
-    destLatEl.value = initialCenter.lat;
-    destLngEl.value = initialCenter.lng;
-    reverseGeocode(initialCenter.lat, initialCenter.lng);
+    if (pickerContext === 'destination') {
+      destLatEl.value = initialCenter.lat;
+      destLngEl.value = initialCenter.lng;
+      reverseGeocode(initialCenter.lat, initialCenter.lng, 'destination');
+    } else {
+      startLatEl.value = initialCenter.lat;
+      startLngEl.value = initialCenter.lng;
+      reverseGeocode(initialCenter.lat, initialCenter.lng, 'start');
+    }
   }
 
+  // Utility to move the marker and recenter the map.
+  function setMarkerPosition(lat, lng){
+    if (!marker || !map) return;
+    const pos = { lat, lng };
+    if (marker.position !== undefined) {
+      marker.position = pos;
+    } else if (marker.setPosition) {
+      marker.setPosition(new google.maps.LatLng(lat, lng));
+    }
+    map.setCenter(pos);
+  }
+
+  // Returns an approximate bounding box for Baguio/Benguet to bias searches/geocoding.
+  function getBaguioBenguetBounds(){
+    if (!window.google || !google.maps) return null;
+    return new google.maps.LatLngBounds(
+      new google.maps.LatLng(16.2000, 120.5000),
+      new google.maps.LatLng(16.6000, 121.0000)
+    );
+  }
+
+  // Lightweight in-page toast for showing Maps-related diagnostics.
+  function showMapsError(message){
+    try {
+      const container = document.body;
+      const div = document.createElement('div');
+      div.style.position = 'fixed';
+      div.style.bottom = '20px';
+      div.style.right = '20px';
+      div.style.maxWidth = '360px';
+      div.style.zIndex = '2000';
+      div.style.background = '#fff3cd';
+      div.style.border = '1px solid #ffeeba';
+      div.style.color = '#856404';
+      div.style.padding = '12px 14px';
+      div.style.borderRadius = '8px';
+      div.style.boxShadow = '0 4px 12px rgba(0,0,0,0.1)';
+      div.textContent = message;
+      container.appendChild(div);
+      setTimeout(() => { div.remove(); }, 8000);
+    } catch(e) {
+      console.warn(message);
+    }
+  }
+
+  // Success toast used for confirmations (short duration, green theme)
+  function showToast(message){
+    try {
+      const container = document.body;
+      const div = document.createElement('div');
+      div.style.position = 'fixed';
+      div.style.bottom = '20px';
+      div.style.right = '20px';
+      div.style.maxWidth = '360px';
+      div.style.zIndex = '2000';
+      div.style.background = '#e6ffed';
+      div.style.border = '1px solid #b7ebc6';
+      div.style.color = '#105a2b';
+      div.style.padding = '10px 12px';
+      div.style.borderRadius = '8px';
+      div.style.boxShadow = '0 4px 12px rgba(0,0,0,0.1)';
+      div.textContent = message;
+      container.appendChild(div);
+      setTimeout(() => { div.remove(); }, 2500);
+    } catch(e) {
+      // fallback
+    }
+  }
+
+  // POST handler for the form: builds JSON payload including coords and sends to backend.
   function hookFormSubmit(){
     const form = document.querySelector('.form-container form');
     if (!form) return;
@@ -201,10 +358,10 @@
         return;
       }
 
-      // Validate departure window
+      // Validate departure window per product rules
       const departureVal = data.get('departure');
       if (!validateDeparture(departureVal)) {
-        alert('Please select a valid departure time: tomorrow between 7:30 AM and 8:00 PM, not Sunday.');
+        alert('Please select a valid departure time: future non-Sunday between 7:30 AM and 8:00 PM.');
         return;
       }
 
@@ -241,22 +398,23 @@
   if (openStartBtn) openStartBtn.addEventListener('click', function(){ pickerContext = 'start'; openModal(); });
   if (closeMapBtn) closeMapBtn.addEventListener('click', closeModal);
   if (useLocationBtn) useLocationBtn.addEventListener('click', function(){
-    // Ensure values are set by marker
-    const pos = marker && marker.getPosition();
-    if (pos) {
-      const lat = pos.lat();
-      const lng = pos.lng();
+    // Ensure values are set by marker (supports AdvancedMarkerElement)
+    const p = getMarkerLatLng();
+    if (p) {
       if (pickerContext === 'destination') {
-        destLatEl.value = lat;
-        destLngEl.value = lng;
-        reverseGeocode(lat, lng, 'destination');
+        destLatEl.value = p.lat;
+        destLngEl.value = p.lng;
+        reverseGeocode(p.lat, p.lng, 'destination');
       } else {
-        startLatEl.value = lat;
-        startLngEl.value = lng;
-        reverseGeocode(lat, lng, 'start');
+        startLatEl.value = p.lat;
+        startLngEl.value = p.lng;
+        reverseGeocode(p.lat, p.lng, 'start');
       }
+      showToast('Location selected.');
+      closeModal();
+    } else {
+      showMapsError('Please move the pin to choose a location.');
     }
-    closeModal();
   });
   if (resetMarkerBtn) resetMarkerBtn.addEventListener('click', resetMarker);
 
@@ -283,6 +441,7 @@
     setupDepartureConstraints();
   });
 
+  // Applies min/max and change validation for the departure datetime input.
   function setupDepartureConstraints(){
     if (!departureInput) return;
 
@@ -319,6 +478,7 @@
     });
   }
 
+  // Ensures selected datetime is a future non-Sunday and within 07:30–20:00 window.
   function validateDeparture(val){
     if (!val) return false;
     const selected = new Date(val);
@@ -345,6 +505,7 @@
     return selected >= min && selected <= max;
   }
 
+  // Computes the earliest selectable date (tomorrow or next non-Sunday if tomorrow is Sunday).
   function getEarliestAllowedDate(){
     const d = new Date();
     d.setDate(d.getDate() + 1); // start from tomorrow
