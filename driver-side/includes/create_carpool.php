@@ -3,7 +3,16 @@
 header('Content-Type: application/json');
 
 try {
+    // Session + DB
+    require_once __DIR__ . '/../../includes/session.php';
     require_once __DIR__ . '/../../includes/db_connect.php';
+
+    // Require authenticated driver
+    if (!isset($_SESSION['user_id']) || ($_SESSION['role'] ?? null) !== 'driver') {
+        http_response_code(401);
+        echo json_encode(['error' => 'Unauthorized']);
+        exit;
+    }
 
     $raw = file_get_contents('php://input');
     $data = json_decode($raw, true);
@@ -27,6 +36,25 @@ try {
         exit;
     }
 
+    // Resolve driver's carId from vehicles collection (ownerId matches session user)
+    $carId = null;
+    try {
+        $vehColl = $db->selectCollection('vehicles');
+        $cursor = $vehColl->find(['ownerId' => $_SESSION['user_id']]);
+        foreach ($cursor as $veh) {
+            // Prefer verified vehicles
+            if (isset($veh['isVerified']) && $veh['isVerified'] && isset($veh['carId'])) {
+                $carId = $veh['carId'];
+                break;
+            }
+            if (!$carId && isset($veh['carId'])) {
+                $carId = $veh['carId'];
+            }
+        }
+    } catch (Throwable $e) {
+        // Leave carId null if lookup fails
+    }
+
     // Build ride document following reference schema
     $rideId = 'R' . str_pad(strval(rand(1, 999999)), 4, '0', STR_PAD_LEFT);
     $datePart = substr($departure, 0, 10); // YYYY-MM-DD
@@ -34,8 +62,8 @@ try {
 
     $doc = [
         'rideId' => $rideId,
-        'carId' => null, // TODO: set from session/user context if available
-        'driverId' => null, // TODO: set from session/user context if available
+        'carId' => $carId,
+        'driverId' => $_SESSION['user_id'],
         'date' => $datePart,
         'departureTime' => $timePart,
         'stationedAt' => $startLocation,
