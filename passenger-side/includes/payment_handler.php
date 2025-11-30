@@ -102,6 +102,7 @@ if (strcasecmp($method, 'GCash') === 0) {
 }
 
 // Build payment data
+// Build base payment data
 $paymentData = [
     'paymentId' => uniqid('P'),
     'rideId' => $_POST['rideId'] ?? '',
@@ -119,6 +120,14 @@ $paymentData = [
     'status' => 'Pending',
     'timestamp' => date('c')
 ];
+
+// Optional pickup coordinates from map picker
+if (isset($_POST['pickupLat']) && isset($_POST['pickupLng']) && $_POST['pickupLat'] !== '' && $_POST['pickupLng'] !== '') {
+    $paymentData['pickupLocationCoords'] = [
+        'lat' => (float)$_POST['pickupLat'],
+        'lng' => (float)$_POST['pickupLng']
+    ];
+}
 
 // Try to insert in DB
 try {

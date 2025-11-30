@@ -8,6 +8,7 @@
       <link rel="stylesheet" href="css/notifications.css">
       <link rel="stylesheet" href="css/payment-gateway.css">
       <script src="js/script.js?v=2" defer></script>
+      <script src="js/pickup-map.js" defer></script>
   </head>
 
   <body>
@@ -141,7 +142,12 @@
               </select>
 
               <label>Pickup/Meetup Location</label>
-              <input type="text" id="pickupLocation" name="pickupLocation" placeholder="Enter Location" required>
+              <div class="input-icon-wrap">
+                <input type="text" id="pickupLocation" name="pickupLocation" placeholder="Enter Location" required autocomplete="off">
+                <img id="openGcashPickupMap" class="input-icon" src="../images/location.png" alt="Pick location on map" title="Pick location on map">
+              </div>
+              <input type="hidden" id="gcash-pickup-lat" name="pickupLat">
+              <input type="hidden" id="gcash-pickup-lng" name="pickupLng">
 
               <div class="proof-section">
                 <div class="ref-number">
@@ -171,7 +177,12 @@
               </select>
 
               <label>Pickup/Meetup Location</label>
-              <input type="text" id="cashPickupLocation" name="pickupLocation" placeholder="Enter Location" required>
+              <div class="input-icon-wrap">
+                <input type="text" id="cashPickupLocation" name="pickupLocation" placeholder="Enter Location" required autocomplete="off">
+                <img id="openCashPickupMap" class="input-icon" src="../images/location.png" alt="Pick location on map" title="Pick location on map">
+              </div>
+              <input type="hidden" id="cash-pickup-lat" name="pickupLat">
+              <input type="hidden" id="cash-pickup-lng" name="pickupLng">
 
               <button type="submit" class="confirm-btn">Confirm Payment</button>
             </form>
@@ -213,6 +224,21 @@
       <p class="footer-copy">Copyright ©2025 | Designed by <span>Carma</span></p>
     </footer>
     <!-- End of footer section -->
+
+    <!-- Map Picker Modal (shared for both forms) -->
+    <div id="pickupMapModal" class="map-modal" aria-hidden="true">
+      <div class="map-card" role="dialog" aria-modal="true" aria-labelledby="pickupMapTitle">
+        <div class="map-header">
+          <h3 id="pickupMapTitle">Select Pickup / Meetup Location</h3>
+          <button type="button" class="btn secondary" id="closePickupMap">Close</button>
+        </div>
+        <div class="map-body"><div id="pickupMap"></div></div>
+        <div class="map-actions">
+          <button type="button" class="btn secondary" id="resetPickupMarker">Reset</button>
+          <button type="button" class="btn primary" id="usePickupLocation">Use This Location</button>
+        </div>
+      </div>
+    </div>
 
     <script src="js/payment-gateway.js?v=2"></script>
   </body>

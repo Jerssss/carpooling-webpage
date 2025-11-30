@@ -1,8 +1,8 @@
-body{
-    font-family: "Poppins", sans-serif;
-    margin: 0;
-    background: #faf7f9;
-    color: #333;
+body {
+  font-family: "Poppins", sans-serif;
+  margin: 0;
+  background: #faf7f9;
+  color: #333;
 }
 
 /* Payment Container CSS */
@@ -119,11 +119,24 @@ body{
 
 .payment-form input,
 .payment-form select {
-  padding: 10px;
+  box-sizing: border-box;
+  height: 44px;
+  padding: 10px 44px 10px 14px;
   border: 1px solid #ccc;
-  border-radius: 8px;
+  border-radius: 10px;
   background: #fff;
-  font-size: 1rem;
+  font-size: 16px;
+  line-height: 22px;
+}
+
+/* Explicit normalization to ensure hidden Cash tab fields match GCash sizing when revealed */
+.payment-form input[type=text],
+.payment-form input[type=email],
+.payment-form input[type=number],
+.payment-form select {
+  height: 44px !important;
+  min-height: 44px;
+  width: 100%;
 }
 
 .proof-section {
@@ -220,53 +233,199 @@ body{
 
 /* Receipt CSS */
 .receipt-container {
-    flex: 1;
-    display: flex;
-    justify-content: flex-end;
+  flex: 1;
+  display: flex;
+  justify-content: flex-end;
 }
 
 .receipt-box {
-    width: 400px;
-    background-color: #faf7fa;
-    border-radius: 16px;
-    padding: 25px;
-    box-shadow: inset 0 0 8px rgba(0, 0, 0, 0.05);
+  width: 400px;
+  background-color: #faf7fa;
+  border-radius: 16px;
+  padding: 25px;
+  box-shadow: inset 0 0 8px rgba(0, 0, 0, 0.05);
 }
 
 .receipt-box h2 {
-    text-align: center;
-    font-size: 22px;
-    font-weight: 600;
-    margin-bottom: 25px;
-    color: #C49102;
+  text-align: center;
+  font-size: 22px;
+  font-weight: 600;
+  margin-bottom: 25px;
+  color: #C49102;
 }
 
 .receipt-item {
-    display: flex;
-    justify-content: space-between;
-    margin-bottom: 12px;
-    font-size: 15px;
-    color: #333;
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 12px;
+  font-size: 15px;
+  color: #333;
 }
 
 .receipt-item span:first-child {
-    font-weight: 500;
+  font-weight: 500;
 }
 
 hr {
-    border: none;
-    border-top: 1px solid #ddd;
-    margin: 18px 0;
+  border: none;
+  border-top: 1px solid #ddd;
+  margin: 18px 0;
 }
 
 .total {
-    font-size: 18px;
-    font-weight: 600;
-    color: #C49102;
+  font-size: 18px;
+  font-weight: 600;
+  color: #C49102;
 }
 
 .placeholder {
-    color: #777;
-    font-style: italic;
+  color: #777;
+  font-style: italic;
 }
 
+/* === Map Picker Modal Styles === */
+.map-modal {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.55);
+  display: none;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+.map-modal.open {
+  display: flex;
+}
+
+.map-card {
+  background: #ffffff;
+  width: 92%;
+  max-width: 760px;
+  border-radius: 14px;
+  box-shadow: 0 12px 34px rgba(0, 0, 0, 0.25);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+.map-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 14px 18px;
+  border-bottom: 1px solid #e6e6e6;
+}
+
+.map-header h3 {
+  margin: 0;
+  font-size: 18px;
+  font-weight: 600;
+}
+
+.map-body {
+  height: 440px;
+  background: #fafafa;
+}
+
+#pickupMap {
+  width: 100%;
+  height: 100%;
+}
+
+.map-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  padding: 12px 18px;
+  border-top: 1px solid #e6e6e6;
+}
+
+.btn {
+  padding: 10px 16px;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: 600;
+  letter-spacing: .3px;
+}
+
+.btn.primary {
+  background: #ffb300;
+  color: #ffffff;
+}
+
+.btn.primary:hover {
+  background: #e5a200;
+}
+
+.btn.secondary {
+  background: #ececec;
+  color: #333;
+}
+
+.btn.secondary:hover {
+  background: #dedede;
+}
+
+/* Input icon wrapper for map trigger */
+.input-icon-wrap {
+  position: relative;
+  display: block;
+}
+
+.input-icon-wrap input {
+  width: 100%;
+}
+
+.input-icon {
+  position: absolute;
+  right: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 20px;
+  height: 20px;
+  cursor: pointer;
+  z-index: 2;
+  opacity: .85;
+}
+
+.input-icon:hover {
+  opacity: 1;
+}
+
+/* Toasts */
+.toast,
+.toast-warning {
+  position: fixed;
+  bottom: 22px;
+  right: 22px;
+  max-width: 360px;
+  z-index: 2000;
+  padding: 12px 14px;
+  border-radius: 10px;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.12);
+  font-size: 14px;
+}
+
+.toast {
+  background: #e6ffed;
+  border: 1px solid #b7ebc6;
+  color: #105a2b;
+}
+
+.toast-warning {
+  background: #fff3cd;
+  border: 1px solid #ffeeba;
+  color: #856404;
+}
+
+@media (max-width: 640px) {
+  .map-card {
+    width: 96%;
+  }
+
+  .map-body {
+    height: 360px;
+  }
+}

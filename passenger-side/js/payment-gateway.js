@@ -72,6 +72,10 @@ document.addEventListener("DOMContentLoaded", () => {
       formData.append("rideId", rideId);
       formData.append("amount", 50);
       formData.append("method", "GCash");
+      // Include coords if chosen via map
+      const lat = document.getElementById('gcash-pickup-lat')?.value;
+      const lng = document.getElementById('gcash-pickup-lng')?.value;
+      if (lat && lng) { formData.append('pickupLat', lat); formData.append('pickupLng', lng); }
 
       // Debug: log form data keys to verify file presence
       try {
@@ -113,6 +117,9 @@ document.addEventListener("DOMContentLoaded", () => {
       formData.append("rideId", rideId);
       formData.append("amount", 50);
       formData.append("method", "Cash");
+      const cashLat = document.getElementById('cash-pickup-lat')?.value;
+      const cashLng = document.getElementById('cash-pickup-lng')?.value;
+      if (cashLat && cashLng) { formData.append('pickupLat', cashLat); formData.append('pickupLng', cashLng); }
 
       // Debug: log cash form fields
       try {
