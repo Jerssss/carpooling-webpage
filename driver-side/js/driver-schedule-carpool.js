@@ -299,17 +299,7 @@
     try {
       const container = document.body;
       const div = document.createElement('div');
-      div.style.position = 'fixed';
-      div.style.bottom = '20px';
-      div.style.right = '20px';
-      div.style.maxWidth = '360px';
-      div.style.zIndex = '2000';
-      div.style.background = '#fff3cd';
-      div.style.border = '1px solid #ffeeba';
-      div.style.color = '#856404';
-      div.style.padding = '12px 14px';
-      div.style.borderRadius = '8px';
-      div.style.boxShadow = '0 4px 12px rgba(0,0,0,0.1)';
+      div.className = 'toast-warning';
       div.textContent = message;
       container.appendChild(div);
       setTimeout(() => { div.remove(); }, 8000);
@@ -323,17 +313,7 @@
     try {
       const container = document.body;
       const div = document.createElement('div');
-      div.style.position = 'fixed';
-      div.style.bottom = '20px';
-      div.style.right = '20px';
-      div.style.maxWidth = '360px';
-      div.style.zIndex = '2000';
-      div.style.background = '#e6ffed';
-      div.style.border = '1px solid #b7ebc6';
-      div.style.color = '#105a2b';
-      div.style.padding = '10px 12px';
-      div.style.borderRadius = '8px';
-      div.style.boxShadow = '0 4px 12px rgba(0,0,0,0.1)';
+      div.className = 'toast';
       div.textContent = message;
       container.appendChild(div);
       setTimeout(() => { div.remove(); }, 2500);
