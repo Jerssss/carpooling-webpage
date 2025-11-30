@@ -15,16 +15,7 @@ if (!$email || !$password || !$roleType || !$name || !$phone || !$occupation) {
     exit;
 }
 
-$users = $db->users;
-
-// Prevent duplicate email
-$existingUser = $users->findOne(['email' => $email]);
-if ($existingUser) {
-    echo json_encode(['success'=>false, 'message'=>'Email already registered']);
-    exit;
-}
-
-// Handle roles
+// Determine roles FIRST 
 $roles = [];
 if ($roleType === 'both') {
     $roles = ['passenger', 'driver'];
@@ -32,7 +23,59 @@ if ($roleType === 'both') {
     $roles = [$roleType];
 }
 
-// Create user
+// Driver document upload 
+// register_user.php is inside project root
+$driverSideRoot = realpath(__DIR__ . '/driver-side');
+
+// Absolute filesystem path (for move_uploaded_file)
+$absoluteDir = $driverSideRoot . '/images/driver_documents/';
+
+// Public path (stored in MongoDB)
+$publicDir = 'driver-side/images/driver_documents/';
+
+$licensePath = null;
+$vehicleRegPath = null;
+
+if (in_array('driver', $roles)) {
+
+    if (!is_dir($absoluteDir)) {
+        mkdir($absoluteDir, 0777, true);
+    }
+
+    if (!empty($_FILES['license']) && $_FILES['license']['error'] === UPLOAD_ERR_OK) {
+        $ext = pathinfo($_FILES['license']['name'], PATHINFO_EXTENSION);
+        $filename = uniqid('license_') . '.' . $ext;
+
+        move_uploaded_file(
+            $_FILES['license']['tmp_name'],
+            $absoluteDir . $filename
+        );
+
+        $licensePath = $publicDir . $filename;
+    }
+
+    if (!empty($_FILES['vehicle-reg']) && $_FILES['vehicle-reg']['error'] === UPLOAD_ERR_OK) {
+        $ext = pathinfo($_FILES['vehicle-reg']['name'], PATHINFO_EXTENSION);
+        $filename = uniqid('vehreg_') . '.' . $ext;
+
+        move_uploaded_file(
+            $_FILES['vehicle-reg']['tmp_name'],
+            $absoluteDir . $filename
+        );
+
+        $vehicleRegPath = $publicDir . $filename;
+    }
+}
+
+$users = $db->users;
+
+// Prevent duplicate email 
+if ($users->findOne(['email' => $email])) {
+    echo json_encode(['success'=>false, 'message'=>'Email already registered']);
+    exit;
+}
+
+// Create user 
 $newUser = [
     'userID' => uniqid('U'),
     'name' => $name,
@@ -45,13 +88,14 @@ $newUser = [
     'createdAt' => new MongoDB\BSON\UTCDateTime()
 ];
 
-// Driver-only fields
+// Attach driver docs ONLY if driver 
 if (in_array('driver', $roles)) {
     $newUser['driverDocs'] = [
-        'licenseImage' => null,
-        'vehicleRegImage' => null
+        'licenseImage' => $licensePath,
+        'vehicleRegImage' => $vehicleRegPath
     ];
 }
+
 $users->insertOne($newUser);
 
 echo json_encode([
