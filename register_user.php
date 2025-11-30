@@ -1,39 +1,60 @@
 <?php
-file_put_contents(__DIR__.'/debug.log', print_r($_POST, true));
 require_once 'db_connect.php';
 header('Content-Type: application/json');
 
 $email = strtolower(trim($_POST['email'] ?? ''));
 $password = $_POST['password'] ?? '';
-$role = strtolower(trim($_POST['role'] ?? ''));
+$roleType = strtolower(trim($_POST['roleType'] ?? ''));
 
-if (!$email || !$password || !$role) {
+$name = trim($_POST['fullname'] ?? '');
+$phone = trim($_POST['contact'] ?? '');
+$occupation = trim($_POST['occupation'] ?? '');
+
+if (!$email || !$password || !$roleType || !$name || !$phone || !$occupation) {
     echo json_encode(['success'=>false, 'message'=>'Missing fields']);
     exit;
 }
 
 $users = $db->users;
 
-// Query the roles array
-$user = $users->findOne([
+// Prevent duplicate email
+$existingUser = $users->findOne(['email' => $email]);
+if ($existingUser) {
+    echo json_encode(['success'=>false, 'message'=>'Email already registered']);
+    exit;
+}
+
+// Handle roles
+$roles = [];
+if ($roleType === 'both') {
+    $roles = ['passenger', 'driver'];
+} else {
+    $roles = [$roleType];
+}
+
+// Create user
+$newUser = [
+    'userID' => uniqid('U'),
+    'name' => $name,
     'email' => $email,
-    'roles' => $role   // matches array members
-]);
+    'phoneNo' => $phone,
+    'occupation' => $occupation,
+    'roles' => $roles,
+    'password' => password_hash($password, PASSWORD_BCRYPT),
+    'isVerified' => false,
+    'createdAt' => new MongoDB\BSON\UTCDateTime()
+];
 
-if (!$user) {
-    echo json_encode(['success'=>false, 'message'=>"No user found for email '$email' with role '$role'"]);
-    exit;
+// Driver-only fields
+if (in_array('driver', $roles)) {
+    $newUser['driverDocs'] = [
+        'licenseImage' => null,
+        'vehicleRegImage' => null
+    ];
 }
-
-if (!password_verify($password, $user['password'])) {
-    echo json_encode(['success'=>false, 'message'=>"Incorrect password"]);
-    exit;
-}
+$users->insertOne($newUser);
 
 echo json_encode([
-    'success'=>true,
-    'message'=>'Login successful',
-    'user'=>$user
+    'success' => true,
+    'message' => 'Registration successful'
 ]);
-?>
-
