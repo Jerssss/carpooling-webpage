@@ -216,6 +216,38 @@ try {
         error_log('Notification insert failed: ' . $e->getMessage());
     }
 
+    // Append to history collection for reporting/archives
+    try {
+        $historyCol = $db->history;
+        $historyDoc = [
+            'historyId' => uniqid('H'),
+            'carId' => $rideDoc['carId'] ?? null,
+            'driverId' => $rideDoc['driverId'] ?? null,
+            'name' => $driverName ?? null,
+            'passengerId' => $paymentData['userId'],
+            'pickupLocation' => $paymentData['pickupLocation'] ?? ($rideDoc['stationedAt'] ?? ''),
+            'dropoffLocation' => $rideDoc['destination'] ?? '',
+            'date' => $rideDoc['date'] ?? '',
+            'time' => $rideDoc['departureTime'] ?? '',
+            'fare' => $paymentData['amount'] ?? 0,
+            'status' => strtolower($paymentData['status'] ?? 'pending'),
+            'createdAt' => new UTCDateTime()
+        ];
+        // Deduplicate per (rideId, passengerId)
+        $existsH = $historyCol->findOne([
+            'passengerId' => $historyDoc['passengerId'],
+            'date' => $historyDoc['date'],
+            'time' => $historyDoc['time'],
+            'dropoffLocation' => $historyDoc['dropoffLocation']
+        ]);
+        if (!$existsH) {
+            $historyCol->insertOne($historyDoc);
+        }
+    } catch (Exception $e) {
+        // Don't block on history failures
+        error_log('History append failed: ' . $e->getMessage());
+    }
+
     echo json_encode(['success' => true, 'message' => 'Payment saved successfully']);
 } catch (Exception $e) {
     echo json_encode(['success' => false, 'message' => 'Error saving payment: ' . $e->getMessage()]);

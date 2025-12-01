@@ -11,95 +11,94 @@ if (!isset($_SESSION['user_id']) || $_SESSION['role'] !== 'passenger') {
 header('Content-Type: application/json; charset=utf-8');
 
 $ridesCol = $db->rides;
-$bookingsCol = $db->bookings;
+$usersCol = $db->users;
 $paymentsCol = $db->payments;
+$historyCol = $db->history;
 
 try {
-    // Fetch ALL bookings for this passenger
+    // Build history primarily from the history collection (status-driven)
     $userId = $_SESSION['user_id'];
 
-    $bookingDocs = $bookingsCol->find([
-        'userId' => $userId
-    ])->toArray();
-
-    $rideIds = array_map(fn($b) => $b['rideId'], $bookingDocs);
-
-    // No bookings → no history
-    if (empty($rideIds)) {
-        echo json_encode(['upcoming' => [], 'finished' => []]);
-        exit;
-    }
-
-    // Fetch rides data
-    $rideDocs = $ridesCol->find(['rideId' => ['$in' => $rideIds]])->toArray();
-
-    // Fetch payments for all booked rides
-    $paymentDocs = $paymentsCol->find(['rideId' => ['$in' => $rideIds]])->toArray();
-
-    // Map rideId → list of payments
-    $ridePaymentsMap = [];
-    foreach ($paymentDocs as $p) {
-        $ridePaymentsMap[$p['rideId']][] = $p;
-    }
+    $historyDocs = $historyCol->find(
+        ['passengerId' => $userId],
+        ['sort' => ['_id' => -1]]
+    )->toArray();
 
     $upcoming = [];
     $finished = [];
 
-    foreach ($rideDocs as $ride) {
-        $paymentsForRide = $ridePaymentsMap[$ride['rideId']] ?? [];
+    foreach ($historyDocs as $h) {
+        $status = strtolower($h['status'] ?? 'pending');
+        $item = [
+            'rideId' => $h['rideId'] ?? '',
+            'stationedAt' => '',
+            'destination' => $h['dropoffLocation'] ?? '',
+            'price' => $h['fare'] ?? 0,
+            'date' => $h['date'] ?? '',
+            'departureTime' => $h['time'] ?? '',
+            'name' => $h['name'] ?? 'Unknown',
+            'pickupLocation' => $h['pickupLocation'] ?? '',
+            'status' => [$status]
+        ];
 
-        // If no payments exist, treat as pending/upcoming
-        if (empty($paymentsForRide)) {
-            $rideData = [
-                'rideId' => $ride['rideId'],
-                'stationedAt' => $ride['stationedAt'],
-                'destination' => $ride['destination'],
-                'price' => $ride['price'],
-                'date' => $ride['date'],
-                'departureTime' => $ride['departureTime'],
-                'name' => "Unknown", // no payment yet
-                'pickupLocation' => $ride['stationedAt'],
-                'status' => ['pending']
-            ];
-            $upcoming[] = $rideData;
-            continue;
-        }
-
-        // Otherwise, loop through payments
-        foreach ($paymentsForRide as $payment) {
-            $status = strtolower($payment['status'] ?? '');
-            $pickupLocation = $payment['pickupLocation'] ?? $ride['stationedAt'];
-            $name = $payment['name'] ?? "Unknown";
-
-            $rideData = [
-                'rideId' => $ride['rideId'],
-                'stationedAt' => $ride['stationedAt'],
-                'destination' => $ride['destination'],
-                'price' => $ride['price'],
-                'date' => $ride['date'],
-                'departureTime' => $ride['departureTime'],
-                'name' => $name,
-                'pickupLocation' => $pickupLocation,
-                'status' => [$status]
-            ];
-
-            if ($status === 'pending') {
-                $upcoming[] = $rideData;
-            } elseif ($status === 'completed') {
-                $finished[] = $rideData;
-            } else {
-                // any other status, treat as finished
-                $finished[] = $rideData;
-            }
+        if ($status === 'pending') {
+            $upcoming[] = $item;
+        } else if ($status === 'completed' || $status === 'cancelled') {
+            $finished[] = $item;
+        } else {
+            $finished[] = $item; // default to finished for any other status
         }
     }
 
-    echo json_encode([
-        'upcoming' => $upcoming,
-        'finished' => $finished
-    ]);
+    // Fallback: if no history yet
+    if (empty($historyDocs)) {
+        $paymentDocs = $paymentsCol->find(
+            ['userId' => $userId],
+            ['sort' => ['_id' => -1]]
+        )->toArray();
 
+        $latestByRide = [];
+        foreach ($paymentDocs as $p) {
+            $rid = $p['rideId'] ?? null;
+            if (!$rid) continue;
+            if (!isset($latestByRide[$rid])) {
+                $latestByRide[$rid] = $p;
+            }
+        }
+
+        $rideIds = array_keys($latestByRide);
+        $rideMap = [];
+        if (!empty($rideIds)) {
+            $cursor = $ridesCol->find(['rideId' => ['$in' => $rideIds]]);
+            foreach ($cursor as $r) {
+                $rideMap[$r['rideId']] = $r;
+            }
+        }
+
+        foreach ($latestByRide as $rid => $payment) {
+            $ride = $rideMap[$rid] ?? null;
+            if (!$ride) continue;
+            $driverName = 'Unknown driver';
+            if (isset($ride['driverId'])) {
+                $u = $usersCol->findOne(['userID' => $ride['driverId']]);
+                if ($u && isset($u['name'])) $driverName = $u['name'];
+            }
+            $status = strtolower($payment['status'] ?? 'pending');
+            $upcoming[] = [
+                'rideId' => $rid,
+                'stationedAt' => $ride['stationedAt'] ?? '',
+                'destination' => $ride['destination'] ?? '',
+                'price' => $ride['price'] ?? 0,
+                'date' => $ride['date'] ?? '',
+                'departureTime' => $ride['departureTime'] ?? '',
+                'name' => $driverName,
+                'pickupLocation' => $payment['pickupLocation'] ?? ($ride['stationedAt'] ?? ''),
+                'status' => [$status]
+            ];
+        }
+    }
+
+    echo json_encode(['upcoming' => $upcoming, 'finished' => $finished]);
 } catch (Exception $e) {
     echo json_encode(["error" => $e->getMessage()]);
 }
-?>
