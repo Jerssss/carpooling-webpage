@@ -1,15 +1,20 @@
 <?php
 // includes/fetch_notifications.php
-// Returns notifications for a passenger (newest first). Supports filter=unread.
+// Returns notifications for the logged-in user (newest first). Supports filter=unread.
 
+require_once __DIR__ . '/session.php';
 require_once __DIR__ . '/db_connect.php';
 header('Content-Type: application/json; charset=utf-8');
 
-$userId = $_GET['userId'] ?? null;
+// Prefer session user; fallback to explicit userId (for dev/testing)
+$sessionUserId = $_SESSION['user_id'] ?? null;
+$paramUserId = $_GET['userId'] ?? null;
+$userId = $sessionUserId ?: $paramUserId;
 $filter = $_GET['filter'] ?? 'all'; // 'all' or 'unread'
 
 if (!$userId) {
-    echo json_encode(['error' => 'Missing userId']);
+    http_response_code(401);
+    echo json_encode(['error' => 'Unauthorized']);
     exit;
 }
 
@@ -31,7 +36,6 @@ foreach ($cursor as $n) {
         'driverId' => $n['driverId'] ?? null,
         'carId' => $n['carId'] ?? null,
         'message' => $n['message'] ?? '',
-        'status' => $n['status'] ?? '',
         'isRead' => isset($n['isRead']) ? (bool)$n['isRead'] : false,
         'timestamp' => $n['timestamp'] ?? null
     ];
@@ -39,4 +43,3 @@ foreach ($cursor as $n) {
 
 echo json_encode($notifications);
 exit;
-?>

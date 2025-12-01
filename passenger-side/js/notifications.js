@@ -1,34 +1,31 @@
 // js/notifications.js
 document.addEventListener('DOMContentLoaded', () => {
     initializeNotificationTabs();
-    loadNotificationsFromURL();
+    // Load for the session user on initial load
+    loadNotifications('all');
     // optional auto refresh:
-    // setInterval(loadNotificationsFromURL, 30000);
+    // setInterval(() => loadNotifications(getActiveFilter()), 30000);
 });
 
-function getUserIdFromURL() {
-    const params = new URLSearchParams(window.location.search);
-    return params.get('userId') || 'U0001';
+function getActiveFilter() {
+    const unreadActive = document.getElementById('unreadTab')?.classList.contains('active');
+    return unreadActive ? 'unread' : 'all';
 }
 
-function loadNotificationsFromURL(filter = 'all') {
-    const userId = getUserIdFromURL();
-    loadNotifications(userId, filter);
-}
-
-async function loadNotifications(userId, filter = 'all') {
+async function loadNotifications(filter = 'all') {
     const list = document.getElementById('notifList');
     if (!list) return;
 
     list.innerHTML =
-    `<div class="notif-item">
+        `<div class="notif-item">
         <div class="notif-content">
             <p>Loading notifications...</p>
         </div>
      </div>`;
 
     try {
-        const url = `../includes/fetch_notifications.php?userId=${encodeURIComponent(userId)}${filter === 'unread' ? '&filter=unread' : ''}`;
+        // Server resolves user from session; only send filter
+        const url = `../includes/fetch_notifications.php${filter === 'unread' ? '?filter=unread' : ''}`;
         const res = await fetch(url);
         if (!res.ok) throw new Error('Network response not ok');
 
@@ -37,7 +34,7 @@ async function loadNotifications(userId, filter = 'all') {
 
         if (data.length === 0) {
             list.innerHTML =
-            `<div class="notif-item">
+                `<div class="notif-item">
                 <div class="notif-content">
                     <p>No notifications.</p>
                 </div>
@@ -80,8 +77,8 @@ async function loadNotifications(userId, filter = 'all') {
 
     } catch (err) {
         console.error('Error loading notifications:', err);
-        list.innerHTML = 
-        `<div class="notif-item">
+        list.innerHTML =
+            `<div class="notif-item">
             <div class="notif-content">
                 <p>Failed to load notifications</p>
             </div>
@@ -111,13 +108,13 @@ function initializeNotificationTabs() {
     allTab.addEventListener('click', (e) => {
         allTab.classList.add('active');
         unreadTab.classList.remove('active');
-        loadNotificationsFromURL('all');
+        loadNotifications('all');
     });
 
     unreadTab.addEventListener('click', (e) => {
         unreadTab.classList.add('active');
         allTab.classList.remove('active');
-        loadNotificationsFromURL('unread');
+        loadNotifications('unread');
     });
 }
 
@@ -127,7 +124,7 @@ function timeAgoISO(iso) {
     if (isNaN(t)) return '';
     const diff = Math.floor((Date.now() - t.getTime()) / 1000);
     if (diff < 60) return `${diff}s`;
-    if (diff < 3600) return `${Math.floor(diff/60)}m`;
-    if (diff < 86400) return `${Math.floor(diff/3600)}h`;
-    return `${Math.floor(diff/86400)}d`;
+    if (diff < 3600) return `${Math.floor(diff / 60)}m`;
+    if (diff < 86400) return `${Math.floor(diff / 3600)}h`;
+    return `${Math.floor(diff / 86400)}d`;
 }

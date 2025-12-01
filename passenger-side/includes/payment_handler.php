@@ -10,9 +10,12 @@ if (!isset($_SESSION['user_id']) || $_SESSION['role'] !== 'passenger') {
 }
 
 use MongoDB\BSON\UTCDateTime;
+
 header('Content-Type: application/json');
 
 $paymentsCollection = $db->payments;
+$ridesCollection = $db->rides;
+$notificationsCollection = $db->notifications;
 
 // Ensure upload directory exists
 $uploadDir = __DIR__ . '/../../images/payments/';
@@ -132,8 +135,38 @@ if (isset($_POST['pickupLat']) && isset($_POST['pickupLng']) && $_POST['pickupLa
 // Try to insert in DB
 try {
     $paymentsCollection->insertOne($paymentData);
+
+    // Build and insert a success booking notification
+    $rideDoc = null;
+    if (!empty($paymentData['rideId'])) {
+        $rideDoc = $ridesCollection->findOne(['rideId' => $paymentData['rideId']]);
+    }
+
+    $notifMessage = 'Successful booking';
+    if ($rideDoc) {
+        $dest = $rideDoc['destination'] ?? '';
+        $time = $rideDoc['departureTime'] ?? '';
+        $notifMessage = "Successful booking for ${dest} (${time})";
+    }
+
+    $notification = [
+        'rideId' => $paymentData['rideId'],
+        'driverId' => $rideDoc['driverId'] ?? null,
+        'passengerId' => $paymentData['userId'],
+        'carId' => $rideDoc['carId'] ?? null,
+        'message' => $notifMessage,
+        'timestamp' => date('c'),
+        'isRead' => false
+    ];
+
+    try {
+        $notificationsCollection->insertOne($notification);
+    } catch (Exception $e) {
+        // If notification insert fails, do not block payment success
+        error_log('Notification insert failed: ' . $e->getMessage());
+    }
+
     echo json_encode(['success' => true, 'message' => 'Payment saved successfully']);
 } catch (Exception $e) {
     echo json_encode(['success' => false, 'message' => 'Error saving payment: ' . $e->getMessage()]);
 }
-?>
