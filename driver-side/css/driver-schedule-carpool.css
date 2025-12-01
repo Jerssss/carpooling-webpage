@@ -1,3 +1,10 @@
+/* ===== GLOBAL FIXES FOR OVERFLOW ===== */
+html, body {
+    width: 100%;
+    max-width: 100%;
+    overflow-x: hidden;   /* Prevent page & footer overflow */
+}
+
 /* ===== FORM STYLES ===== */
 body {
     background: #f5f5f5;
