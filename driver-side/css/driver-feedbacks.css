@@ -1,3 +1,10 @@
+/* ===== GLOBAL OVERFLOW FIX ===== */
+html, body {
+    width: 100%;
+    max-width: 100%;
+    overflow-x: hidden;  /* fully prevents horizontal scroll */
+}
+
 /* GENERAL */
 body {
     font-family: 'Poppins', Arial, sans-serif;
@@ -7,17 +14,20 @@ body {
     font-size: 18px; /* GLOBAL FONT SIZE ↑ */
 }
 
+/* Container */
 .container {
     display: flex;
     gap: 35px; /* bigger spacing */
     padding: 35px; /* bigger padding */
-    max-width: 1800px; /* wider layout */
+    max-width: 1600px; /* ↓ slightly reduced to eliminate overflow */
     margin: auto;
+    box-sizing: border-box; /* prevents padding from pushing layout */
 }
 
 /* LEFT SIDE — HISTORY */
 .history-section {
     width: 33%;
+    min-width: 300px; /* prevents overly small collapse */
 }
 
 .history-section h2 {
@@ -54,6 +64,7 @@ body {
 /* RIGHT SIDE — FEEDBACK LIST */
 .feedback-section {
     width: 67%;
+    min-width: 450px; /* avoids squeezing and overflow */
 }
 
 .feedback-section h2 {
@@ -79,6 +90,8 @@ body {
     cursor: pointer;
     box-shadow: 0 6px 18px rgba(0,0,0,0.10);
     transition: 0.2s;
+    width: 100%;
+    box-sizing: border-box; /* FIX overflow inside card */
 }
 
 .feedback-card:hover {
@@ -95,6 +108,7 @@ body {
 .feedback-card .info {
     flex: 1;
     margin-left: 20px;
+    min-width: 0; /* ↓ FIX text overflow */
 }
 
 .feedback-card .name {
@@ -107,6 +121,7 @@ body {
     font-size: 14px; /* bumped up */
     color: #666;
     margin-top: 3px;
+    white-space: normal; /* wraps text instead of overflow */
 }
 
 .feedback-card .rating {
@@ -126,13 +141,15 @@ body {
 
 .modal-content {
     background: white;
-    margin: 8% auto;
+    margin: 5% auto; /* adjust for better fit */
     padding: 35px; /* bigger modal */
     border-radius: 20px;
-    width: 50%; /* bigger modal width */
+    width: 90%; /* responsive modal */
+    max-width: 650px; /* capped width */
     box-shadow: 0 8px 25px rgba(0,0,0,0.15);
     animation: fadeIn 0.25s ease;
     position: relative;
+    box-sizing: border-box; /* prevent modal overflow */
 }
 
 .close-button {
@@ -152,4 +169,33 @@ body {
 @keyframes fadeIn {
     from { opacity: 0; transform: translateY(-10px); }
     to { opacity: 1; transform: translateY(0); }
+}
+
+/* ===== RESPONSIVE BREAKPOINTS ===== */
+@media (max-width: 1100px) {
+    .container {
+        flex-direction: column;
+        max-width: 100%;
+    }
+
+    .history-section,
+    .feedback-section {
+        width: 100%;
+    }
+}
+
+@media (max-width: 600px) {
+    .history-section h2 {
+        font-size: 36px;
+    }
+
+    .feedback-card {
+        flex-direction: column;
+        text-align: center;
+    }
+
+    .feedback-card .info {
+        margin-left: 0;
+        margin-top: 10px;
+    }
 }
