@@ -146,7 +146,22 @@ try {
     if ($rideDoc) {
         $dest = $rideDoc['destination'] ?? '';
         $time = $rideDoc['departureTime'] ?? '';
-        $notifMessage = "Successful booking for ${dest} (${time})";
+        // Try to get driver name for message formatting
+        $driverName = null;
+        try {
+            $usersCol = $db->users ?? null;
+            if ($usersCol && !empty($rideDoc['driverId'])) {
+                $uDoc = $usersCol->findOne(['userID' => $rideDoc['driverId']]);
+                if ($uDoc && isset($uDoc['name'])) $driverName = $uDoc['name'];
+            }
+        } catch (Exception $e) {
+            // ignore driver lookup failures silently
+        }
+        if ($driverName) {
+            $notifMessage = "Successful booking for Driver {$driverName} bound to {$dest} at {$time}";
+        } else {
+            $notifMessage = "Successful booking for {$dest} ({$time})";
+        }
     }
 
     $notification = [
@@ -160,7 +175,15 @@ try {
     ];
 
     try {
-        $notificationsCollection->insertOne($notification);
+        // De-duplicate: avoid inserting the same notification twice for rapid re-submissions
+        $exists = $notificationsCollection->findOne([
+            'rideId' => $notification['rideId'],
+            'passengerId' => $notification['passengerId'],
+            'message' => $notification['message']
+        ]);
+        if (!$exists) {
+            $notificationsCollection->insertOne($notification);
+        }
     } catch (Exception $e) {
         // If notification insert fails, do not block payment success
         error_log('Notification insert failed: ' . $e->getMessage());
