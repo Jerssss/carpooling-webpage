@@ -31,9 +31,17 @@ async function loadReceipt(rideId) {
         updateReceiptField('pickupTime', data.pickupTime);
         updateReceiptField('paymentId', data.paymentId);
         updateReceiptField('destination', data.destination);
-        // updateReceiptField('discount', formatCurrency(data.discount));
-        // updateReceiptField('subtotal', formatCurrency(data.subtotal));
+        updateReceiptField('driverName', data.driverName);
+        updateReceiptField('discount', formatCurrency(data.discount));
+        updateReceiptField('subtotal', formatCurrency(data.subtotal));
         updateReceiptField('total', formatCurrency(data.total));
+
+        // Populate left-side Transaction Details
+        setInputValue('fullName', data.name);
+        setInputValue('idNumber', data.idNumber);
+        setInputValue('email', data.email);
+        setInputValue('pickupTimeInput', data.pickupTime);
+        setInputValue('pickupLocationInput', data.pickupLocation);
 
         // Optional status indicator
         addStatusBadge(data.status);
@@ -47,19 +55,19 @@ async function loadReceipt(rideId) {
 // Helper function to update receipt fields
 function updateReceiptField(fieldName, value) {
     const receiptItems = document.querySelectorAll('.receipt-item');
-    
+
     receiptItems.forEach(item => {
         const label = item.querySelector('span:first-child').textContent.toLowerCase();
-        
+
         // Match field names with labels
         const fieldMap = {
-            'method:': 'method',
-            'carpool driver:': 'rideId',
+            'payment type:': 'method',
+            'carpool driver:': 'driverName',
             'booking time:': 'pickupTime',
             'transaction id:': 'paymentId',
             'destination:': 'destination',
-            'discount:': 'N/A',
-            'subtotal:': 'N/A',
+            'discount:': 'discount',
+            'subtotal:': 'subtotal',
             'total:': 'total'
         };
 
@@ -73,17 +81,23 @@ function updateReceiptField(fieldName, value) {
     });
 }
 
+// Helper to set read-only input values if element exists
+function setInputValue(id, value) {
+    const el = document.getElementById(id);
+    if (el) el.value = value ?? '';
+}
+
 // Function to add status badge (optional enhancement)
 function addStatusBadge(status) {
     const receiptBox = document.querySelector('.receipt-box');
     let badge = document.querySelector('.status-badge');
-    
+
     if (!badge) {
         badge = document.createElement('div');
         badge.className = 'status-badge';
         receiptBox.insertBefore(badge, receiptBox.firstChild.nextSibling);
     }
-    
+
     badge.textContent = status;
     badge.className = `status-badge status-${status.toLowerCase()}`;
 }
@@ -95,10 +109,10 @@ function getPaymentIdFromURL() {
 }
 
 // Initialize receipt when page loads
-document.addEventListener('DOMContentLoaded', function() {
+document.addEventListener('DOMContentLoaded', function () {
     const BASE = '/9467_it312-teamarc_midtermproject';
     const rideId = getPaymentIdFromURL();
-    
+
     if (rideId) {
         loadReceipt(rideId);
     } else {

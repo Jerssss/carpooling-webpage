@@ -110,18 +110,18 @@ $paymentData = [
     'paymentId' => uniqid('P'),
     'rideId' => $_POST['rideId'] ?? '',
     'userId' => $_SESSION['user_id'],
-    'name'   => $_SESSION['name'],
-    'idNumber' => $_POST['idNumber'] ?? '',
-    'email'  => $_SESSION['email'],
-    'pickupType' => $_POST['pickupType'] ?? ($_POST['cashPickupType'] ?? ''),
+    'name'   => $_POST['name'] ?? ($_SESSION['name'] ?? ''),
+    'idNumber' => $_POST['idNumber'] ?? ($_SESSION['idNumber'] ?? ''),
+    'email'  => $_POST['email'] ?? ($_SESSION['email'] ?? ''),
+    'pickupType' => $_POST['pickupType'] ?? '',
     'pickupTime' => $_POST['pickupTime'] ?? '',
-    'pickupLocation' => $_POST['pickupLocation'] ?? ($_POST['cashPickupLocation'] ?? ''),
+    'pickupLocation' => $_POST['pickupLocation'] ?? '',
     'gcashRefNumber' => $_POST['referenceNumber'] ?? '',
     'screenshot' => $screenshotPath,
     'amount' => (float)($_POST['amount'] ?? 0),
     'method' => $method,
     'status' => 'Pending',
-    'timestamp' => date('c')
+    'timestamp' => new UTCDateTime()
 ];
 
 // Optional pickup coordinates from map picker

@@ -68,6 +68,9 @@ document.addEventListener("DOMContentLoaded", () => {
       const formData = new FormData(paymentForm);
 
       // Add outside fields
+      formData.append("name", fullNameEl.value);
+      formData.append("email", emailEl.value);
+      formData.append("idNumber", idNumberEl.value);
       formData.append("pickupTime", pickupTimeEl.value);
       formData.append("rideId", rideId);
       formData.append("amount", 50);
@@ -112,6 +115,8 @@ document.addEventListener("DOMContentLoaded", () => {
       const formData = new FormData(cashForm);
 
       // Add outside fields
+      formData.append("name", fullNameEl.value);
+      formData.append("email", emailEl.value);
       formData.append("idNumber", idNumberEl.value);
       formData.append("pickupTime", pickupTimeEl.value);
       formData.append("rideId", rideId);

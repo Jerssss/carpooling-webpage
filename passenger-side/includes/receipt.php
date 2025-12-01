@@ -25,8 +25,16 @@ try {
         exit;
     }
 
-    // Find payment based on rideId
-    $payment = $db->payments->findOne(['rideId' => $rideId]);
+    // Find the most recent payment for this rideId and current user
+    $payment = $db->payments->findOne(
+        [
+            'rideId' => $rideId,
+            'userId' => $_SESSION['user_id']
+        ],
+        [
+            'sort' => ['_id' => -1]
+        ]
+    );
     if (!$payment) {
         echo json_encode(['error' => 'No payment found for this ride ID']);
         exit;
@@ -54,16 +62,24 @@ try {
 
     // Calculate totals
     $subtotal = $payment['amount'] ?? 0;
-    $discount = 0; // Add your discount logic here if needed
+    $discount = 0; // May discount ba tayo?
     $total = $subtotal - $discount;
 
     // Prepare receipt data
+    $driverName = $driver['name'] ?? 'N/A';
     $receiptData = [
         'method' => $payment['method'] ?? 'N/A',
         'rideId' => $rideId,
         'pickupTime' => $payment['pickupTime'] ?? 'N/A',
+        'pickupType' => $payment['pickupType'] ?? 'N/A',
+        'pickupLocation' => $payment['pickupLocation'] ?? 'N/A',
         'paymentId' => $payment['paymentId'] ?? 'N/A',
         'destination' => $ride['destination'] ?? 'N/A',
+        'driverName' => $driverName,
+        // Passenger details for left panel
+        'name' => $payment['name'] ?? 'N/A',
+        'idNumber' => $payment['idNumber'] ?? 'N/A',
+        'email' => $payment['email'] ?? 'N/A',
         'discount' => $discount,
         'subtotal' => $subtotal,
         'total' => $total,
@@ -77,8 +93,6 @@ try {
         'success' => true,
         'data' => $receiptData
     ]);
-
 } catch (Exception $e) {
     echo json_encode(['error' => 'Database error: ' . $e->getMessage()]);
 }
-?>
