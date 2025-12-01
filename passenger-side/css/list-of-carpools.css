@@ -71,10 +71,25 @@
 }
 
 @media (max-width: 768px) {
-    .search-filter { flex-direction: column; align-items: stretch; gap: 15px; }
-    .search-filter input { width: 100%; }
-    .filter-group { flex-wrap: wrap; justify-content: center; }
-    .filter-group select { width: 100%; max-width: 250px; }
+    .search-filter {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 15px;
+    }
+
+    .search-filter input {
+        width: 100%;
+    }
+
+    .filter-group {
+        flex-wrap: wrap;
+        justify-content: center;
+    }
+
+    .filter-group select {
+        width: 100%;
+        max-width: 250px;
+    }
 }
 
 .cards-container {
@@ -87,7 +102,8 @@
 .carpool-container {
     display: flex;
     flex-wrap: wrap;
-    justify-content: center; /* centers cards including last row */
+    justify-content: center;
+    /* centers cards including last row */
     gap: 25px;
     max-width: 1200px;
     margin: 0 auto;
@@ -99,24 +115,38 @@
     border: 2px solid #f9a603;
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
     overflow: hidden;
-    flex: 1 1 250px; /* flexible width */
+    flex: 1 1 250px;
+    /* flexible width */
     max-width: 260px;
     min-width: 230px;
     transition: transform 0.2s ease;
 }
 
-.carpool-card:hover { transform: translateY(-5px); }
+.carpool-card:hover {
+    transform: translateY(-5px);
+}
 
-.carpool-card img { width: 100%; height: 170px; object-fit: cover; }
+.carpool-card img {
+    width: 100%;
+    height: 170px;
+    object-fit: cover;
+}
 
 .carpool-info {
     padding: 15px;
     text-align: left;
 }
 
-.carpool-info h3 { margin: 5px 0; color: #c49102; font-size: 16px; }
+.carpool-info h3 {
+    margin: 5px 0;
+    color: #c49102;
+    font-size: 16px;
+}
 
-.carpool-info .occupation { font-style: italic; color: #777; }
+.carpool-info .occupation {
+    font-style: italic;
+    color: #777;
+}
 
 .carpool-info p {
     font-size: 14px;
@@ -127,11 +157,19 @@
     gap: 8px;
 }
 
-.carpool-info p img { width: 16px; height: 16px; }
+.carpool-info p img {
+    width: 16px;
+    height: 16px;
+}
 
 /* Removed .status-dot completely */
 
-.card-footer { display: flex; justify-content: space-between; align-items: center; padding: 10px 15px 15px; }
+.card-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 15px 15px;
+}
 
 .view-btn {
     background-color: #f9a603;
@@ -144,13 +182,109 @@
     transition: background 0.2s;
 }
 
-.view-btn:hover { background-color: #d38c02; }
+.view-btn:hover {
+    background-color: #d38c02;
+}
 
 /* Responsive flex adjustments */
 @media (max-width: 1024px) {
-    .carpool-card { flex: 1 1 45%; max-width: 45%; } /* 2 cards per row */
+    .carpool-card {
+        flex: 1 1 45%;
+        max-width: 45%;
+    }
+
+    /* 2 cards per row */
 }
 
 @media (max-width: 768px) {
-    .carpool-card { flex: 1 1 100%; max-width: 100%; } /* 1 card per row */
+    .carpool-card {
+        flex: 1 1 100%;
+        max-width: 100%;
+    }
+
+    /* 1 card per row */
+}
+
+/* Clickable location icon button (matches social icon hover feel) */
+.loc-icon-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 22px;
+    height: 22px;
+    margin-right: 4px;
+    border: none;
+    background: transparent;
+    padding: 0;
+    cursor: pointer;
+    border-radius: 50%;
+    transition: transform 0.15s ease, filter 0.15s ease, background-color 0.15s ease;
+}
+
+.loc-icon-btn:hover {
+    transform: translateY(-1px) scale(1.05);
+    filter: brightness(1.05);
+    background-color: rgba(0, 0, 0, 0.03);
+}
+
+.loc-icon-btn img {
+    width: 16px;
+    height: 16px;
+    display: block;
+}
+
+/* Map modal styles */
+.map-modal {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.45);
+    display: none;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+}
+
+.map-modal.open {
+    display: flex;
+}
+
+.map-dialog {
+    width: min(92vw, 640px);
+    background: #fff;
+    border-radius: 12px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.25);
+    overflow: hidden;
+}
+
+.map-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px 14px;
+    border-bottom: 1px solid #eee;
+}
+
+.map-header h3 {
+    margin: 0;
+    font-size: 16px;
+    color: #333;
+}
+
+.map-close {
+    border: none;
+    background: transparent;
+    font-size: 22px;
+    line-height: 1;
+    cursor: pointer;
+    padding: 4px 8px;
+    border-radius: 6px;
+}
+
+.map-close:hover {
+    background: rgba(0, 0, 0, 0.06);
+}
+
+.map-body {
+    width: 100%;
+    height: 380px;
 }

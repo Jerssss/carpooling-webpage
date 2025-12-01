@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -9,10 +10,8 @@
   <link rel="stylesheet" href="css/list-of-carpools.css">
   <script src="js/script.js" defer></script>
   <script src="js/notifications.js" defer></script>
-  <script src="js/fetch_carpool.js" defer></script>
   <script src="js/search_filter.js" defer></script>
-  <!-- Optional: Font Awesome for icons -->
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <script src="js/location-map.js" defer></script>
 </head>
 
 <body>
@@ -34,7 +33,9 @@
     <!-- Right side nav -->
     <div class="nav-right">
       <div class="hamburger" id="hamburger" onclick="toggleMobileMenu()">
-        <div></div><div></div><div></div>
+        <div></div>
+        <div></div>
+        <div></div>
       </div>
 
       <div class="nav-bell">
@@ -46,7 +47,11 @@
               <span id="unreadTab">Unread</span>
             </div>
             <div class="notif-list" id="notifList">
-              <div class="notif-item"><div class="notif-content"><p>Loading notifications...</p></div></div>
+              <div class="notif-item">
+                <div class="notif-content">
+                  <p>Loading notifications...</p>
+                </div>
+              </div>
             </div>
           </div>
         </div>
@@ -89,7 +94,7 @@
 
   <section class="carpool-section">
     <h1>List of Carpools in Your Area</h1>
-      
+
     <div class="search-filter">
       <input type="text" id="searchInput" placeholder="Destination or Driver">
 
@@ -107,13 +112,13 @@
           <option value="3">3 seats available</option>
         </select>
 
-        <select id="roleFilter"> 
-          <option value="">All Roles</option> 
-          <option value="student">Student</option> 
-          <option value="faculty">Faculty</option> 
+        <select id="roleFilter">
+          <option value="">All Roles</option>
+          <option value="student">Student</option>
+          <option value="faculty">Faculty</option>
         </select>
       </div>
-    </div>  
+    </div>
 
     <div class="cards-container">
       <div class="carpool-container">
@@ -121,6 +126,17 @@
       </div>
     </div>
   </section>
+
+  <!-- Map Modal for viewing a single location pin -->
+  <div id="locationMapModal" class="map-modal" aria-hidden="true">
+    <div class="map-dialog" role="dialog" aria-modal="true" aria-labelledby="locationMapTitle">
+      <div class="map-header">
+        <h3 id="locationMapTitle">Location</h3>
+        <button id="closeLocationMap" class="map-close" aria-label="Close">×</button>
+      </div>
+      <div id="locationMap" class="map-body" aria-hidden="true"></div>
+    </div>
+  </div>
 
   <footer class="site-footer">
     <div class="social-icons">
@@ -141,4 +157,5 @@
     <p class="footer-copy">Copyright ©2025 | Designed by <span>Carma</span></p>
   </footer>
 </body>
+
 </html>
