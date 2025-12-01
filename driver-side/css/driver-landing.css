@@ -1,3 +1,10 @@
+/* ===== GLOBAL FIXES FOR OVERFLOW ===== */
+html, body {
+    width: 100%;
+    max-width: 100%;
+    overflow-x: hidden;      /* Prevent horizontal overflow */
+}
+
 /* ===== MAIN LAYOUT ===== */
 body {
     background: #F3EBE9;
@@ -105,7 +112,6 @@ driver-container, .driver-container {
 .content-window h2.section-title {
     text-align: left;
 }
-
 
 .section-title {
     font-size: 20px;
