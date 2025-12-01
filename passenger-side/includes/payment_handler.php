@@ -164,25 +164,52 @@ try {
         }
     }
 
-    $notification = [
+    // Build passenger-facing notification (for the booking passenger)
+    $passengerNotification = [
         'rideId' => $paymentData['rideId'],
         'driverId' => $rideDoc['driverId'] ?? null,
         'passengerId' => $paymentData['userId'],
         'carId' => $rideDoc['carId'] ?? null,
+        'type' => 'booking',
         'message' => $notifMessage,
-        'timestamp' => date('c'),
+        'timestamp' => new UTCDateTime(),
+        'isRead' => false
+    ];
+
+    // Build driver-facing notification (inform the driver who booked)
+    $passengerName = $paymentData['name'] ?? 'A passenger';
+    $driverMsg = "New booking by {$passengerName} bound to {$dest} at {$time}";
+    $driverNotification = [
+        'rideId' => $paymentData['rideId'],
+        'driverId' => $rideDoc['driverId'] ?? null,
+        'passengerId' => $paymentData['userId'],
+        'carId' => $rideDoc['carId'] ?? null,
+        'type' => 'booking',
+        'message' => $driverMsg,
+        'timestamp' => new UTCDateTime(),
         'isRead' => false
     ];
 
     try {
-        // De-duplicate: avoid inserting the same notification twice for rapid re-submissions
-        $exists = $notificationsCollection->findOne([
-            'rideId' => $notification['rideId'],
-            'passengerId' => $notification['passengerId'],
-            'message' => $notification['message']
+        // De-duplicate passenger notification
+        $existsP = $notificationsCollection->findOne([
+            'rideId' => $passengerNotification['rideId'],
+            'passengerId' => $passengerNotification['passengerId'],
+            'message' => $passengerNotification['message']
         ]);
-        if (!$exists) {
-            $notificationsCollection->insertOne($notification);
+        if (!$existsP) {
+            $notificationsCollection->insertOne($passengerNotification);
+        }
+
+        // De-duplicate driver notification
+        $existsD = $notificationsCollection->findOne([
+            'rideId' => $driverNotification['rideId'],
+            'driverId' => $driverNotification['driverId'],
+            'passengerId' => $driverNotification['passengerId'],
+            'message' => $driverNotification['message']
+        ]);
+        if (!$existsD) {
+            $notificationsCollection->insertOne($driverNotification);
         }
     } catch (Exception $e) {
         // If notification insert fails, do not block payment success

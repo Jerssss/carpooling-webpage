@@ -8,6 +8,7 @@ header('Content-Type: application/json; charset=utf-8');
 
 // Prefer session user; fallback to explicit userId (for dev/testing)
 $sessionUserId = $_SESSION['user_id'] ?? null;
+$sessionRole = $_SESSION['role'] ?? null; // 'passenger' or 'driver'
 $paramUserId = $_GET['userId'] ?? null;
 $userId = $sessionUserId ?: $paramUserId;
 $filter = $_GET['filter'] ?? 'all'; // 'all' or 'unread'
@@ -20,7 +21,14 @@ if (!$userId) {
 
 $collection = $db->notifications;
 
-$q = ['passengerId' => $userId];
+$q = [];
+// If the logged-in user is a driver, fetch notifications targeting the driver.
+// Otherwise (or by default), fetch notifications targeting the passenger.
+if ($sessionRole === 'driver') {
+    $q['driverId'] = $userId;
+} else {
+    $q['passengerId'] = $userId;
+}
 if ($filter === 'unread') {
     $q['isRead'] = false;
 }
@@ -30,6 +38,19 @@ $cursor = $collection->find($q, ['sort' => ['timestamp' => -1]]);
 
 $notifications = [];
 foreach ($cursor as $n) {
+    // Normalize timestamp to ISO string
+    $ts = null;
+    if (isset($n['timestamp'])) {
+        $t = $n['timestamp'];
+        if ($t instanceof MongoDB\BSON\UTCDateTime) {
+            $ts = $t->toDateTime()->format('c');
+        } elseif (is_array($t) && isset($t['$date'])) {
+            $ts = $t['$date'];
+        } elseif (is_string($t)) {
+            $ts = $t; // fallback for legacy string timestamps
+        }
+    }
+
     $notifications[] = [
         'id' => (string)($n['_id'] ?? ''),
         'rideId' => $n['rideId'] ?? null,
@@ -37,7 +58,7 @@ foreach ($cursor as $n) {
         'carId' => $n['carId'] ?? null,
         'message' => $n['message'] ?? '',
         'isRead' => isset($n['isRead']) ? (bool)$n['isRead'] : false,
-        'timestamp' => $n['timestamp'] ?? null
+        'timestamp' => $ts
     ];
 }
 

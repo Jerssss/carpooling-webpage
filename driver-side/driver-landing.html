@@ -6,6 +6,7 @@
     <title>Driver Landing</title>
     <link rel="stylesheet" href="css/driver-style.css">
     <link rel="stylesheet" href="css/driver-landing.css">
+    <link rel="stylesheet" href="../css/notifications.css">
 </head>
 <body>
 
@@ -21,9 +22,24 @@
             <li><a href="../driver-side/driver-feedbacks.html">Feedbacks</a></li>
         </ul>
         <div class="nav-right">
-            <div id="notificationsContainer" class="nav-bell">
-                <img src="../images/bell.png" class="bell-icon" />
-            </div>
+                        <div class="nav-bell">
+                                <img src="../images/bell.png" class="bell-icon" alt="Notifications" onclick="toggleDriverNotifications()">
+                                <div id="notificationsContainer">
+                                    <div class="notifications-dropdown" id="notificationsDropdown">
+                                        <div class="notif-tabs">
+                                            <span class="active" id="allTab">All</span>
+                                            <span id="unreadTab">Unread</span>
+                                        </div>
+                                        <div class="notif-list" id="notifList">
+                                            <div class="notif-item">
+                                                <div class="notif-content">
+                                                    <p>Loading notifications...</p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                        </div>
             <img src="../images/bod.jpg" class="user-pic" />
         </div>
     </nav>
@@ -155,6 +171,21 @@
         });
     });
 </script>
+
+<script>
+    function toggleDriverNotifications() {
+        const dd = document.getElementById('notificationsDropdown');
+        if (dd) dd.classList.toggle('show');
+    }
+    // Close dropdown on outside click
+    document.addEventListener('click', (e) => {
+        const inside = e.target.closest('.nav-bell');
+        const dd = document.getElementById('notificationsDropdown');
+        if (dd && !inside) dd.classList.remove('show');
+    });
+</script>
+
+<script src="../passenger-side/js/notifications.js" defer></script>
 
 <!-- ===== FOOTER SECTION ===== -->
     <footer class="site-footer">

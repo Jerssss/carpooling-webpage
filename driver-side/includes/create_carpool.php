@@ -84,6 +84,33 @@ try {
     $collection = $db->selectCollection('rides');
     $result = $collection->insertOne($doc);
 
+    // Insert a driver-facing notification about successful carpool creation
+    try {
+        $notifColl = $db->selectCollection('notifications');
+        $msg = "Carpool created: {$startLocation} → {$destination} at {$timePart}";
+        $notif = [
+            'rideId' => $rideId,
+            'driverId' => $_SESSION['user_id'],
+            'passengerId' => null,
+            'carId' => $carId,
+            'type' => 'carpool_created',
+            'message' => $msg,
+            'timestamp' => new MongoDB\BSON\UTCDateTime(),
+            'isRead' => false
+        ];
+        // Deduplicate by (driverId, rideId, type)
+        $exists = $notifColl->findOne([
+            'driverId' => $notif['driverId'],
+            'rideId' => $notif['rideId'],
+            'type' => $notif['type']
+        ]);
+        if (!$exists) {
+            $notifColl->insertOne($notif);
+        }
+    } catch (Throwable $e) {
+        // Non-fatal
+    }
+
     echo json_encode(['ok' => true, 'rideId' => $rideId, 'insertedId' => (string)$result->getInsertedId()]);
 } catch (Throwable $e) {
     http_response_code(500);
