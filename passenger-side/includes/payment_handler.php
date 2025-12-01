@@ -170,7 +170,9 @@ try {
         'driverId' => $rideDoc['driverId'] ?? null,
         'passengerId' => $paymentData['userId'],
         'carId' => $rideDoc['carId'] ?? null,
+        'paymentId' => $paymentData['paymentId'],
         'type' => 'booking',
+        'audience' => 'passenger',
         'message' => $notifMessage,
         'timestamp' => new UTCDateTime(),
         'isRead' => false
@@ -178,35 +180,41 @@ try {
 
     // Build driver-facing notification (inform the driver who booked)
     $passengerName = $paymentData['name'] ?? 'A passenger';
-    $driverMsg = "New booking by {$passengerName} bound to {$dest} at {$time}";
+    $driverMsg = isset($rideDoc) ? ("New booking by {$passengerName} bound to " . ($rideDoc['destination'] ?? '') . " at " . ($rideDoc['departureTime'] ?? '')) : ("New booking by {$passengerName}");
     $driverNotification = [
         'rideId' => $paymentData['rideId'],
         'driverId' => $rideDoc['driverId'] ?? null,
         'passengerId' => $paymentData['userId'],
         'carId' => $rideDoc['carId'] ?? null,
+        'paymentId' => $paymentData['paymentId'],
         'type' => 'booking',
+        'audience' => 'driver',
         'message' => $driverMsg,
         'timestamp' => new UTCDateTime(),
         'isRead' => false
     ];
 
     try {
-        // De-duplicate passenger notification
+        // De-duplicate passenger notification within the last 2 minutes to prevent accidental double-submits
+        $now = new UTCDateTime();
+        $twoMinAgo = new UTCDateTime(($now->toDateTime()->getTimestamp() - 120) * 1000);
         $existsP = $notificationsCollection->findOne([
             'rideId' => $passengerNotification['rideId'],
             'passengerId' => $passengerNotification['passengerId'],
-            'message' => $passengerNotification['message']
+            'message' => $passengerNotification['message'],
+            'timestamp' => ['$gt' => $twoMinAgo]
         ]);
         if (!$existsP) {
             $notificationsCollection->insertOne($passengerNotification);
         }
 
-        // De-duplicate driver notification
+        // De-duplicate driver notification within the last 2 minutes
         $existsD = $notificationsCollection->findOne([
             'rideId' => $driverNotification['rideId'],
             'driverId' => $driverNotification['driverId'],
             'passengerId' => $driverNotification['passengerId'],
-            'message' => $driverNotification['message']
+            'message' => $driverNotification['message'],
+            'timestamp' => ['$gt' => $twoMinAgo]
         ]);
         if (!$existsD) {
             $notificationsCollection->insertOne($driverNotification);

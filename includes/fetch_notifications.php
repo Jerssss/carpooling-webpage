@@ -22,8 +22,6 @@ if (!$userId) {
 $collection = $db->notifications;
 
 $q = [];
-// If the logged-in user is a driver, fetch notifications targeting the driver.
-// Otherwise (or by default), fetch notifications targeting the passenger.
 if ($sessionRole === 'driver') {
     $q['driverId'] = $userId;
 } else {
@@ -48,6 +46,25 @@ foreach ($cursor as $n) {
             $ts = $t['$date'];
         } elseif (is_string($t)) {
             $ts = $t; // fallback for legacy string timestamps
+        }
+    }
+
+    // Filter by audience: drivers see only driver-audience items; passengers see only passenger-audience items.
+    $audience = $n['audience'] ?? null;
+    $type = $n['type'] ?? null;
+    if ($sessionRole === 'driver') {
+        // Include only explicit driver-audience notifications.
+        if ($audience && $audience !== 'driver') {
+            continue;
+        }
+        // If audience is missing (legacy), include only safe driver-side types.
+        if (!$audience && !in_array($type, ['carpool_created'], true)) {
+            continue;
+        }
+    } else {
+        // Passenger role: include only explicit passenger-audience or legacy (no audience) items.
+        if ($audience && $audience !== 'passenger') {
+            continue;
         }
     }
 

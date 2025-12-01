@@ -94,6 +94,7 @@ try {
             'passengerId' => null,
             'carId' => $carId,
             'type' => 'carpool_created',
+            'audience' => 'driver',
             'message' => $msg,
             'timestamp' => new MongoDB\BSON\UTCDateTime(),
             'isRead' => false
