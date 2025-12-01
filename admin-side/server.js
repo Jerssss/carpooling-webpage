@@ -34,6 +34,15 @@ async function connectDB() {
 }
 connectDB();
 
+// Protiect all admin routes
+function adminOnly(req, res, next) {
+    if (!req.session.admin) {
+        return res.status(401).json({ message: "Unauthorized" });
+    }
+    next();
+}
+
+
 // Admin login route
 app.post("/api/admin/login", async (req, res) => {
     try {
@@ -43,12 +52,11 @@ app.post("/api/admin/login", async (req, res) => {
 
         const user = await users.findOne({ email: email, role: "admin" });
 
-        if (!user || !bcrypt.compareSync(password, user.password)) {
+        if (!user) {
             return res.status(401).json({ message: "Admin not found" });
         }
 
         const passwordMatch = await bcrypt.compare(password, user.password);
-
         if (!passwordMatch) {
             return res.status(401).json({ message: "Invalid password" });
         }
@@ -75,6 +83,79 @@ app.get("/api/admin/dashboard", (req, res) => {
     }
     res.json({ message: "Welcome, " + req.session.admin.name });
 });
+
+// Fetch all users
+app.get("/api/admin/users/:id", adminOnly, async (req, res) => {
+    const db = client.db(dbName);
+    const user = await db.collection("users").findOne({ userID: req.params.id });
+    res.json(user);
+});
+
+// Verify or Unveryfy a user
+app.patch("/api/admin/users/:id/verify", adminOnly, async (req, res) => {
+    const db = client.db(dbName);
+    const { isVerified } = req.body;
+
+    await db.collection("users").updateOne(
+        { userID: req.params.id },
+        { $set: { isVerified } }
+    );
+
+    res.json({ message: "User updated" });
+});
+
+// Get pending vehicles
+app.get("/api/admin/vehicles/pending", adminOnly, async (req, res) => {
+    const db = client.db(dbName);
+
+    const vehicles = await db.collection("vehicles")
+        .find({ isVerified: false })
+        .toArray();
+
+    res.json(vehicles);
+});
+
+// Approve a vehicle
+app.patch("/api/admin/vehicles/:id/approve", adminOnly, async (req, res) => {
+    const db = client.db(dbName);
+
+    await db.collection("vehicles").updateOne(
+        { carId: req.params.id },
+        { $set: { isVerified: true } }
+    );
+
+    res.json({ message: "Vehicle approved" });
+});
+
+// Monitor active rides
+app.get("/api/admin/rides/active", adminOnly, async (req, res) => {
+    const db = client.db(dbName);
+
+    const rides = await db.collection("rides")
+        .find({ status: "available" })
+        .toArray();
+
+    res.json(rides);
+});
+
+// Monitor Transactions or Payments
+app.get("/api/admin/payments", adminOnly, async (req, res) => {
+    const db = client.db(dbName);
+    const payments = await db.collection("payments").find().toArray();
+    res.json(payments);
+});
+
+// Manage Reports and Complaints
+app.get("/api/admin/reports", adminOnly, async (req, res) => {
+    const db = client.db(dbName);
+
+    const reports = await db.collection("history")
+        .find({ report_description: { $ne: "" } })
+        .toArray();
+
+    res.json(reports);
+});
+
 
 app.listen(4000, () => {
     console.log("Admin NodeJS backend running at port 4000");
