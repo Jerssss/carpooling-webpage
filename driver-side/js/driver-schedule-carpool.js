@@ -6,7 +6,7 @@
 // - Validates departure date/time per business rules (no sundays, future only, 07:30am–8:00pm)
 // Requirements: Google Maps JavaScript API with Places library + a valid billing account
 
-(function(){
+(function () {
   const BASE = '/9467_it312-teamarc_midtermproject';
   const apiKey = 'ENV_API_KEY'; // API KEY FROM JERS, PLEASE DON'T LEAK
   const MAP_ID = 'ENV_MAP_ID_KEY'; // MAP ID FROM JERS, PLEASE DON'T LEAK
@@ -36,7 +36,7 @@
   let pickerContext = 'destination'; // or 'start'
 
   // Safely extract {lat, lng} from AdvancedMarkerElement or classic markers
-  function getMarkerLatLng(){
+  function getMarkerLatLng() {
     if (!marker || !marker.position) return null;
     const pos = marker.position;
     const lat = typeof pos.lat === 'function' ? pos.lat() : pos.lat;
@@ -46,14 +46,14 @@
   }
 
   // Dynamically loads the Google Maps script (Places lib included).
-  function loadGoogleMaps(cb){
+  function loadGoogleMaps(cb) {
     if (mapsLoaded) return cb();
     const script = document.createElement('script');
     script.src = `https://maps.googleapis.com/maps/api/js?key=${apiKey}&libraries=places,marker&v=weekly&loading=async`;
     script.async = true;
     script.defer = true;
-    script.onload = function(){ mapsLoaded = true; cb(); };
-    script.onerror = function(){
+    script.onload = function () { mapsLoaded = true; cb(); };
+    script.onerror = function () {
       console.error('Failed to load Google Maps API');
       showMapsError('Failed to load Google Maps API. Check network, ad blockers, and API key.');
     };
@@ -61,7 +61,7 @@
   }
 
   // Wire up Places Autocomplete for both inputs; bias results to Baguio/Benguet.
-  function initAutocomplete(){
+  function initAutocomplete() {
     if (!window.google || !google.maps || !google.maps.places) return;
     autocompleteDest = new google.maps.places.Autocomplete(destinationInput, {
       fields: ['place_id', 'geometry', 'name', 'formatted_address'],
@@ -76,7 +76,7 @@
       if (autocompleteDest.setComponentRestrictions) {
         autocompleteDest.setComponentRestrictions({ country: ['ph'] });
       }
-    } catch(e) {}
+    } catch (e) { }
 
     // Additional manual bounds around Baguio/Benguet
     const bounds = new google.maps.LatLngBounds(
@@ -127,7 +127,7 @@
   }
 
   // Opens the map modal and initializes/centers the map + marker for current field context.
-  function openModal(){
+  function openModal() {
     if (!mapsLoaded) {
       loadGoogleMaps(() => {
         setupMap();
@@ -147,7 +147,7 @@
   }
 
   // Closes the modal and restores focus to the triggering pin.
-  function closeModal(){
+  function closeModal() {
     mapModal.classList.remove('open');
     mapModal.setAttribute('aria-hidden', 'true');
     // Return focus to the triggering button
@@ -157,12 +157,12 @@
 
   // Creates the map and the draggable marker. If the field already has lat/lng,
   // centers/places the marker there; otherwise, geocodes the typed text to seed the pin.
-  function setupMap(){
+  function setupMap() {
     if (!window.google || !google.maps) return;
     if (google.maps.importLibrary) {
       // Try new loader libs, but don't rely solely on them.
-      google.maps.importLibrary('maps').catch(() => {});
-      google.maps.importLibrary('marker').catch(() => {});
+      google.maps.importLibrary('maps').catch(() => { });
+      google.maps.importLibrary('marker').catch(() => { });
     }
     geocoder = geocoder || new google.maps.Geocoder();
     const mapEl = document.getElementById('map');
@@ -197,7 +197,7 @@
     });
 
     // Update hidden lat/lng + input text when the user drags the pin.
-    marker.addListener('dragend', function(){
+    marker.addListener('dragend', function () {
       const p = getMarkerLatLng();
       if (!p) return;
       if (pickerContext === 'destination') {
@@ -239,7 +239,7 @@
   }
 
   // Reverse-geocode a coordinate to a formatted address and write to the proper input.
-  function reverseGeocode(lat, lng, target){
+  function reverseGeocode(lat, lng, target) {
     if (!geocoder) return;
     geocoder.geocode({ location: { lat, lng } }, (results, status) => {
       if (status === 'OK' && results && results.length) {
@@ -254,7 +254,7 @@
   }
 
   // Reset the marker and map center to the default initial center (Baguio).
-  function resetMarker(){
+  function resetMarker() {
     if (!marker || !map) return;
     if (marker && marker.position !== undefined) {
       marker.position = initialCenter;
@@ -274,7 +274,7 @@
   }
 
   // Utility to move the marker and recenter the map.
-  function setMarkerPosition(lat, lng){
+  function setMarkerPosition(lat, lng) {
     if (!marker || !map) return;
     const pos = { lat, lng };
     if (marker.position !== undefined) {
@@ -286,7 +286,7 @@
   }
 
   // Returns an approximate bounding box for Baguio/Benguet to bias searches/geocoding.
-  function getBaguioBenguetBounds(){
+  function getBaguioBenguetBounds() {
     if (!window.google || !google.maps) return null;
     return new google.maps.LatLngBounds(
       new google.maps.LatLng(16.2000, 120.5000),
@@ -295,7 +295,7 @@
   }
 
   // Lightweight in-page toast for showing Maps-related diagnostics.
-  function showMapsError(message){
+  function showMapsError(message) {
     try {
       const container = document.body;
       const div = document.createElement('div');
@@ -303,13 +303,13 @@
       div.textContent = message;
       container.appendChild(div);
       setTimeout(() => { div.remove(); }, 8000);
-    } catch(e) {
+    } catch (e) {
       console.warn(message);
     }
   }
 
   // Success toast used for confirmations (short duration, green theme)
-  function showToast(message){
+  function showToast(message) {
     try {
       const container = document.body;
       const div = document.createElement('div');
@@ -317,13 +317,13 @@
       div.textContent = message;
       container.appendChild(div);
       setTimeout(() => { div.remove(); }, 2500);
-    } catch(e) {
+    } catch (e) {
       // fallback
     }
   }
 
   // POST handler for the form: builds JSON payload including coords and sends to backend.
-  function hookFormSubmit(){
+  function hookFormSubmit() {
     const form = document.querySelector('.form-container form');
     if (!form) return;
     form.addEventListener('submit', async (e) => {
@@ -374,10 +374,10 @@
   }
 
   // Events
-  if (openDestBtn) openDestBtn.addEventListener('click', function(){ pickerContext = 'destination'; openModal(); });
-  if (openStartBtn) openStartBtn.addEventListener('click', function(){ pickerContext = 'start'; openModal(); });
+  if (openDestBtn) openDestBtn.addEventListener('click', function () { pickerContext = 'destination'; openModal(); });
+  if (openStartBtn) openStartBtn.addEventListener('click', function () { pickerContext = 'start'; openModal(); });
   if (closeMapBtn) closeMapBtn.addEventListener('click', closeModal);
-  if (useLocationBtn) useLocationBtn.addEventListener('click', function(){
+  if (useLocationBtn) useLocationBtn.addEventListener('click', function () {
     // Ensure values are set by marker (supports AdvancedMarkerElement)
     const p = getMarkerLatLng();
     if (p) {
@@ -399,19 +399,19 @@
   if (resetMarkerBtn) resetMarkerBtn.addEventListener('click', resetMarker);
 
   // Initialize maps + autocomplete on focus to avoid early load
-  destinationInput && destinationInput.addEventListener('focus', function(){
+  destinationInput && destinationInput.addEventListener('focus', function () {
     loadGoogleMaps(() => {
       initAutocomplete();
     });
   });
-  startInput && startInput.addEventListener('focus', function(){
+  startInput && startInput.addEventListener('focus', function () {
     loadGoogleMaps(() => {
       initAutocomplete();
     });
   });
 
   // Also try init on DOM ready
-  document.addEventListener('DOMContentLoaded', function(){
+  document.addEventListener('DOMContentLoaded', function () {
     hookFormSubmit();
     if (destinationInput || startInput) {
       loadGoogleMaps(() => {
@@ -422,7 +422,7 @@
   });
 
   // Applies min/max and change validation for the departure datetime input.
-  function setupDepartureConstraints(){
+  function setupDepartureConstraints() {
     if (!departureInput) return;
 
     // Earliest allowed date: tomorrow or next non-Sunday day if tomorrow is Sunday
@@ -433,7 +433,7 @@
     const minStr = `${yyyy}-${mm}-${dd}T07:30`;
 
     // Set a max (1 year ahead 20:00) – validation will still block Sundays
-    const maxDate = new Date(earliest); maxDate.setFullYear(maxDate.getFullYear() + 1); const maxY = maxDate.getFullYear(); const maxM = String(maxDate.getMonth() + 1).padStart(2,'0'); const maxD = String(maxDate.getDate()).padStart(2,'0');
+    const maxDate = new Date(earliest); maxDate.setFullYear(maxDate.getFullYear() + 1); const maxY = maxDate.getFullYear(); const maxM = String(maxDate.getMonth() + 1).padStart(2, '0'); const maxD = String(maxDate.getDate()).padStart(2, '0');
     const maxStr = `${maxY}-${maxM}-${maxD}T20:00`;
 
     departureInput.min = minStr;
@@ -449,7 +449,7 @@
       departureInput.parentElement && departureInput.parentElement.appendChild(msg);
     }
 
-    departureInput.addEventListener('change', function(){
+    departureInput.addEventListener('change', function () {
       const val = departureInput.value;
       if (!validateDeparture(val)) {
         alert('Invalid time. Use a future non-Sunday date between 07:30 AM and 08:00 PM.');
@@ -459,7 +459,7 @@
   }
 
   // Ensures selected datetime is a future non-Sunday and within 07:30–20:00 window.
-  function validateDeparture(val){
+  function validateDeparture(val) {
     if (!val) return false;
     const selected = new Date(val);
     if (isNaN(selected.getTime())) return false;
@@ -486,7 +486,7 @@
   }
 
   // Computes the earliest selectable date (tomorrow or next non-Sunday if tomorrow is Sunday).
-  function getEarliestAllowedDate(){
+  function getEarliestAllowedDate() {
     const d = new Date();
     d.setDate(d.getDate() + 1); // start from tomorrow
     while (d.getDay() === 0) { // skip Sundays

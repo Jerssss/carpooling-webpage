@@ -77,7 +77,7 @@ try {
     ];
 
     if ($destLat !== null && $destLng !== null) {
-        $doc['destinationLocation'] = [ 'lat' => (float)$destLat, 'lng' => (float)$destLng ];
+        $doc['destinationLocation'] = ['lat' => (float)$destLat, 'lng' => (float)$destLng];
     }
 
     // Insert into MongoDB

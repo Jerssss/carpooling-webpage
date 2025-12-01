@@ -3,7 +3,7 @@
 // a precise pickup/meetup location using a modal map with a draggable pin.
 
 // Wrap everything to avoid leaking variables globally
-(function(){
+(function () {
   // Static config: API key and Map ID (Vector map) used by Advanced Markers
   const API_KEY = 'ENV_API_KEY';
   const MAP_ID = window.GMAPS_MAP_ID || 'ENV_MAP_ID_KEY';
@@ -37,7 +37,7 @@
   const initialCenter = { lat: 16.4023, lng: 120.5960 };
 
   // Dynamically inject Google Maps JS (Places + Marker libraries)
-  function loadMaps(cb){
+  function loadMaps(cb) {
     if (mapsLoaded) return cb();
     const script = document.createElement('script');
     script.src = `https://maps.googleapis.com/maps/api/js?key=${API_KEY}&libraries=places,marker&v=weekly&loading=async`;
@@ -48,17 +48,17 @@
   }
 
   // Wire Places Autocomplete to both pickup inputs and constrain to Baguio/Benguet
-  function initAutocomplete(){
+  function initAutocomplete() {
     if (!window.google || !google.maps || !google.maps.places) return;
     if (gcashInput && !autocompleteGcash) {
       autocompleteGcash = new google.maps.places.Autocomplete(gcashInput, {
-        fields: ['place_id','geometry','name','formatted_address'],
+        fields: ['place_id', 'geometry', 'name', 'formatted_address'],
         types: ['geocode']
       });
     }
     if (cashInput && !autocompleteCash) {
       autocompleteCash = new google.maps.places.Autocomplete(cashInput, {
-        fields: ['place_id','geometry','name','formatted_address'],
+        fields: ['place_id', 'geometry', 'name', 'formatted_address'],
         types: ['geocode']
       });
     }
@@ -79,7 +79,7 @@
 
   // When a place is chosen from autocomplete, copy its lat/lng to hidden fields
   // and guard against results outside target bounds
-  function handlePlace(ac, latEl, lngEl, input){
+  function handlePlace(ac, latEl, lngEl, input) {
     const place = ac.getPlace();
     if (!place || !place.geometry || !place.geometry.location) return;
     const loc = place.geometry.location;
@@ -90,34 +90,34 @@
     const within = (lat >= 16.2000 && lat <= 16.6000 && lng >= 120.5000 && lng <= 121.0000);
     if (!within) {
       alert('Select a location within Baguio/Benguet.');
-      input.value = ''; latEl.value=''; lngEl.value='';
+      input.value = ''; latEl.value = ''; lngEl.value = '';
     }
   }
 
   // Open the modal, ensure Maps are loaded, and focus the primary action
-  function openModal(){
+  function openModal() {
     loadMaps(() => {
       setupMap();
       modal.classList.add('open');
-      modal.setAttribute('aria-hidden','false');
+      modal.setAttribute('aria-hidden', 'false');
       (useBtn && useBtn.focus && useBtn.focus());
     });
   }
   // Close the modal and return focus to the triggering pin icon
-  function closeModal(){
+  function closeModal() {
     modal.classList.remove('open');
-    modal.setAttribute('aria-hidden','true');
+    modal.setAttribute('aria-hidden', 'true');
     const returnTarget = pickerContext === 'gcash' ? openGcashBtn : openCashBtn;
     returnTarget && returnTarget.focus && returnTarget.focus();
   }
 
   // Initialize map + draggable Advanced Marker.
   // If input already has coords, center on them; otherwise geocode typed text.
-  function setupMap(){
+  function setupMap() {
     if (!window.google || !google.maps) return;
     geocoder = geocoder || new google.maps.Geocoder();
     const mapEl = document.getElementById('pickupMap');
-    if (mapEl) mapEl.innerHTML='';
+    if (mapEl) mapEl.innerHTML = '';
     const existingLat = pickerContext === 'gcash' ? parseFloat(gcashLatEl.value) : parseFloat(cashLatEl.value);
     const existingLng = pickerContext === 'gcash' ? parseFloat(gcashLngEl.value) : parseFloat(cashLngEl.value);
     const center = (!isNaN(existingLat) && !isNaN(existingLng)) ? { lat: existingLat, lng: existingLng } : initialCenter;
@@ -137,9 +137,9 @@
     // Geocode typed value if no coords yet
     const typedValue = pickerContext === 'gcash' ? (gcashInput && gcashInput.value) : (cashInput && cashInput.value);
     const hasCoords = !isNaN(existingLat) && !isNaN(existingLng);
-    if (!hasCoords && typedValue && typedValue.trim().length){
+    if (!hasCoords && typedValue && typedValue.trim().length) {
       geocoder.geocode({ address: typedValue, region: 'PH' }, (results, status) => {
-        if (status === 'OK' && results && results.length){
+        if (status === 'OK' && results && results.length) {
           const loc = results[0].geometry.location;
           setMarkerPosition(loc.lat(), loc.lng());
           if (pickerContext === 'gcash') { gcashLatEl.value = loc.lat(); gcashLngEl.value = loc.lng(); gcashInput.value = results[0].formatted_address || gcashInput.value; }
@@ -150,41 +150,41 @@
   }
 
   // Convert lat/lng to human-readable address and write to the corresponding input
-  function reverseGeocode(lat,lng,targetInput){
+  function reverseGeocode(lat, lng, targetInput) {
     if (!geocoder) return;
-    geocoder.geocode({ location: { lat,lng } }, (results,status) => {
-      if (status==='OK' && results && results.length){
+    geocoder.geocode({ location: { lat, lng } }, (results, status) => {
+      if (status === 'OK' && results && results.length) {
         targetInput.value = results[0].formatted_address || targetInput.value;
       }
     });
   }
 
   // Safely read the Advanced Marker position regardless of object shape
-  function getMarkerLatLng(){
+  function getMarkerLatLng() {
     if (!marker || !marker.position) return null;
-    const pos = marker.position; const lat = typeof pos.lat==='function'?pos.lat():pos.lat; const lng = typeof pos.lng==='function'?pos.lng():pos.lng;
-    if (typeof lat !== 'number' || typeof lng !== 'number') return null; return { lat,lng };
+    const pos = marker.position; const lat = typeof pos.lat === 'function' ? pos.lat() : pos.lat; const lng = typeof pos.lng === 'function' ? pos.lng() : pos.lng;
+    if (typeof lat !== 'number' || typeof lng !== 'number') return null; return { lat, lng };
   }
   // Move the pin and recenter the map
-  function setMarkerPosition(lat,lng){ if (!marker || !map) return; marker.position = { lat,lng }; map.setCenter({ lat,lng }); }
+  function setMarkerPosition(lat, lng) { if (!marker || !map) return; marker.position = { lat, lng }; map.setCenter({ lat, lng }); }
   // Reset pin to initial city center and update the active tab’s hidden fields
-  function resetMarker(){ if (!marker || !map) return; marker.position = initialCenter; map.setCenter(initialCenter); if (pickerContext==='gcash'){ gcashLatEl.value=initialCenter.lat; gcashLngEl.value=initialCenter.lng; reverseGeocode(initialCenter.lat,initialCenter.lng,gcashInput); } else { cashLatEl.value=initialCenter.lat; cashLngEl.value=initialCenter.lng; reverseGeocode(initialCenter.lat,initialCenter.lng,cashInput); } }
+  function resetMarker() { if (!marker || !map) return; marker.position = initialCenter; map.setCenter(initialCenter); if (pickerContext === 'gcash') { gcashLatEl.value = initialCenter.lat; gcashLngEl.value = initialCenter.lng; reverseGeocode(initialCenter.lat, initialCenter.lng, gcashInput); } else { cashLatEl.value = initialCenter.lat; cashLngEl.value = initialCenter.lng; reverseGeocode(initialCenter.lat, initialCenter.lng, cashInput); } }
 
   // UI helpers: warning and success toasts styled via CSS classes
-  function showWarn(msg){ try { const d=document.createElement('div'); d.className='toast-warning'; d.textContent=msg; document.body.appendChild(d); setTimeout(()=>d.remove(),5000); } catch(e){ console.warn(msg); } }
-  function showToast(msg){ try { const d=document.createElement('div'); d.className='toast'; d.textContent=msg; document.body.appendChild(d); setTimeout(()=>d.remove(),2500); } catch(e){} }
+  function showWarn(msg) { try { const d = document.createElement('div'); d.className = 'toast-warning'; d.textContent = msg; document.body.appendChild(d); setTimeout(() => d.remove(), 5000); } catch (e) { console.warn(msg); } }
+  function showToast(msg) { try { const d = document.createElement('div'); d.className = 'toast'; d.textContent = msg; document.body.appendChild(d); setTimeout(() => d.remove(), 2500); } catch (e) { } }
 
   // Event wiring: open modal for the right tab, handle modal buttons
-  if (openGcashBtn) openGcashBtn.addEventListener('click', () => { pickerContext='gcash'; openModal(); });
-  if (openCashBtn) openCashBtn.addEventListener('click', () => { pickerContext='cash'; openModal(); });
+  if (openGcashBtn) openGcashBtn.addEventListener('click', () => { pickerContext = 'gcash'; openModal(); });
+  if (openCashBtn) openCashBtn.addEventListener('click', () => { pickerContext = 'cash'; openModal(); });
   if (closeBtn) closeBtn.addEventListener('click', closeModal);
   if (resetBtn) resetBtn.addEventListener('click', resetMarker);
   if (useBtn) useBtn.addEventListener('click', () => {
     // On confirm, copy pin coords into hidden fields, normalize address, notify, and close
     const p = getMarkerLatLng();
-    if (!p){ showWarn('Move the pin to choose a location.'); return; }
-    if (pickerContext==='gcash'){ gcashLatEl.value=p.lat; gcashLngEl.value=p.lng; reverseGeocode(p.lat,p.lng,gcashInput); }
-    else { cashLatEl.value=p.lat; cashLngEl.value=p.lng; reverseGeocode(p.lat,p.lng,cashInput); }
+    if (!p) { showWarn('Move the pin to choose a location.'); return; }
+    if (pickerContext === 'gcash') { gcashLatEl.value = p.lat; gcashLngEl.value = p.lng; reverseGeocode(p.lat, p.lng, gcashInput); }
+    else { cashLatEl.value = p.lat; cashLngEl.value = p.lng; reverseGeocode(p.lat, p.lng, cashInput); }
     showToast('Pickup location selected');
     closeModal();
   });
@@ -195,6 +195,6 @@
 
   // On DOM ready, optionally pre-load Maps if fields exist to reduce first-open delay
   document.addEventListener('DOMContentLoaded', () => {
-    if (gcashInput || cashInput){ loadMaps(initAutocomplete); }
+    if (gcashInput || cashInput) { loadMaps(initAutocomplete); }
   });
 })();
