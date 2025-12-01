@@ -96,9 +96,8 @@ body {
 
 /* CENTER FORM */
 .payment-content {
-  flex: 1;
-  display: flex;
-  background: transparent;
+  /* FIX: remove unnecessary flex */
+  width: 100%;
 }
 
 .payment-form {
@@ -129,7 +128,13 @@ body {
   line-height: 22px;
 }
 
-/* Explicit normalization to ensure hidden Cash tab fields match GCash sizing when revealed */
+/* FIX: Ensure both GCash + Cash content align exactly the same */
+#gcash-content,
+#cash-content {
+  width: 100%;
+}
+
+/* Explicit normalization */
 .payment-form input[type=text],
 .payment-form input[type=email],
 .payment-form input[type=number],
