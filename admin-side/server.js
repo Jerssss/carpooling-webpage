@@ -13,12 +13,22 @@ app.use(cors({
     credentials: true
 }));
 
+// Test route
+app.get("/api/test", (req, res) => {
+    res.json({ message: "Server working" });
+});
+
+
 // Session setup
 app.use(session({
-    secret: "supersecretadminkey", // change to a secure random string
+    secret: "supersecretadminkey",
     resave: false,
     saveUninitialized: true,
-    cookie: { maxAge: 30 * 60 * 1000  } // set true if using https
+    cookie: {
+        maxAge: 30 * 60 * 1000,
+        sameSite: "lax", // <- for cross-origin
+        secure: false // true if using https
+    }
 }));
 
 const client = new MongoClient(process.env.MONGO_URI);
@@ -34,7 +44,7 @@ async function connectDB() {
 }
 connectDB();
 
-// Protiect all admin routes
+// Protect all admin routes
 function adminOnly(req, res, next) {
     if (!req.session.admin) {
         return res.status(401).json({ message: "Unauthorized" });
@@ -76,6 +86,13 @@ app.post("/api/admin/login", async (req, res) => {
     }
 });
 
+// test route
+app.get("/api/admin/test-users", async (req, res) => {
+    const db = client.db(dbName);
+    const users = await db.collection("users").find().toArray();
+    res.json(users);
+});
+
 // Example: check session
 app.get("/api/admin/dashboard", (req, res) => {
     if (!req.session.admin) {
@@ -85,10 +102,11 @@ app.get("/api/admin/dashboard", (req, res) => {
 });
 
 // Fetch all users
-app.get("/api/admin/users/:id", adminOnly, async (req, res) => {
+app.get("/api/admin/users", adminOnly, async (req, res) => {
+    console.log("GET /api/admin/users hit");
     const db = client.db(dbName);
-    const user = await db.collection("users").findOne({ userID: req.params.id });
-    res.json(user);
+    const users = await db.collection("users").find().toArray();
+    res.json(users);
 });
 
 // Verify or Unveryfy a user
@@ -138,6 +156,14 @@ app.get("/api/admin/rides/active", adminOnly, async (req, res) => {
     res.json(rides);
 });
 
+// Get bookings per ride
+app.get("/api/admin/bookings/:rideId", adminOnly, async (req, res) => {
+    const db = client.db(dbName);
+    const bookings = await db.collection("bookings").find({ rideId: req.params.rideId }).toArray();
+    res.json(bookings);
+});
+
+
 // Monitor Transactions or Payments
 app.get("/api/admin/payments", adminOnly, async (req, res) => {
     const db = client.db(dbName);
@@ -160,3 +186,9 @@ app.get("/api/admin/reports", adminOnly, async (req, res) => {
 app.listen(4000, () => {
     console.log("Admin NodeJS backend running at port 4000");
 });
+
+// Debug 
+app.get("/api/admin/check", (req, res) => {
+    res.json({ session: req.session });
+});
+
