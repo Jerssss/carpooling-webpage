@@ -2,7 +2,7 @@
 html, body {
     width: 100%;
     max-width: 100%;
-    overflow-x: hidden;      /* Prevent horizontal overflow */
+    overflow-x: hidden;
 }
 
 /* ===== MAIN LAYOUT ===== */
@@ -10,10 +10,12 @@ body {
     background: #F3EBE9;
 }
 
+/* FIXED: driver-container needs min-height so footer stays down */
 driver-container, .driver-container {
     display: flex;
     gap: 25px;
     padding: 40px 4%;
+    min-height: calc(100vh - 250px); /* keeps footer at bottom */
 }
 
 /* ===== LEFT PANEL ===== */
@@ -66,13 +68,14 @@ driver-container, .driver-container {
     line-height: 1.3;
 }
 
-/* ===== RIGHT PANEL ===== */
+/* ===== RIGHT PANEL (FIXED) ===== */
 .right-panel {
     width: 72%;
     background: #fff;
     border-radius: 12px;
-    padding: 40px 45px;
+    padding: 25px 30px; /* reduced padding */
     box-shadow: 0 4px 18px rgba(0,0,0,0.1);
+    min-height: 500px; /* prevents footer from floating upward */
 }
 
 .content-window {
@@ -83,43 +86,48 @@ driver-container, .driver-container {
     display: block;
 }
 
+/* Title (date) */
 .content-window h1 {
-    font-size: 30px;
-    font-weight: 700;
+    font-size: 26px;
     margin-bottom: 5px;
 }
 
+/* Route title (Maryheights - Camp 7) */
+.content-window .route-title {
+    text-align: left !important;
+    font-size: 20px;
+    margin-bottom: 5px;
+}
+
+/* Time info */
 .time {
-    font-size: 14px;
-    margin-bottom: 20px;
+    font-size: 15px;
+    margin-bottom: 15px;
     opacity: 0.7;
 }
 
-.content-window h2 {
-    text-align: right;
-    margin-bottom: 25px;
-    font-size: 20px;
-    font-weight: 700;
+/* Section headers */
+.pickup-title,
+.section-title {
+    margin-top: 10px;
+    margin-bottom: 8px; /* reduced to remove huge space */
+    font-size: 18px;
+    text-align: left;
 }
 
-/* Route heading under the date */
+/* REMOVE problematic rule — now minimal */
 .right-panel h2:first-of-type {
     text-align: left;
-    margin-left: 0;
+    margin-bottom: 8px;
     width: 100%;
 }
 
-.content-window h2.section-title {
+/* Generic h2 fallback */
+.content-window h2 {
     text-align: left;
-}
-
-.section-title {
-    font-size: 20px;
-    font-weight: 600;
-    margin-top: 20px;
     margin-bottom: 10px;
-    color: #333;
-    text-align: left;
+    font-size: 18px;
+    font-weight: 700;
 }
 
 /* ===== PASSENGER LIST ===== */
