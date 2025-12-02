@@ -219,3 +219,12 @@ main {
     grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
   }
 }
+
+.ride-section-title {
+  margin-top: 0;
+  padding-top: 0;
+}
+
+.ride-info p {
+  align-items: center;
+}
