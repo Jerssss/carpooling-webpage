@@ -173,3 +173,11 @@ h1 {
     width: 130px;
   }
 }
+
+.about-features {
+  overflow-x: hidden;
+}
+
+.team-container {
+  overflow-x: hidden;
+}
