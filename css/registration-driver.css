@@ -101,6 +101,13 @@ body {
     height: 30px;
 }
 
+/* ==== FILE NAME DISPLAY ==== */
+.file-selected {
+    font-weight: 600;
+    color: #ff9800;
+}
+
+
 /* Submit Button */
 .submit-btn {
     width: 100%;

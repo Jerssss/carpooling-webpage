@@ -4,6 +4,21 @@ document.addEventListener("DOMContentLoaded", () => {
   const form = document.querySelector(".registration-form");
   if (!form) return;
 
+  // ==== FILE NAME PREVIEW =====
+  const fileInputs = document.querySelectorAll(".file-upload-big input[type='file']");
+
+  fileInputs.forEach(input => {
+    input.addEventListener("change", () => {
+      const file = input.files[0];
+      const labelSpan = input.parentElement.querySelector(".file-label");
+
+      if (file) {
+        labelSpan.innerHTML = `<strong class="file-selected">${file.name}</strong>`;
+      }
+    });
+  });
+
+  // ===== FORM SUBMIT =====
   form.addEventListener("submit", async e => {
     e.preventDefault();
 
@@ -21,8 +36,7 @@ document.addEventListener("DOMContentLoaded", () => {
       alert(data.message);
 
       if (data.success) {
-        // Assuming login.html is in the root of your project folder
-        let projectFolder = "/9467_it312-teamarc_midtermproject"; // <-- your project folder in htdocs
+        let projectFolder = "/9467_it312-teamarc_midtermproject";
         window.location.href = `${projectFolder}/login.html`;
       }
 
