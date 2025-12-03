@@ -109,15 +109,18 @@ document.addEventListener("DOMContentLoaded", () => {
 
         let passengersHTML = "";
         ride.passengers.forEach(p => {
+            const picPath = p.picture && p.picture.startsWith('images/') ? `../${p.picture}` : `../images/${p.picture || 'p1.png'}`;
             passengersHTML += `
                 <div class="passenger-card">
-                    <img src="../${p.picture}" class="profile-img" />
+                    <img src="${picPath}" class="profile-img" />
                     <div class="info">
                         <p class="name">${p.name}</p>
                         <p class="num">${p.phone}</p>
                         <p class="loc">${p.pickupLocation}</p>
                     </div>
-                    <img src="../images/location.png" class="loc-icon" />
+                    <button class="loc-icon-btn" type="button" title="Show on map">
+                        <img src="../images/location.png" class="loc-icon" />
+                    </button>
                 </div>
             `;
         });
@@ -132,6 +135,17 @@ document.addEventListener("DOMContentLoaded", () => {
         `;
 
         rightPanel.appendChild(div);
+        // Bind map openers within this window
+        div.querySelectorAll('.passenger-card').forEach(card => {
+            const btn = card.querySelector('.loc-icon-btn');
+            const locText = card.querySelector('.loc')?.textContent?.trim();
+            const name = card.querySelector('.name')?.textContent?.trim() || 'Passenger';
+            if (btn && locText && typeof window.showLocationOnMap === 'function') {
+                btn.addEventListener('click', () => {
+                    window.showLocationOnMap(locText, `${name}'s pickup`);
+                });
+            }
+        });
     }
 
     function createHistoryWindow(entry, dateKey) {

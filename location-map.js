@@ -8,10 +8,12 @@
     if (!window.GMAPS_MAP_ID) window.GMAPS_MAP_ID = MAP_ID;
 
     // Modal DOM references
-    const modal = document.getElementById('locationMapModal');
-    const closeBtn = document.getElementById('closeLocationMap');
-    const mapTitle = document.getElementById('locationMapTitle');
-    const mapEl = document.getElementById('locationMap');
+    // Support both passenger-side and driver-side modal IDs
+    const modal = document.getElementById('locationMapModal') || document.getElementById('locMapModal');
+    const closeBtn = document.getElementById('closeLocationMap') || document.getElementById('closeLocMap');
+    const mapTitle = document.getElementById('locationMapTitle') || document.getElementById('locMapTitle');
+    const mapEl = document.getElementById('locationMap') || document.getElementById('locMap');
+    const backdropEl = document.querySelector('#locationMapModal .map-backdrop') || document.querySelector('#locMapModal .map-backdrop');
 
     // Runtime map state
     let loaded = false;
@@ -131,6 +133,7 @@
     // Close interactions: close button, backdrop click, and Escape key
     closeBtn && closeBtn.addEventListener('click', closeModal);
     modal && modal.addEventListener('click', (e) => { if (e.target === modal) closeModal(); });
+    backdropEl && backdropEl.addEventListener('click', closeModal);
     document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeModal(); });
 
     // Preload Maps on DOM ready to avoid first-click latency/flakiness

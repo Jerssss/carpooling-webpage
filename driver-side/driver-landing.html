@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -8,6 +9,7 @@
     <link rel="stylesheet" href="css/driver-landing.css">
     <link rel="stylesheet" href="../css/notifications.css">
 </head>
+
 <body>
 
     <!-- NAVBAR -->
@@ -22,24 +24,25 @@
             <li><a href="../driver-side/driver-feedbacks.html">Feedbacks</a></li>
         </ul>
         <div class="nav-right">
-                        <div class="nav-bell">
-                                <img src="../images/bell.png" class="bell-icon" alt="Notifications" onclick="toggleDriverNotifications()">
-                                <div id="notificationsContainer">
-                                    <div class="notifications-dropdown" id="notificationsDropdown">
-                                        <div class="notif-tabs">
-                                            <span class="active" id="allTab">All</span>
-                                            <span id="unreadTab">Unread</span>
-                                        </div>
-                                        <div class="notif-list" id="notifList">
-                                            <div class="notif-item">
-                                                <div class="notif-content">
-                                                    <p>Loading notifications...</p>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
+            <div class="nav-bell">
+                <img src="../images/bell.png" class="bell-icon" alt="Notifications"
+                    onclick="toggleDriverNotifications()">
+                <div id="notificationsContainer">
+                    <div class="notifications-dropdown" id="notificationsDropdown">
+                        <div class="notif-tabs">
+                            <span class="active" id="allTab">All</span>
+                            <span id="unreadTab">Unread</span>
                         </div>
+                        <div class="notif-list" id="notifList">
+                            <div class="notif-item">
+                                <div class="notif-content">
+                                    <p>Loading notifications...</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
             <img src="../images/bod.jpg" class="user-pic" />
         </div>
     </nav>
@@ -48,163 +51,74 @@
 
         <!-- LEFT SIDEBAR -->
         <div class="left-panel">
-              <h2>Welcome!</h2>
+            <h2>Welcome!</h2>
             <h3>Scheduled Carpool</h3>
-            <div class="schedule-list">
-                <div class="schedule-card" data-target="day-1125">
-                    <p class="date">11/25/2025</p>
-                    <p class="route">Maryheights - Camp 7</p>
-                    <p class="desc">Body text for whatever you’d like to say...</p>
-                </div>
-            </div>
+            <div class="schedule-list"></div>
 
             <h3>History</h3>
-            <div class="history-list">
-                <div class="schedule-card" data-target="day-1124">
-                    <p class="date">11/24/2025</p>
-                    <p class="route">Maryheights - Camp 7</p>
-                    <p class="desc">Body text for previous entry...</p>
-                </div>
-                <div class="schedule-card" data-target="day-1123">
-                    <p class="date">11/23/2025</p>
-                    <p class="route">Maryheights - Camp 7</p>
-                    <p class="desc">Another history entry...</p>
-                </div>
-                <div class="schedule-card" data-target="day-1122">
-                    <p class="date">11/22/2025</p>
-                    <p class="route">Maryheights - Camp 7</p>
-                    <p class="desc">Another history entry...</p>
-                </div>
-            </div>
+            <div class="history-list"></div>
         </div>
 
-        <!-- RIGHT CONTENT WINDOW -->
-        <div class="right-panel">
-
-            <!-- DEFAULT CONTENT FOR 11/25 -->
-            <div class="content-window active" id="day-1125">
-
-                <h1>11/25/2025 </h1>
-                <h2 class="route-title">Maryheights - Camp 7</h2>
-                <p class="time">4:30 PM - 5:30 PM</p>
-
-                <h2 class="pickup-title">For Pick Up</h2>
-                <h2 class="section-title">Passengers</h2>
-
-                <div class="passenger-list">
-
-                    <div class="passenger-card">
-                        <img src="../images/p1.png" class="profile-img" />
-                        <div class="info">
-                            <p class="name">Lorraine Adame</p>
-                            <p class="num">09231232242</p>
-                            <p class="loc">Studio Coffee Camp 7</p>
-                        </div>
-                        <img src="../images/location.png" class="loc-icon" />
-                    </div>
-
-                    <div class="passenger-card">
-                        <img src="../images/p2.png" class="profile-img" />
-                        <div class="info">
-                            <p class="name">ishowspeed</p>
-                            <p class="num">09231232242</p>
-                            <p class="loc">Studio Coffee Camp 7</p>
-                        </div>
-                        <img src="../images/location.png" class="loc-icon" />
-                    </div>
-
-                    <div class="passenger-card">
-                        <img src="../images/p3.png" class="profile-img" />
-                        <div class="info">
-                            <p class="name">Loq</p>
-                            <p class="num">09231232242</p>
-                            <p class="loc">Studio Coffee Camp 7</p>
-                        </div>
-                        <img src="../images/location.png" class="loc-icon" />
-                    </div>
-
-                    <div class="passenger-card">
-                        <img src="../images/p4.png" class="profile-img" />
-                        <div class="info">
-                            <p class="name">Gianana</p>
-                            <p class="num">09231232242</p>
-                            <p class="loc">Studio Coffee Camp 7</p>
-                        </div>
-                        <img src="../images/location.png" class="loc-icon" />
-                    </div>
-
-                </div>
-
-            </div>
-
-            <!-- OTHER DAYS -->
-            <div class="content-window" id="day-1124">
-                <h1>11/24/2025</h1>
-                <p>History details go here...</p>
-            </div>
-
-            <div class="content-window" id="day-1123">
-                <h1>11/23/2025</h1>
-                <p>History details go here...</p>
-            </div>
-
-            <div class="content-window" id="day-1122">
-                <h1>11/22/2025</h1>
-                <p>History details go here...</p>
-            </div>
-
-        </div>
+        <!-- RIGHT CONTENT WINDOW (populated by driver-landing.js) -->
+        <div class="right-panel"></div>
     </div>
 
-<script>
-    // Click logic for switching windows
-    const cards = document.querySelectorAll('.schedule-card');
-    const windows = document.querySelectorAll('.content-window');
+    <!-- Window switching and dynamic content handled by driver-landing.js -->
 
-    cards.forEach(card => {
-        card.addEventListener('click', () => {
-            const target = card.getAttribute('data-target');
+    <!-- Shared Map Modal for location-map.js -->
+    <div id="locMapModal" class="map-modal" aria-hidden="true">
+        <div class="map-card" role="dialog" aria-modal="true" aria-labelledby="locMapTitle">
+            <div class="map-header">
+                <h3 id="locMapTitle">Location</h3>
+                <button type="button" class="btn secondary" id="closeLocMap">Close</button>
+            </div>
+            <div class="map-body">
+                <div id="locMap"></div>
+            </div>
+        </div>
+        <div class="map-backdrop" aria-hidden="true"></div>
+        <div class="sr-only" id="locMapStatus" aria-live="polite"></div>
+        <div id="locMapToast" class="map-toast" aria-hidden="true"></div>
+    </div>
 
-            windows.forEach(w => w.classList.remove('active'));
-            document.getElementById(target).classList.add('active');
+    <script src="../location-map.js" defer></script>
+    <!-- Map button binding is done within driver-landing.js after dynamic render -->
+
+    <script>
+        function toggleDriverNotifications() {
+            const dd = document.getElementById('notificationsDropdown');
+            if (dd) dd.classList.toggle('show');
+        }
+        // Close dropdown on outside click
+        document.addEventListener('click', (e) => {
+            const inside = e.target.closest('.nav-bell');
+            const dd = document.getElementById('notificationsDropdown');
+            if (dd && !inside) dd.classList.remove('show');
         });
-    });
-</script>
+    </script>
 
-<script>
-    function toggleDriverNotifications() {
-        const dd = document.getElementById('notificationsDropdown');
-        if (dd) dd.classList.toggle('show');
-    }
-    // Close dropdown on outside click
-    document.addEventListener('click', (e) => {
-        const inside = e.target.closest('.nav-bell');
-        const dd = document.getElementById('notificationsDropdown');
-        if (dd && !inside) dd.classList.remove('show');
-    });
-</script>
+    <script src="../passenger-side/js/notifications.js" defer></script>
 
-<script src="../passenger-side/js/notifications.js" defer></script>
-
-<!-- ===== FOOTER SECTION ===== -->
+    <!-- ===== FOOTER SECTION ===== -->
     <footer class="site-footer">
-      <div class="social-icons">
-        <a href="#"><img src="../images/facebook-app-symbol.png" alt="Facebook"></a>
-        <a href="#"><img src="../images/instagram.png" alt="Instagram"></a>
-        <a href="#"><img src="../images/twitter.png" alt="Twitter"></a>
-        <a href="#"><img src="../images/google.png" alt="Google"></a>
-        <a href="#"><img src="../images/youtube.png" alt="YouTube"></a>
-      </div>
+        <div class="social-icons">
+            <a href="#"><img src="../images/facebook-app-symbol.png" alt="Facebook"></a>
+            <a href="#"><img src="../images/instagram.png" alt="Instagram"></a>
+            <a href="#"><img src="../images/twitter.png" alt="Twitter"></a>
+            <a href="#"><img src="../images/google.png" alt="Google"></a>
+            <a href="#"><img src="../images/youtube.png" alt="YouTube"></a>
+        </div>
 
-            <ul class="footer-nav">
-              <li><a href="../driver-side/driver-landing.html">Home</a></li>
-              <li><a href="../driver-side/driver-schedule-carpool.html">Schedule</a></li>
-              <li><a href="#">Feedbacks</a></li>
-              <li><a href="../passenger-side/about.html">Our Team</a></li>
-            </ul>
+        <ul class="footer-nav">
+            <li><a href="../driver-side/driver-landing.html">Home</a></li>
+            <li><a href="../driver-side/driver-schedule-carpool.html">Schedule</a></li>
+            <li><a href="#">Feedbacks</a></li>
+            <li><a href="../passenger-side/about.html">Our Team</a></li>
+        </ul>
 
-      <p class="footer-copy">Copyright ©2025 | Designed by <span>Carma</span></p>
+        <p class="footer-copy">Copyright ©2025 | Designed by <span>Carma</span></p>
     </footer>
     <script src="js/driver-landing.js"></script>
 </body>
+
 </html>
