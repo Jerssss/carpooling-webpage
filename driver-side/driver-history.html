@@ -3,10 +3,10 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Driver History</title>
+    <title>Driver History & Feedbacks</title>
 
     <link rel="stylesheet" href="css/driver-style.css">
-    <link rel="stylesheet" href="css/driver-landing.css">
+    <link rel="stylesheet" href="css/driver-history.css">
     <link rel="stylesheet" href="../css/notifications.css">
 </head>
 <body>
@@ -26,13 +26,11 @@
     <div class="nav-right">
         <div class="nav-bell">
             <img src="../images/bell.png" class="bell-icon" alt="Notifications"
-                 onclick="toggleDriverNotifications()">
+                onclick="toggleDriverNotifications()">
             <div id="notificationsContainer">
                 <div class="notifications-dropdown" id="notificationsDropdown">
                     <div class="notif-list" id="notifList">
-                        <div class="notif-item">
-                            <p>Loading notifications...</p>
-                        </div>
+                        <div class="notif-item"><p>Loading...</p></div>
                     </div>
                 </div>
             </div>
@@ -42,24 +40,137 @@
 </nav>
 
 <div class="driver-container">
+
     <!-- LEFT PANEL -->
     <div class="left-panel">
-        <h2>Ride History</h2>
-        <div class="history-list"></div>
+        <h2>Completed Rides</h2>
+
+        <div class="history-list">
+
+            <!-- COMPLETED RIDE CARD 1 -->
+            <div class="history-card"
+                onclick="showRide(this)"
+                data-date="Nov 20, 2025"
+                data-route="Maryheights → Camp 7"
+                data-car="Toyota Vios"
+                data-time="6:00 AM"
+                data-seats="4 Seats"
+                data-price="₱120">
+
+                <div class="card-top">
+                    <h3 class="card-date">Nov 20, 2025</h3>
+                    <span class="status complete">Completed</span>
+                </div>
+
+                <div class="card-route">Maryheights → Camp 7</div>
+
+                <div class="card-meta">
+                    <span>🚗 Toyota Vios</span>
+                    <span>🕒 6:00 AM</span>
+                    <span>💺 4 Seats</span>
+                    <span>💰 ₱120</span>
+                </div>
+            </div>
+
+            <!-- COMPLETED RIDE CARD 2 -->
+            <div class="history-card"
+                onclick="showRide(this)"
+                data-date="Nov 18, 2025"
+                data-route="Session Road → Bakakeng"
+                data-car="Honda Brio"
+                data-time="7:30 AM"
+                data-seats="3 Seats"
+                data-price="₱100">
+
+                <div class="card-top">
+                    <h3 class="card-date">Nov 18, 2025</h3>
+                    <span class="status complete">Completed</span>
+                </div>
+
+                <div class="card-route">Session Road → Bakakeng</div>
+
+                <div class="card-meta">
+                    <span>🚗 Honda Brio</span>
+                    <span>🕒 7:30 AM</span>
+                    <span>💺 3 Seats</span>
+                    <span>💰 ₱100</span>
+                </div>
+            </div>
+
+        </div>
     </div>
 
     <!-- RIGHT PANEL -->
-    <div class="right-panel"></div>
+    <div class="right-panel" id="rideDetails">
+        <h2>Select a completed ride to view details and feedback</h2>
+    </div>
+
 </div>
 
-<script src="../passenger-side/js/notifications.js" defer></script>
-<script src="js/driver-history.js"></script>
+<script src="../passenger-side/js/notifications.js"></script>
 
 <script>
-    function toggleDriverNotifications() {
-        const dd = document.getElementById('notificationsDropdown');
-        if (dd) dd.classList.toggle('show');
-    }
+function toggleDriverNotifications() {
+    const dd = document.getElementById('notificationsDropdown');
+    if (dd) dd.classList.toggle('show');
+}
+
+function showRide(card) {
+    const date = card.dataset.date;
+    const route = card.dataset.route;
+    const car = card.dataset.car;
+    const time = card.dataset.time;
+    const seats = card.dataset.seats;
+    const price = card.dataset.price;
+
+    // Highlight selected card
+    document.querySelectorAll('.history-card').forEach(c => c.classList.remove('selected'));
+    card.classList.add('selected');
+
+    // Right panel content
+    const panel = document.getElementById('rideDetails');
+    panel.innerHTML = `
+        <div class="ride-card">
+
+            <div class="ride-header">
+                <h1>${date}</h1>
+                <span class="status complete">Completed</span>
+            </div>
+
+            <h3 class="route-title">${route}</h3>
+
+            <div class="ride-meta">
+                <div>🚗 <strong>Car:</strong> ${car}</div>
+                <div>🕒 <strong>Time:</strong> ${time}</div>
+                <div>💺 <strong>Seats:</strong> ${seats}</div>
+                <div>💰 <strong>Fare:</strong> ${price}</div>
+            </div>
+
+            <h3 class="feedback-title">Passenger Feedback</h3>
+
+            <div class="feedback-list">
+                <div class="feedback-card">
+                    <div class="avatar"></div>
+                    <div class="info">
+                        <div class="name">Juan D.</div>
+                        <div class="comment">Very safe and smooth ride 👍</div>
+                    </div>
+                    <div class="rating">★★★★★</div>
+                </div>
+
+                <div class="feedback-card">
+                    <div class="avatar"></div>
+                    <div class="info">
+                        <div class="name">Maria S.</div>
+                        <div class="comment">Comfortable and friendly driver</div>
+                    </div>
+                    <div class="rating">★★★★☆</div>
+                </div>
+            </div>
+
+        </div>
+    `;
+}
 </script>
 
 </body>

@@ -1,0 +1,139 @@
+/* ===== GLOBAL ===== */
+html, body {
+    width: 100%;
+    overflow-x: hidden;
+}
+
+body {
+    background: #F3EBE9;
+    font-family: 'Poppins', Arial, sans-serif;
+}
+
+/* ===== MAIN CONTAINER ===== */
+.driver-container {
+    display: flex;
+    gap: 25px;
+    padding: 40px 4%;
+    min-height: calc(100vh - 250px);
+}
+
+/* ===== LEFT PANEL ===== */
+.left-panel {
+    width: 35%;
+    padding: 20px;
+}
+
+.left-panel h2 {
+    font-size: 28px;
+    margin-bottom: 20px;
+}
+
+/* ===== HISTORY CARDS (LEFT) ===== */
+.history-list {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.history-card {
+    background: #fff;
+    padding: 18px;
+    border-radius: 14px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+.history-card:hover {
+    transform: translateX(4px);
+}
+
+.history-card.selected {
+    border: 2px solid #ffc400;
+}
+
+.history-date {
+    font-weight: 700;
+    font-size: 16px;
+}
+
+.history-route {
+    font-size: 13px;
+    opacity: 0.7;
+}
+
+/* ===== RIGHT PANEL ===== */
+.right-panel {
+    width: 65%;
+    background: #fff;
+    border-radius: 16px;
+    padding: 25px 30px;
+    box-shadow: 0 6px 18px rgba(0,0,0,0.12);
+}
+
+/* Ride Card inside right panel */
+.ride-card h1 {
+    font-size: 26px;
+    margin-bottom: 6px;
+}
+
+.route-title {
+    font-size: 18px;
+    margin-bottom: 15px;
+}
+
+/* Feedback list */
+.feedback-list {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.feedback-card {
+    background: #fafafa;
+    padding: 15px;
+    border-radius: 14px;
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    border: 1px solid #eee;
+}
+
+.avatar {
+    width: 55px;
+    height: 55px;
+    background: #dcdcdc;
+    border-radius: 50%;
+}
+
+.info {
+    flex: 1;
+}
+
+.name {
+    font-weight: 700;
+}
+
+.comment {
+    font-size: 14px;
+    opacity: 0.75;
+    margin-top: 3px;
+}
+
+.rating {
+    font-size: 18px;
+    color: #ffcc00;
+    font-weight: bold;
+}
+
+/* ===== RESPONSIVE ===== */
+@media (max-width: 1050px) {
+    .driver-container {
+        flex-direction: column;
+    }
+
+    .left-panel, 
+    .right-panel {
+        width: 100%;
+    }
+}
