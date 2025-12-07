@@ -366,6 +366,7 @@
           throw new Error(json.error || `HTTP ${res.status}`);
         }
         alert('Carpool created successfully!');
+        window.location.href = `${BASE}/driver-side/driver-landing.html`;
       } catch (err) {
         console.error('Create carpool failed:', err);
         alert(`Failed to create carpool: ${err.message}`);
