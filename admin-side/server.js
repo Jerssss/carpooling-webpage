@@ -26,7 +26,7 @@ app.use(session({
     saveUninitialized: true,
     cookie: {
         maxAge: 30 * 60 * 1000,
-        sameSite: "lax", // <- for cross-origin
+        sameSite: "lax", // for cross-origin
         secure: false // true if using https
     }
 }));
@@ -149,16 +149,26 @@ app.get("/api/admin/vehicles/pending", adminOnly, async (req, res) => {
     res.json(vehicles);
 });
 
-// Approve a vehicle
-app.patch("/api/admin/vehicles/:id/approve", adminOnly, async (req, res) => {
+// Update vehicle verification status (approve/reject)
+app.patch("/api/admin/vehicles/:id", adminOnly, async (req, res) => {
     const db = client.db(dbName);
+    const { isVerified } = req.body; // true for approve, false for reject
 
-    await db.collection("vehicles").updateOne(
-        { carId: req.params.id },
-        { $set: { isVerified: true } }
-    );
+    try {
+        const result = await db.collection("vehicles").updateOne(
+            { carId: req.params.id },
+            { $set: { isVerified } }
+        );
 
-    res.json({ message: "Vehicle approved" });
+        if (result.matchedCount === 0) {
+            return res.status(404).json({ message: "Vehicle not found" });
+        }
+
+        res.json({ message: `Vehicle ${isVerified ? "approved" : "rejected"}` });
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ message: "Server error" });
+    }
 });
 
 // Monitor active rides

@@ -147,7 +147,7 @@ async function loadVehicles() {
 
 async function updateVehicle(carId, status) {
     try {
-        await fetch(`${API}/vehicles/${carId}/approve`, {
+        await fetch(`${API}/vehicles/${carId}`, {
             method: "PATCH",
             headers: { "Content-Type": "application/json" },
             credentials: "include",
