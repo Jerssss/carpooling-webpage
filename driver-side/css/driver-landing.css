@@ -15,7 +15,7 @@ driver-container, .driver-container {
     display: flex;
     gap: 25px;
     padding: 40px 4%;
-    min-height: calc(100vh - 250px); /* keeps footer at bottom */
+    min-height: calc(100vh - 250px);
 }
 
 /* ===== LEFT PANEL ===== */
@@ -37,12 +37,14 @@ driver-container, .driver-container {
     opacity: 0.7;
 }
 
-.schedule-list, .history-list {
+/* Only scheduled list remains */
+.schedule-list {
     display: flex;
     flex-direction: column;
     gap: 15px;
 }
 
+/* ===== SCHEDULE CARDS ===== */
 .schedule-card {
     background: #fff;
     padding: 18px;
@@ -68,14 +70,14 @@ driver-container, .driver-container {
     line-height: 1.3;
 }
 
-/* ===== RIGHT PANEL (FIXED) ===== */
+/* ===== RIGHT PANEL ===== */
 .right-panel {
     width: 72%;
     background: #fff;
     border-radius: 12px;
-    padding: 25px 30px; /* reduced padding */
+    padding: 25px 30px;
     box-shadow: 0 4px 18px rgba(0,0,0,0.1);
-    min-height: 500px; /* prevents footer from floating upward */
+    min-height: 500px;
 }
 
 .content-window {
@@ -86,20 +88,18 @@ driver-container, .driver-container {
     display: block;
 }
 
-/* Title (date) */
+/* Titles */
 .content-window h1 {
     font-size: 26px;
     margin-bottom: 5px;
 }
 
-/* Route title (Maryheights - Camp 7) */
 .content-window .route-title {
     text-align: left !important;
     font-size: 20px;
     margin-bottom: 5px;
 }
 
-/* Time info */
 .time {
     font-size: 15px;
     margin-bottom: 15px;
@@ -110,19 +110,17 @@ driver-container, .driver-container {
 .pickup-title,
 .section-title {
     margin-top: 10px;
-    margin-bottom: 8px; /* reduced to remove huge space */
+    margin-bottom: 8px;
     font-size: 18px;
     text-align: left;
 }
 
-/* REMOVE problematic rule — now minimal */
 .right-panel h2:first-of-type {
     text-align: left;
     margin-bottom: 8px;
     width: 100%;
 }
 
-/* Generic h2 fallback */
 .content-window h2 {
     text-align: left;
     margin-bottom: 10px;
@@ -173,13 +171,7 @@ driver-container, .driver-container {
     margin-top: 2px;
 }
 
-.loc-icon {
-    width: 25px;
-    height: 25px;
-    margin-left: auto;
-}
-
-/* Clickable location icon button */
+/* ===== LOCATION BUTTON ===== */
 .loc-icon-btn {
     display: inline-flex;
     align-items: center;
@@ -207,7 +199,7 @@ driver-container, .driver-container {
     display: block;
 }
 
-/* Map modal styles*/
+/* ===== MAP MODAL ===== */
 .map-modal {
     position: fixed;
     inset: 0;
@@ -254,7 +246,7 @@ driver-container, .driver-container {
     height: 100%;
 }
 
-/* Generic button styles used by modal */
+/* Buttons */
 .btn {
     padding: 10px 14px;
     border: none;
@@ -271,9 +263,11 @@ driver-container, .driver-container {
     .driver-container {
         flex-direction: column;
     }
+
     .left-panel, .right-panel {
         width: 100%;
     }
+
     .content-window h2 {
         text-align: left;
     }

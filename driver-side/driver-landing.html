@@ -12,114 +12,102 @@
 
 <body>
 
-    <!-- NAVBAR -->
-    <nav>
-        <div class="nav-left">
-            <img src="../images/carma-logo.png" class="logo" />
-            <span class="site-name">Carma</span>
-        </div>
-        <ul>
-            <li><a href="../driver-side/driver-landing.html" class="active">Home</a></li>
-            <li><a href="../driver-side/driver-schedule-carpool.html">Schedule</a></li>
-            <li><a href="../driver-side/driver-feedbacks.html">Feedbacks</a></li>
-            <li><a href="../driver-side/driver-history.html">History</a></li>
-        </ul>
-        <div class="nav-right">
-            <div class="nav-bell">
-                <img src="../images/bell.png" class="bell-icon" alt="Notifications"
-                    onclick="toggleDriverNotifications()">
-                <div id="notificationsContainer">
-                    <div class="notifications-dropdown" id="notificationsDropdown">
-                        <div class="notif-tabs">
-                            <span class="active" id="allTab">All</span>
-                            <span id="unreadTab">Unread</span>
-                        </div>
-                        <div class="notif-list" id="notifList">
-                            <div class="notif-item">
-                                <div class="notif-content">
-                                    <p>Loading notifications...</p>
-                                </div>
-                            </div>
+<!-- NAVBAR -->
+<nav>
+    <div class="nav-left">
+        <img src="../images/carma-logo.png" class="logo" />
+        <span class="site-name">Carma</span>
+    </div>
+    <ul>
+        <li><a href="../driver-side/driver-landing.html" class="active">Home</a></li>
+        <li><a href="../driver-side/driver-schedule-carpool.html" class="active">Schedule</a></li>
+        <li><a href="../driver-side/driver-history.html">History</a></li>
+        <li><a href="../driver-side/driver-feedbacks.html">Feedbacks</a></li>
+    </ul>
+    <div class="nav-right">
+        <div class="nav-bell">
+            <img src="../images/bell.png" class="bell-icon" alt="Notifications"
+                 onclick="toggleDriverNotifications()">
+            <div id="notificationsContainer">
+                <div class="notifications-dropdown" id="notificationsDropdown">
+                    <div class="notif-list" id="notifList">
+                        <div class="notif-item">
+                            <p>Loading notifications...</p>
                         </div>
                     </div>
                 </div>
             </div>
-            <img src="../images/bod.jpg" class="user-pic" />
         </div>
-    </nav>
+        <img src="../images/bod.jpg" class="user-pic" />
+    </div>
+</nav>
 
-    <div class="driver-container">
+<div class="driver-container">
 
-        <!-- LEFT SIDEBAR -->
-        <div class="left-panel">
-            <h2>Welcome!</h2>
-            <h3>Scheduled Carpool</h3>
-            <div class="schedule-list"></div>
-
-            <h3>History</h3>
-            <div class="history-list"></div>
-        </div>
-
-        <!-- RIGHT CONTENT WINDOW (populated by driver-landing.js) -->
-        <div class="right-panel"></div>
+    <!-- LEFT SIDEBAR -->
+    <div class="left-panel">
+        <h2>Welcome!</h2>
+        <h3>Scheduled Carpool</h3>
+        <div class="schedule-list"></div>
     </div>
 
-    <!-- Window switching and dynamic content handled by driver-landing.js -->
+    <!-- RIGHT CONTENT WINDOW -->
+    <div class="right-panel"></div>
+</div>
 
-    <!-- Shared Map Modal for location-map.js -->
-    <div id="locMapModal" class="map-modal" aria-hidden="true">
-        <div class="map-card" role="dialog" aria-modal="true" aria-labelledby="locMapTitle">
-            <div class="map-header">
-                <h3 id="locMapTitle">Location</h3>
-                <button type="button" class="btn secondary" id="closeLocMap">Close</button>
-            </div>
-            <div class="map-body">
-                <div id="locMap"></div>
-            </div>
+<!-- Shared Map Modal -->
+<div id="locMapModal" class="map-modal" aria-hidden="true">
+    <div class="map-card" role="dialog" aria-modal="true" aria-labelledby="locMapTitle">
+        <div class="map-header">
+            <h3 id="locMapTitle">Location</h3>
+            <button type="button" class="btn secondary" id="closeLocMap">Close</button>
         </div>
-        <div class="map-backdrop" aria-hidden="true"></div>
-        <div class="sr-only" id="locMapStatus" aria-live="polite"></div>
-        <div id="locMapToast" class="map-toast" aria-hidden="true"></div>
+        <div class="map-body">
+            <div id="locMap"></div>
+        </div>
+    </div>
+    <div class="map-backdrop" aria-hidden="true"></div>
+    <div class="sr-only" id="locMapStatus" aria-live="polite"></div>
+    <div id="locMapToast" class="map-toast" aria-hidden="true"></div>
+</div>
+
+<script src="../location-map.js" defer></script>
+
+<script>
+    function toggleDriverNotifications() {
+        const dd = document.getElementById('notificationsDropdown');
+        if (dd) dd.classList.toggle('show');
+    }
+
+    document.addEventListener('click', (e) => {
+        const inside = e.target.closest('.nav-bell');
+        const dd = document.getElementById('notificationsDropdown');
+        if (dd && !inside) dd.classList.remove('show');
+    });
+</script>
+
+<script src="../passenger-side/js/notifications.js" defer></script>
+
+<!-- FOOTER -->
+<footer class="site-footer">
+    <div class="social-icons">
+        <a href="#"><img src="../images/facebook-app-symbol.png" alt="Facebook"></a>
+        <a href="#"><img src="../images/instagram.png" alt="Instagram"></a>
+        <a href="#"><img src="../images/twitter.png" alt="Twitter"></a>
+        <a href="#"><img src="../images/google.png" alt="Google"></a>
+        <a href="#"><img src="../images/youtube.png" alt="YouTube"></a>
     </div>
 
-    <script src="../location-map.js" defer></script>
-    <!-- Map button binding is done within driver-landing.js after dynamic render -->
+    <ul class="footer-nav">
+        <li><a href="../driver-side/driver-landing.html">Home</a></li>
+        <li><a href="../driver-side/driver-schedule-carpool.html">Schedule</a></li>
+        <li><a href="#">Feedbacks</a></li>
+        <li><a href="../passenger-side/about.html">Our Team</a></li>
+    </ul>
 
-    <script>
-        function toggleDriverNotifications() {
-            const dd = document.getElementById('notificationsDropdown');
-            if (dd) dd.classList.toggle('show');
-        }
-        // Close dropdown on outside click
-        document.addEventListener('click', (e) => {
-            const inside = e.target.closest('.nav-bell');
-            const dd = document.getElementById('notificationsDropdown');
-            if (dd && !inside) dd.classList.remove('show');
-        });
-    </script>
+    <p class="footer-copy">Copyright ©2025 | Designed by <span>Carma</span></p>
+</footer>
 
-    <script src="../passenger-side/js/notifications.js" defer></script>
-
-    <!-- ===== FOOTER SECTION ===== -->
-    <footer class="site-footer">
-        <div class="social-icons">
-            <a href="#"><img src="../images/facebook-app-symbol.png" alt="Facebook"></a>
-            <a href="#"><img src="../images/instagram.png" alt="Instagram"></a>
-            <a href="#"><img src="../images/twitter.png" alt="Twitter"></a>
-            <a href="#"><img src="../images/google.png" alt="Google"></a>
-            <a href="#"><img src="../images/youtube.png" alt="YouTube"></a>
-        </div>
-
-        <ul class="footer-nav">
-            <li><a href="../driver-side/driver-landing.html">Home</a></li>
-            <li><a href="../driver-side/driver-schedule-carpool.html">Schedule</a></li>
-            <li><a href="#">Feedbacks</a></li>
-            <li><a href="../passenger-side/about.html">Our Team</a></li>
-        </ul>
-
-        <p class="footer-copy">Copyright ©2025 | Designed by <span>Carma</span></p>
-    </footer>
-    <script src="js/driver-landing.js"></script>
+<script src="js/driver-landing.js"></script>
 </body>
-
 </html>

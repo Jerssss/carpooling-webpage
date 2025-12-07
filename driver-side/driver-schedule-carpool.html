@@ -15,38 +15,33 @@
 <body>
     <!-- NAVBAR -->
     <nav>
-        <div class="nav-left">
-            <img src="../images/carma-logo.png" class="logo" />
-            <span class="site-name">Carma</span>
-        </div>
-        <ul>
-            <li><a href="../driver-side/driver-landing.html">Home</a></li>
-            <li><a href="../driver-side/driver-schedule-carpool.html" class="active">Schedule</a></li>
-            <li><a href="../driver-side/driver-feedbacks.html">Feedbacks</a></li>
-            <li><a href="../driver-side/driver-history.html">History</a></li>
-        </ul>
-                <div class="nav-right">
-                        <div class="nav-bell">
-                                <img src="../images/bell.png" class="bell-icon" alt="Notifications" onclick="toggleDriverNotifications()" />
-                                <div id="notificationsContainer">
-                                    <div class="notifications-dropdown" id="notificationsDropdown">
-                                        <div class="notif-tabs">
-                                            <span class="active" id="allTab">All</span>
-                                            <span id="unreadTab">Unread</span>
-                                        </div>
-                                        <div class="notif-list" id="notifList">
-                                            <div class="notif-item">
-                                                <div class="notif-content">
-                                                    <p>Loading notifications...</p>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
+    <div class="nav-left">
+        <img src="../images/carma-logo.png" class="logo" />
+        <span class="site-name">Carma</span>
+    </div>
+    <ul>
+        <li><a href="../driver-side/driver-landing.html" class="active">Home</a></li>
+        <li><a href="../driver-side/driver-schedule-carpool.html " class="active">Schedule</a></li>
+        <li><a href="../driver-side/driver-history.html">History</a></li>
+        <li><a href="../driver-side/driver-feedbacks.html">Feedbacks</a></li>
+    </ul>
+    <div class="nav-right">
+        <div class="nav-bell">
+            <img src="../images/bell.png" class="bell-icon" alt="Notifications"
+                 onclick="toggleDriverNotifications()">
+            <div id="notificationsContainer">
+                <div class="notifications-dropdown" id="notificationsDropdown">
+                    <div class="notif-list" id="notifList">
+                        <div class="notif-item">
+                            <p>Loading notifications...</p>
                         </div>
-            <img src="../images/bod.jpg" class="user-pic" />
+                    </div>
+                </div>
+            </div>
         </div>
-    </nav>
+        <img src="../images/bod.jpg" class="user-pic" />
+    </div>
+</nav>
 
     <!-- FORM SECTION -->
     <div class="form-container">
