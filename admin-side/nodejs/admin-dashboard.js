@@ -76,6 +76,8 @@ async function loadUsers() {
 async function viewUserDetails(userID) {
     try {
         const res = await fetch(`${API}/users/${userID}`, { credentials: "include" });
+        console.log("Response status:", res.status, "Content-Type:", res.headers.get("content-type"));
+        if (!res.ok) throw new Error("Failed to fetch user: " + res.status);
         const u = await res.json();
 
         document.getElementById("modalContent").innerHTML = `
