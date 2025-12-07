@@ -46,6 +46,7 @@ connectDB();
 
 // Protect all admin routes
 function adminOnly(req, res, next) {
+    console.log("adminOnly session:", req.session.admin);
     if (!req.session.admin) {
         return res.status(401).json({ message: "Unauthorized" });
     }
@@ -108,6 +109,21 @@ app.get("/api/admin/users", adminOnly, async (req, res) => {
     const users = await db.collection("users").find().toArray();
     res.json(users);
 });
+
+// Fetch single user details
+app.get("/api/admin/users/:id", adminOnly, async (req, res) => {
+    console.log("GET user by ID hit:", req.params.id);
+    try {
+        const db = client.db(dbName);
+        const user = await db.collection("users").findOne({ userID: req.params.id });
+        if (!user) return res.status(404).json({ message: "User not found" });
+        res.json(user);
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ message: "Server error" });
+    }
+});
+
 
 // Verify or Unveryfy a user
 app.patch("/api/admin/users/:id/verify", adminOnly, async (req, res) => {
