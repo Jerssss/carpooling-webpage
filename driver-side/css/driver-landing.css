@@ -5,12 +5,10 @@ html, body {
     overflow-x: hidden;
 }
 
-/* ===== MAIN LAYOUT ===== */
 body {
     background: #F3EBE9;
 }
 
-/* FIXED: driver-container needs min-height so footer stays down */
 driver-container, .driver-container {
     display: flex;
     gap: 25px;
@@ -20,8 +18,15 @@ driver-container, .driver-container {
 
 /* ===== LEFT PANEL ===== */
 .left-panel {
+    position: relative;
     width: 28%;
     padding: 20px;
+
+    /* added */
+    display: flex;
+    flex-direction: column;
+    height: calc(100vh - 250px);
+    box-sizing: border-box;
 }
 
 .left-panel h2 {
@@ -37,12 +42,47 @@ driver-container, .driver-container {
     opacity: 0.7;
 }
 
-/* Only scheduled list remains */
+/* make list scrollable and leave space for button */
 .schedule-list {
-    display: flex;
-    flex-direction: column;
-    gap: 15px;
+    flex: 1 1 auto;
+    overflow-y: auto;
+    padding-bottom: 80px; /* space so cards never touch button */
+    margin-bottom: 0;
 }
+
+/* keep button pinned inside left panel bottom */
+.fixed-bottom-btn {
+    position: sticky;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    margin-top: 10px;
+    background: #F3EBE9;
+    padding-top: 10px;
+}
+
+.schedule-btn {
+    display: block;
+    width: 100%;
+    text-align: center;
+    background: #ffb300;
+    color: #fff;
+    padding: 14px;
+    border-radius: 12px;
+    font-size: 16px;
+    font-weight: 600;
+    text-decoration: none;
+    margin-top: 15px;
+    transition: 0.2s ease;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+}
+
+.schedule-btn:hover {
+    background: #e5a200;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 16px rgba(0,0,0,0.2);
+}
+
 
 /* ===== SCHEDULE CARDS ===== */
 .schedule-card {
@@ -246,7 +286,6 @@ driver-container, .driver-container {
     height: 100%;
 }
 
-/* Buttons */
 .btn {
     padding: 10px 14px;
     border: none;
