@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Driver History</title>
+
+    <link rel="stylesheet" href="css/driver-style.css">
+    <link rel="stylesheet" href="css/driver-landing.css">
+    <link rel="stylesheet" href="../css/notifications.css">
+</head>
+<body>
+
+<!-- NAVBAR -->
+<nav>
+    <div class="nav-left">
+        <img src="../images/carma-logo.png" class="logo" />
+        <span class="site-name">Carma</span>
+    </div>
+    <ul>
+        <li><a href="../driver-side/driver-landing.html">Home</a></li>
+        <li><a href="../driver-side/driver-schedule-carpool.html">Schedule</a></li>
+        <li><a href="../driver-side/driver-history.html" class="active">History</a></li>
+        <li><a href="../driver-side/driver-feedbacks.html">Feedbacks</a></li>
+    </ul>
+    <div class="nav-right">
+        <div class="nav-bell">
+            <img src="../images/bell.png" class="bell-icon" alt="Notifications"
+                 onclick="toggleDriverNotifications()">
+            <div id="notificationsContainer">
+                <div class="notifications-dropdown" id="notificationsDropdown">
+                    <div class="notif-list" id="notifList">
+                        <div class="notif-item">
+                            <p>Loading notifications...</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <img src="../images/bod.jpg" class="user-pic" />
+    </div>
+</nav>
+
+<div class="driver-container">
+    <!-- LEFT PANEL -->
+    <div class="left-panel">
+        <h2>Ride History</h2>
+        <div class="history-list"></div>
+    </div>
+
+    <!-- RIGHT PANEL -->
+    <div class="right-panel"></div>
+</div>
+
+<script src="../passenger-side/js/notifications.js" defer></script>
+<script src="js/driver-history.js"></script>
+
+<script>
+    function toggleDriverNotifications() {
+        const dd = document.getElementById('notificationsDropdown');
+        if (dd) dd.classList.toggle('show');
+    }
+</script>
+
+</body>
+</html>
