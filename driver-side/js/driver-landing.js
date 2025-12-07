@@ -46,10 +46,9 @@ document.addEventListener("DOMContentLoaded", () => {
                         p => p.userId !== driverId
                     );
 
-                    // ✅ Skip rides with NO passengers
-                    if (filteredPassengers.length === 0) return;
-
+                    // ✅ KEEP rides even if there are no passengers
                     ride.passengers = filteredPassengers;
+
                     const dateKey = ride.date.replace(/\D/g, "");
 
                     scheduleList.innerHTML += `
@@ -77,25 +76,29 @@ document.addEventListener("DOMContentLoaded", () => {
 
         let passengersHTML = "";
 
-        ride.passengers.forEach(p => {
-            const picPath = p.picture
-                ? `../${p.picture}`
-                : `../images/p1.png`;
+        if (ride.passengers.length === 0) {
+            passengersHTML = `<p class="empty-text">No passengers booked yet.</p>`;
+        } else {
+            ride.passengers.forEach(p => {
+                const picPath = p.picture
+                    ? `../${p.picture}`
+                    : `../images/p1.png`;
 
-            passengersHTML += `
-                <div class="passenger-card">
-                    <img src="${picPath}" class="profile-img" />
-                    <div class="info">
-                        <p class="name">${p.name}</p>
-                        <p class="num">${p.phone}</p>
-                        <p class="loc">${p.pickupLocation}</p>
+                passengersHTML += `
+                    <div class="passenger-card">
+                        <img src="${picPath}" class="profile-img" />
+                        <div class="info">
+                            <p class="name">${p.name}</p>
+                            <p class="num">${p.phone}</p>
+                            <p class="loc">${p.pickupLocation}</p>
+                        </div>
+                        <button class="loc-icon-btn" type="button" title="Show on map">
+                            <img src="../images/location.png" class="loc-icon" />
+                        </button>
                     </div>
-                    <button class="loc-icon-btn" type="button" title="Show on map">
-                        <img src="../images/location.png" class="loc-icon" />
-                    </button>
-                </div>
-            `;
-        });
+                `;
+            });
+        }
 
         div.innerHTML = `
             <h1>${ride.date}</h1>
