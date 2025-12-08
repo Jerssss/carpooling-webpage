@@ -2,6 +2,8 @@ console.log("admin-dashboard.js loaded");
 
 const API = "http://localhost:4000/api/admin";
 
+let currentFilter = "all"; // default filter for Users
+
 // Panel switching
 document.addEventListener("DOMContentLoaded", () => {
     checkAdminSession();
@@ -28,9 +30,25 @@ document.addEventListener("DOMContentLoaded", () => {
             if (target === "active-rides") loadRides();
         });
     });
+    
+    // Filter button for All, Verified, and Unverified
+    const filterTabs = document.querySelectorAll(".filter-tab");
+    filterTabs.forEach(tab => {
+        tab.addEventListener("click", () => {
+        // Update active tab UI
+        filterTabs.forEach(t => t.classList.remove("active"));
+        tab.classList.add("active");
+
+        // Get filter type
+        currentFilter = tab.dataset.filter; // Save current filter
+
+        // Reload user list with filter
+        loadUsers(currentFilter);
+    });
+});
 
     // Load default tab (User Accounts)
-    loadUsers();
+    loadUsers("all");
 });
 
 // Session check
@@ -50,16 +68,25 @@ async function checkAdminSession() {
 checkAdminSession();
 
 // Users functions
-async function loadUsers() {
+async function loadUsers(filter = "all") {
     try {
         const res = await fetch(`${API}/users`, { credentials: "include" });
         if (!res.ok) throw new Error("Failed to fetch users");
         const users = await res.json();
 
+        let filtered = users; // Filter the users by status
+        if (filter === "verified") {
+            filtered = users.filter(u => u.isVerified === true);
+        } 
+        else if (filter === "unverified") {
+            filtered = users.filter(u => u.isVerified === false);
+        }
+
         const list = document.getElementById("userList");
         list.innerHTML = "";
 
-        users.forEach(u => {
+
+        filtered.forEach(u => {
             list.innerHTML += `
                 <div class="user-card">
 
@@ -91,25 +118,59 @@ async function viewUserDetails(userID) {
         if (!res.ok) throw new Error("Failed to fetch user: " + res.status);
         const u = await res.json();
 
-        document.getElementById("modalContent").innerHTML = `
-            <h3>${u.name}</h3>
-            <p>Email: ${u.email}</p>
-            <p>Phone: ${u.phoneNo}</p>
-            <p>Occupation: ${u.occupation}</p>
-            <p>Roles: ${u.roles.join(", ")}</p>
-            <p>Status: <b>${u.isVerified ? "Verified" : "Unverified"}</b></p>
+        // Fill modal fields
+        document.getElementById("modalName").textContent = u.name;
+        document.getElementById("modalEmail").textContent = `Email: ${u.email}`;
+        document.getElementById("modalPhone").textContent = `Phone: ${u.phoneNo}`;
+        document.getElementById("modalOccupation").textContent = `Occupation: ${u.occupation}`;
+        document.getElementById("modalRoles").textContent = `Roles: ${u.roles.join(", ")}`;
+        document.getElementById("modalStatus").innerHTML = `Status: <b>${u.isVerified ? "Verified" : "Unverified"}</b>`;
+        
+        
+        // Images for driver roles 
+        if (u.roles.includes("driver") && u.driverDocs) {
 
-            ${u.driverDocs ? `
-              <img src="../${u.driverDocs.licenseImage}" width="100">
-              <img src="../${u.driverDocs.vehicleRegImage}" width="100">
-            ` : ""}
+            // Profile image
+            document.getElementById("profilePicBox").innerHTML = `
+            <img src="../${u.driverDocs.profileImage}">
+            <p class="img-label">Profile Picture</p>
+            `;
+            
+            // License image
+            document.getElementById("licensePicBox").innerHTML = `
+            <img src="../${u.driverDocs.licenseImage}">
+            <p class="img-label">License</p>
+            `;
+            
+            // Vehicle registration
+            document.getElementById("vehiclePicBox").innerHTML = `
+            <img src="../${u.driverDocs.vehicleRegImage}">
+            <p class="img-label">Vehicle Registration</p>
+            `;
+        
+        } else {
+            // Clear if NOT a driver
+            document.getElementById("licensePicBox").innerHTML = "";
+            document.getElementById("vehiclePicBox").innerHTML = "";
+        }
 
-            <br><br>
-            <button onclick="updateUserVerification('${u.userID}', true)">Verify</button>
-            <button onclick="updateUserVerification('${u.userID}', false)">Unverify</button>
-        `;
+        // Buttons
+        document.getElementById("verifyBtn").onclick = () => updateUserVerification(u.userID, true);
+        document.getElementById("revokeBtn").onclick = () => updateUserVerification(u.userID, false);
+
+        // Auto-hide/show buttons based on verification
+        if (u.isVerified) {
+            document.getElementById("verifyBtn").style.display = "none";
+            document.getElementById("rejectBtn").style.display = "none";
+            document.getElementById("revokeBtn").style.display = "block";
+        } else {
+            document.getElementById("verifyBtn").style.display = "block";
+            document.getElementById("rejectBtn").style.display = "block"; // No functionality yet
+            document.getElementById("revokeBtn").style.display = "none";
+        }
 
         openModal();
+
     } catch (err) {
         console.error(err);
     }
@@ -124,7 +185,9 @@ async function updateUserVerification(userID, status) {
             body: JSON.stringify({ isVerified: status })
         });
         closeModal();
-        loadUsers();
+        
+        // Reload users using the current filter 
+        loadUsers(currentFilter);
     } catch (err) {
         console.error(err);
     }

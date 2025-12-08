@@ -59,6 +59,13 @@
                     <h1>User Accounts</h1>
                     <p>Showing all passengers & car owners</p>
                 </header>
+                
+                <div class="user-filter-tabs">
+                    <div class="filter-tab active" data-filter="all">All</div>
+                    <div class="filter-tab" data-filter="verified">Verified</div>
+                    <div class="filter-tab" data-filter="unverified">Unverified</div>
+                </div>
+
                 <div class="list-container" id="userList"></div>
             </div>
 
@@ -99,8 +106,31 @@
     <!-- MODAL -->
     <div id="modalOverlay" class="modal-overlay hidden">
         <div class="modal-box">
-            <span class="close-btn" onclick="closeModal()">&times;</span>
-            <div id="modalContent"></div>
+
+            <button class="close-btn" onclick="closeModal()">✖</button>
+
+            <div class="modal-header" id="modalName"></div>
+            <div class="modal-info">
+                <p id="modalEmail"></p>
+                <p id="modalPhone"></p>
+                <p id="modalOccupation"></p>
+                <p id="modalRoles"></p>
+                <p id="modalStatus"></p>
+            </div>
+            
+            <div class="picture-container">
+                <div class="image-row">
+                    <div id="profilePicBox" class="image-box"></div>
+                    <div id="licensePicBox" class="image-box"></div>
+                    <div id="vehiclePicBox" class="image-box"></div>
+                </div>
+            </div>
+            
+            <div class="modal-buttons">
+                <button class="btn btn-verify" id="verifyBtn">Verify</button>
+                <button class="btn btn-reject" id="rejectBtn">Reject</button>
+                <button class="btn btn-revoke" id="revokeBtn">Revoke Verification</button>
+            </div>
         </div>
     </div>
 

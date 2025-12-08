@@ -93,6 +93,31 @@ body {
     gap: 15px;
 }
 
+/* === TAB SWITCHING STYLES === */
+.user-filter-tabs {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 15px;
+}
+
+.filter-tab {
+    padding: 8px 16px;
+    background: #e9e9e9;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: 500;
+    transition: 0.2s;
+}
+
+.filter-tab.active {
+    background: #FFC800;
+    color: white;
+}
+
+.filter-tab:hover {
+    opacity: 0.8;
+}
+
 
 /* === CONTENT WINDOWS === */
 .content-window { 
@@ -303,33 +328,147 @@ footer {
     color: #666;
 }
 
+/* Design for Modal box that displays the user information */
 .modal-overlay {
   position: fixed;
   top: 0; left: 0;
   width: 100%; height: 100%;
-  background: rgba(0,0,0,0.5);
+  background: rgba(0,0,0,0.6);
   display: flex;
   justify-content: center;
   align-items: center;
+  backdrop-filter: blur(4px);
+  z-index: 9999;
 }
 
 .modal-box {
-  background: #fff;
-  padding: 20px;
-  width: 400px;
-  border-radius: 8px;
-  box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+  background: #ffffff;
+  width: 450px;
+  padding: 25px 30px;
+  border-radius: 14px;
+  box-shadow: 0 10px 35px rgba(0,0,0,0.2);
+  animation: popIn 0.25s ease-out;
+  position: relative;
+  font-family: "Inter", sans-serif;
 }
 
-.hidden {
-  display: none;
+@keyframes popIn {
+  0% { transform: scale(0.85); opacity: 0; }
+  100% { transform: scale(1); opacity: 1; }
 }
 
 .close-btn {
-  float: right;
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  font-size: 20px;
+  background: transparent;
+  border: none;
   cursor: pointer;
+  color: #444;
+  transition: 0.2s;
 }
 
+.close-btn:hover {
+  color: #000;
+  transform: scale(1.1);
+}
+
+.modal-header {
+  font-size: 22px;
+  font-weight: 600;
+  margin-bottom: 10px;
+}
+
+.modal-info p {
+  margin: 4px 0;
+  font-size: 15px;
+  color: #333;
+}
+
+.modal-buttons {
+  margin-top: 20px;
+  display: flex;
+  gap: 10px;
+}
+
+.btn {
+  flex: 1;
+  padding: 10px 0;
+  border-radius: 8px;
+  border: none;
+  cursor: pointer;
+  font-size: 15px;
+  font-weight: 500;
+  transition: 0.2s;
+}
+
+.btn-verify {
+  background: #1a73e8;
+  color: white;
+}
+
+.btn-reject{
+  background: red;
+  color: white;
+}
+
+.btn-verify:hover {
+  background: #0f5ec9;
+}
+
+.btn-revoke {
+  background: #d9534f;
+  color: white;
+}
+
+.btn-revoke:hover {
+  background: #c64542;
+}
+
+.picture-container {
+  margin-top: 15px;
+  text-align: center;
+}
+
+
+.image-row {
+  display: flex;
+  justify-content: center;
+  gap: 15px;
+  margin-top: 15px;
+}
+
+.image-box {
+  text-align: center;
+}
+
+.image-box img {
+  width: 120px;
+  height: 120px;
+  border-radius: 8px;
+  object-fit: cover;
+  border: 1px solid #ddd;
+}
+
+.img-label {
+  font-size: 12px;
+  margin-top: 5px;
+  color: #555;
+}
+
+.picture-container img {
+  width: 120px;
+  height: 120px;
+  border-radius: 8px;
+  object-fit: cover;
+  border: 1px solid #ddd;
+}
+
+/* Hide modal when hidden class is applied */
+.hidden {
+  display: none !important;
+}
 
 
 /* RESPONSIVE */
