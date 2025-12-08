@@ -108,13 +108,20 @@ document.addEventListener('click', function (e) {
 });
 
 // Load user name on driver profile
-document.addEventListener("DOMContentLoaded", () => {
-  fetch('../includes/get_user_name.php')
-    .then(response => response.text())
-    .then(name => {
-      document.getElementById("userName").textContent = name;
-    })
-    .catch(err => console.error("Failed to load user name:", err));
+document.addEventListener("DOMContentLoaded", async () => {
+  try {
+    const res = await fetch('../includes/get_driver_profile.php', { credentials: 'include' });
+    const data = await res.json();
+    if (data && data.success) {
+      const p = data.profile || {};
+      const nameEl = document.getElementById("userName");
+      if (nameEl) nameEl.textContent = p.name || 'Driver';
+      const pics = document.querySelectorAll('.user-pic');
+      pics.forEach(img => { img.src = p.photoUrl || '../images/speed.jpg'; });
+    }
+  } catch (err) {
+    console.error("Failed to load user profile:", err);
+  }
 });
 
 // Ensure hero video tries to play
