@@ -27,6 +27,10 @@
                 onclick="toggleDriverNotifications()">
             <div id="notificationsContainer">
                 <div class="notifications-dropdown" id="notificationsDropdown">
+                    <div class="notif-tabs">
+                        <span class="active" id="allTab">All</span>
+                        <span id="unreadTab">Unread</span>
+                    </div>
                     <div class="notif-list" id="notifList">
                         <div class="notif-item"><p>Loading...</p></div>
                     </div>
@@ -105,7 +109,7 @@
 
 </div>
 
-<script src="../passenger-side/js/notifications.js"></script>
+<script src="../js/notifications.js"></script>
 
 <script>
 function toggleDriverNotifications() {
