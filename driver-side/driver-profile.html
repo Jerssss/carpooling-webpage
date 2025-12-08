@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CARMA | Driver Profile</title>
+
+    <!-- Shared styles -->
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="../css/notifications.css">
+
+    <!-- Driver Profile Styles -->
+    <link rel="stylesheet" href="css/driver-profile.css">
+
+    <script src="js/driver-script.js" defer></script>
+    <script src="../js/notifications.js" defer></script>
+    <script src="../js/notifications-loader.js" defer></script>
+    <script src="js/driver-profile.js" defer></script>
+  </head>
+
+  <body>
+    <nav>
+      <!-- Left -->
+      <div class="nav-left">
+        <img src="../images/carma-logo.png" class="logo" alt="CARMA Logo">
+        <span class="site-name">CARMA</span>
+      </div>
+
+      <!-- Center Links -->
+      <ul>
+        <li><a href="driver-landing.html">Home</a></li>
+        <li><a href="driver-history.html">History</a></li>
+      </ul>
+
+      <!-- Right -->
+      <div class="nav-right">
+        <div class="hamburger" id="hamburger" onclick="toggleMobileMenu()">
+          <div></div>
+          <div></div>
+          <div></div>
+        </div>
+
+        <div class="nav-bell">
+          <img src="../images/bell.png" class="bell-icon">
+          <div id="notificationsContainer"></div>
+        </div>
+
+        <img src="../images/speed.jpg" class="user-pic" onclick="toggleMenu()">
+      </div>
+
+      <!-- Dropdown -->
+      <div class="sub-menu-wrap" id="subMenu">
+        <div class="sub-menu">
+          <div class="user-info">
+            <img src="../images/speed.jpg" alt="User">
+            <h2 id="userName">Loading...</h2>
+          </div>
+          <hr>
+          <a href="driver-profile.html" class="sub-menu-link">
+            <img src="../images/user.png">
+            <p>Driver Profile</p>
+            <span>&gt;</span>
+          </a>
+          <a href="#" class="sub-menu-link">
+            <img src="../images/settings.png">
+            <p>Settings</p>
+            <span>&gt;</span>
+          </a>
+          <a href="#" class="sub-menu-link">
+            <img src="../images/question.png">
+            <p>Help & Support</p>
+            <span>&gt;</span>
+          </a>
+          <a href="#" class="sub-menu-link">
+            <img src="../images/user-logout.png">
+            <p>Logout</p>
+            <span>&gt;</span>
+          </a>
+        </div>
+      </div>
+    </nav>
+
+    <!-- DRIVER PROFILE SECTION -->
+    <section class="profile-page">
+      <div class="profile-container">
+
+        <!-- Header -->
+        <div class="profile-header">
+          <div class="user-basic">
+            <img src="../images/speed.jpg" alt="Driver Picture" class="profile-photo">
+            <div>
+              <h2>John Doe</h2>
+              <p>driver123@gmail.com</p>
+            </div>
+          </div>
+
+          <button class="edit-btn">Edit</button>
+        </div>
+
+        <!-- FORM -->
+        <form class="profile-form">
+
+          <!-- Driver Information -->
+          <div class="form-group">
+            <label>Full Name</label>
+            <input id="fullName" type="text" placeholder="Enter full name">
+          </div>
+
+          <div class="form-group">
+            <label>Contact Number</label>
+            <input id="contactNumber" type="text" placeholder="Enter contact number">
+          </div>
+
+          <div class="form-group">
+            <label>Gender</label>
+            <input id="gender" type="text" placeholder="Enter gender">
+          </div>
+
+          <div class="form-group">
+            <label>Driver License No.</label>
+            <input id="licenseNumber" type="text" placeholder="Enter license number">
+          </div>
+
+          <!-- Car Information -->
+          <div class="form-group">
+            <label>Car Make</label>
+            <input id="carMake" type="text" placeholder="e.g. Toyota">
+          </div>
+
+          <div class="form-group">
+            <label>Car Model</label>
+            <input id="carModel" type="text" placeholder="e.g. Vios">
+          </div>
+
+          <div class="form-group">
+            <label>Year Model</label>
+            <input id="yearModel" type="text" placeholder="e.g. 2020">
+          </div>
+
+          <div class="form-group">
+            <label>Plate Number</label>
+            <input id="plateNumber" type="text" placeholder="e.g. ABC-1234">
+          </div>
+
+          <div class="form-group">
+            <label>Capacity</label>
+            <input id="capacity" type="number" min="1" placeholder="e.g. 4">
+          </div>
+
+          <div class="form-group">
+            <label>Vehicle Verified</label>
+            <input id="vehicleVerified" type="text" readonly>
+          </div>
+
+          <!-- Uploads -->
+          <div class="form-group">
+            <label>Upload Driver License</label>
+            <input id="licenseUpload" type="file" accept="image/*">
+          </div>
+
+          <div class="form-group">
+            <label>Car Photo</label>
+            <img id="carPhoto" alt="Car Photo" src="../images/car_pics/default_car.png" style="max-width: 100%; height: auto; border-radius: 8px;" />
+          </div>
+
+        </form>
+
+      </div>
+    </section>
+
+    <footer class="site-footer">
+    <div class="social-icons">
+        <a href="#"><img src="../images/facebook-app-symbol.png" alt="Facebook"></a>
+        <a href="#"><img src="../images/instagram.png" alt="Instagram"></a>
+        <a href="#"><img src="../images/twitter.png" alt="Twitter"></a>
+        <a href="#"><img src="../images/google.png" alt="Google"></a>
+        <a href="#"><img src="../images/youtube.png" alt="YouTube"></a>
+    </div>
+
+    <ul class="footer-nav">
+        <li><a href="driver-landing.html">Home</a></li>
+        <li><a href="driver-schedule-carpool.html">Schedule</a></li>
+        <li><a href="driver-history.html">Feedbacks</a></li>
+    </ul>
+
+    <p class="footer-copy">Copyright ©2025 | Designed by <span>Carma</span></p>
+</footer>
+  </body>
+</html>

@@ -7,37 +7,72 @@
     <link rel="stylesheet" href="css/driver-style.css">
     <link rel="stylesheet" href="css/driver-feedbacks.css">
     <link rel="stylesheet" href="../css/notifications.css">
+    <script src="js/driver-script.js" defer></script>
+    <script src="../js/notifications.js" defer></script>
+    <script src="../js/notifications-loader.js" defer></script>
 </head>
 <body>
     <!-- NAVBAR -->
 <nav>
-    <div class="nav-left">
-        <img src="../images/carma-logo.png" class="logo" />
-        <span class="site-name">Carma</span>
-    </div>
-    <ul>
-        <li><a href="../driver-side/driver-landing.html">Home</a></li>
-        <li><a href="../driver-side/driver-schedule-carpool.html">Schedule</a></li>
-        <li><a href="../driver-side/driver-history.html">History</a></li>
-        <li><a href="../driver-side/driver-feedbacks.html" class="active">Feedbacks</a></li>
-    </ul>
-    <div class="nav-right">
-        <div class="nav-bell">
-            <img src="../images/bell.png" class="bell-icon" alt="Notifications"
-                 onclick="toggleDriverNotifications()">
-            <div id="notificationsContainer">
-                <div class="notifications-dropdown" id="notificationsDropdown">
-                    <div class="notif-list" id="notifList">
-                        <div class="notif-item">
-                            <p>Loading notifications...</p>
-                        </div>
-                    </div>
-                </div>
-            </div>
+      <!-- Left -->
+      <div class="nav-left">
+        <img src="../images/carma-logo.png" class="logo" alt="CARMA Logo">
+        <span class="site-name">CARMA</span>
+      </div>
+
+      <!-- Center Links -->
+      <ul>
+        <li><a href="driver-landing.html">Home</a></li>
+        <li><a href="driver-history.html">History</a></li>
+      </ul>
+
+      <!-- Right -->
+      <div class="nav-right">
+        <div class="hamburger" id="hamburger" onclick="toggleMobileMenu()">
+          <div></div>
+          <div></div>
+          <div></div>
         </div>
-        <img src="../images/bod.jpg" class="user-pic" />
-    </div>
-</nav>
+
+        <div class="nav-bell">
+          <img src="../images/bell.png" class="bell-icon" alt="Notifications">
+          <div id="notificationsContainer"></div>
+        </div>
+
+        <img src="../images/speed.jpg" class="user-pic" onclick="toggleMenu()">
+      </div>
+
+      <!-- Dropdown -->
+      <div class="sub-menu-wrap" id="subMenu">
+        <div class="sub-menu">
+          <div class="user-info">
+            <img src="../images/speed.jpg" alt="User">
+            <h2 id="userName">Loading...</h2>
+          </div>
+          <hr>
+          <a href="driver-profile.html" class="sub-menu-link">
+            <img src="../images/user.png">
+            <p>Driver Profile</p>
+            <span>&gt;</span>
+          </a>
+          <a href="#" class="sub-menu-link">
+            <img src="../images/settings.png">
+            <p>Settings</p>
+            <span>&gt;</span>
+          </a>
+          <a href="#" class="sub-menu-link">
+            <img src="../images/question.png">
+            <p>Help & Support</p>
+            <span>&gt;</span>
+          </a>
+          <a href="#" class="sub-menu-link">
+            <img src="../images/user-logout.png">
+            <p>Logout</p>
+            <span>&gt;</span>
+          </a>
+        </div>
+      </div>
+    </nav>
 
     <!-- MAIN CONTENT -->
     <div class="container">
@@ -81,22 +116,21 @@
 
     <!-- ===== FOOTER SECTION ===== -->
     <footer class="site-footer">
-        <div class="social-icons">
-            <a href="#"><img src="../images/facebook-app-symbol.png" alt="Facebook"></a>
-            <a href="#"><img src="../images/instagram.png" alt="Instagram"></a>
-            <a href="#"><img src="../images/twitter.png" alt="Twitter"></a>
-            <a href="#"><img src="../images/google.png" alt="Google"></a>
-            <a href="#"><img src="../images/youtube.png" alt="YouTube"></a>
-        </div>
+    <div class="social-icons">
+        <a href="#"><img src="../images/facebook-app-symbol.png" alt="Facebook"></a>
+        <a href="#"><img src="../images/instagram.png" alt="Instagram"></a>
+        <a href="#"><img src="../images/twitter.png" alt="Twitter"></a>
+        <a href="#"><img src="../images/google.png" alt="Google"></a>
+        <a href="#"><img src="../images/youtube.png" alt="YouTube"></a>
+    </div>
 
-        <ul class="footer-nav">
-            <li><a href="../driver-side/driver-landing.html">Home</a></li>
-            <li><a href="../driver-side/driver-schedule-carpool.html">Schedule</a></li>
-            <li><a href="#">Feedbacks</a></li>
-            <li><a href="../passenger-side/about.html">Our Team</a></li>
-        </ul>
+    <ul class="footer-nav">
+        <li><a href="driver-landing.html">Home</a></li>
+        <li><a href="driver-schedule-carpool.html">Schedule</a></li>
+        <li><a href="driver-history.html">Feedbacks</a></li>
+    </ul>
 
-        <p class="footer-copy">Copyright ©2025 | Designed by <span>Carma</span></p>
-    </footer>
+    <p class="footer-copy">Copyright ©2025 | Designed by <span>Carma</span></p>
+</footer>
 </body>
 </html>

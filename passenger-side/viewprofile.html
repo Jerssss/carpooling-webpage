@@ -8,7 +8,8 @@
     <link rel="stylesheet" href="css/viewprofile.css">
     <link rel="stylesheet" href="../css/notifications.css">
     <script src="js/script.js" defer></script>
-    <script src="js/notifications.js" defer></script>
+    <script src="../js/notifications.js" defer></script>
+    <script src="../js/notifications-loader.js" defer></script>
   </head>
   <body>
     <!-- ===== NAVBAR ===== -->
@@ -37,22 +38,8 @@
       </div>
 
       <div class="nav-bell">
-        <img src="../images/bell.png" class="bell-icon" alt="Notifications" onclick="toggleNotifications()">
-        <div id="notificationsContainer">
-          <div class="notifications-dropdown" id="notificationsDropdown">
-            <div class="notif-tabs">
-              <span class="active" id="allTab">All</span>
-              <span id="unreadTab">Unread</span>
-            </div>
-            <div class="notif-list" id="notifList">
-              <div class="notif-item">
-                <div class="notif-content">
-                  <p>Loading notifications...</p>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
+        <img src="../images/bell.png" class="bell-icon" alt="Notifications">
+        <div id="notificationsContainer"></div>
       </div>
 
       <img src="../images/speed.jpg" class="user-pic" alt="User" onclick="toggleMenu()">
