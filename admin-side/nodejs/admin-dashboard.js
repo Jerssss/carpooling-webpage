@@ -3,6 +3,7 @@ console.log("admin-dashboard.js loaded");
 const API = "http://localhost:4000/api/admin";
 
 let currentFilter = "all"; // default filter for Users
+let currentSearch = "";
 
 // Panel switching
 document.addEventListener("DOMContentLoaded", () => {
@@ -11,6 +12,13 @@ document.addEventListener("DOMContentLoaded", () => {
     // Tab switching
     const sectionCards = document.querySelectorAll(".section-card");
     const windows = document.querySelectorAll(".content-window");
+    const searchInput = document.getElementById("userSearchInput");
+    
+    // Search listener
+    searchInput.addEventListener("input", () => {
+        currentSearch = searchInput.value.toLowerCase();
+        loadUsers(currentFilter, currentSearch);
+    });
 
     sectionCards.forEach(card => {
         card.addEventListener("click", () => {
@@ -35,6 +43,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const filterTabs = document.querySelectorAll(".filter-tab");
     filterTabs.forEach(tab => {
         tab.addEventListener("click", () => {
+
         // Update active tab UI
         filterTabs.forEach(t => t.classList.remove("active"));
         tab.classList.add("active");
@@ -43,7 +52,7 @@ document.addEventListener("DOMContentLoaded", () => {
         currentFilter = tab.dataset.filter; // Save current filter
 
         // Reload user list with filter
-        loadUsers(currentFilter);
+        loadUsers(currentFilter, currentSearch);
     });
 });
 
@@ -68,19 +77,29 @@ async function checkAdminSession() {
 checkAdminSession();
 
 // Users functions
-async function loadUsers(filter = "all") {
+async function loadUsers(filter = "all", search = "") {
     try {
         const res = await fetch(`${API}/users`, { credentials: "include" });
         if (!res.ok) throw new Error("Failed to fetch users");
         const users = await res.json();
 
         let filtered = users; // Filter the users by status
+
         if (filter === "verified") {
             filtered = users.filter(u => u.isVerified === true);
         } 
         else if (filter === "unverified") {
             filtered = users.filter(u => u.isVerified === false);
         }
+
+        // Applying search
+        if (search.trim() !== "") {
+            filtered = filtered.filter(u => 
+            u.name.toLowerCase().includes(search) ||
+            u.userID.toLowerCase().includes(search) ||
+            u.roles.join(", ").toLowerCase().includes(search)
+        );
+    }
 
         const list = document.getElementById("userList");
         list.innerHTML = "";
@@ -187,7 +206,7 @@ async function updateUserVerification(userID, status) {
         closeModal();
         
         // Reload users using the current filter 
-        loadUsers(currentFilter);
+        loadUsers(currentFilter, currentSearch);
     } catch (err) {
         console.error(err);
     }

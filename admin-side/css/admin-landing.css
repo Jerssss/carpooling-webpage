@@ -93,6 +93,41 @@ body {
     gap: 15px;
 }
 
+/* === SEARCH BAR STYLES === */
+.search-container {
+    width: 100%;
+    margin: 10px 0 15px 0;
+    display: flex;
+    justify-content: center;
+}
+
+/* Search Input */
+.search-input {
+    width: 100%;
+    max-width: 350px;
+    padding: 10px 14px;
+    border-radius: 8px;
+    border: 1px solid #ccc;
+    background: #f9f9f9;
+    font-size: 14px;
+    transition: all 0.25s ease;
+    outline: none; /* disable blue outline */
+}
+
+
+/* On Focus */
+.search-input:focus {
+    background: #fff;
+    border-color: #e39726;
+    box-shadow: 0 0 0 3px rgba(74, 144, 226, 0.2);
+}
+
+/* Placeholder Styling */
+.search-input::placeholder {
+    color: #999;
+}
+
+
 /* === TAB SWITCHING STYLES === */
 .user-filter-tabs {
     display: flex;
