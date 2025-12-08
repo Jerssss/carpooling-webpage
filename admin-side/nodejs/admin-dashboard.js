@@ -62,9 +62,20 @@ async function loadUsers() {
         users.forEach(u => {
             list.innerHTML += `
                 <div class="user-card">
-                    <p><b>${u.name}</b> (${u.roles.join(", ")})</p>
-                    <p>Status: ${u.isVerified ? "Verified" : "Unverified"}</p>
-                    <button onclick="viewUserDetails('${u.userID}')">View Details</button>
+
+                    <div class="info">
+                        <div class="name">${u.name}</div>
+                        <div class="role">(${u.roles.join(", ")})</div>
+                    </div>
+
+                    <div class="status">
+                        ${u.isVerified ? "Verified" : "Unverified"}
+                    </div>
+
+                    <button class="view-btn" onclick="viewUserDetails('${u.userID}')">
+                        View Details
+                    </button>
+
                 </div>
             `;
         });

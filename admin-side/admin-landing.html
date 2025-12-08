@@ -31,9 +31,9 @@
 
         <!-- LEFT PANEL -->
         <div class="left-panel">
-            <h2>Admin Dashboard</h2>
+            <h2 class="logo-title">Admin Dashboard</h2>
 
-            <h3>Sections</h3>
+            <h3 class="sidebar-label">Sections</h3>
             <div class="section-list">
                 <div class="section-card active" data-target="user-accounts">
                     User Accounts
@@ -55,38 +55,42 @@
 
             <!-- USER ACCOUNTS WINDOW -->
             <div id="user-accounts" class="content-window active">
-                <h1>User Accounts</h1>
-                <p class="time">Showing all passengers & car owners</p>
-
-                <h2 class="section-title">Registered Users</h2>
-                <div class="user-list" id="userList"></div>
+                <header class="page-header">
+                    <h1>User Accounts</h1>
+                    <p>Showing all passengers & car owners</p>
+                </header>
+                <div class="list-container" id="userList"></div>
             </div>
 
             <!-- VEHICLE REGISTRATIONS WINDOW -->
             <div id="vehicle-registrations" class="content-window">
-                <h1>Pending Vehicle Registrations</h1>
-                <p class="time">Review and approve car owner documents</p>
+                <header class="page-header">
+                    <h1>Pending Vehicle Registrations</h1>
+                    <p>Review and approve car owner documents</p>
+                </header>
 
-                <h2 class="section-title">Pending Vehicles</h2>
-                <div class="vehicle-list" id="vehicleList"></div>
+                <div class="list-container" id="vehicleList"></div>
             </div>
 
             <!-- REPORTS & COMPLAINTS WINDOW -->
             <div id="reports-complaints" class="content-window">
-                <h1>Reports & Complaints</h1>
-                <p class="time">Displaying all submitted reports</p>
+                <header class="page-header">
+                    <h1>Reports & Complaints</h1>
+                    <p>Displaying all submitted reports</p>
+                </header>
 
-                <h2 class="section-title">Recent Reports</h2>
-                <div class="report-list" id="reportList"></div>
+                <div class="list-container" id="reportList"></div>
             </div>
 
             <!-- ACTIVE RIDES WINDOW -->
             <div id="active-rides" class="content-window">
-                <h1>Active Rides</h1>
-                <p class="time">Monitoring ongoing carpools</p>
 
-                <h2 class="section-title">Currently Active</h2>
-                <div class="ride-list" id="rideList"></div>
+                <header class="page-header">
+                    <h1>Active Rides</h1>
+                    <p>Monitoring ongoing carpools</p>
+                </header>
+
+                <div class="list-container" id="rideList"></div>
             </div>
 
         </div>
