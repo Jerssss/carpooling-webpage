@@ -281,7 +281,10 @@ async function loadReports() {
 // Display reports in the list
 function displayReports(reports) {
     const list = document.getElementById("reportList");
-    
+
+    // Save current filder
+    const currentFilter = document.getElementById("statusFilter")?.value || "all";
+
     if (reports.length === 0) {
         list.innerHTML = `
             <div class="empty-state">
@@ -304,9 +307,7 @@ function displayReports(reports) {
                 <select id="statusFilter" onchange="filterReports()">
                     <option value="all">All Reports</option>
                     <option value="pending">Pending</option>
-                    <option value="investigating">Investigating</option>
                     <option value="resolved">Resolved</option>
-                    <option value="cancelled">Cancelled</option>
                 </select>
             </div>
         </div>
@@ -314,31 +315,43 @@ function displayReports(reports) {
         <div class="report-list-container" id="reportCards"></div>
     `;
 
-    const cardsContainer = document.getElementById("reportCards");
+    // Restore the previously selected filter
+    document.getElementById("statusFilter").value = currentFilter;
 
+    const cardsContainer = document.getElementById("reportCards");
+    
+    
     reports.forEach(r => {
         const status = r.status || "pending";
         const statusClass = `status-${status.toLowerCase()}`;
         
         const card = document.createElement("div");
         card.className = "report-card";
+        
+        
         card.innerHTML = `
             <div class="report-info">
                 <p><b>Complaint ID:</b> ${r.complaintId}</p>
                 <p><b>Passenger:</b> ${r.passengerName} (${r.passengerId})</p>
                 <p><b>Driver:</b> ${r.driverName} (${r.driverId})</p>
                 <p><b>Issue:</b> ${(r.complaintMessage || "").substring(0, 60)}${(r.complaintMessage || "").length > 60 ? "..." : ""}</p>
-                <p><span class="status-badge ${statusClass}">${status}</span></p>
             </div>
-            <div class="report-actions">
-                <button class="btn btn-view" onclick="viewReport('${r.complaintId}')">
-                    View Details
-                </button>
-                <button class="btn btn-resolve" 
+            
+            <div class="report-footer">
+                <div class="status-wrapper">
+                    <span class="status-badge ${statusClass}">${status.toUpperCase()}</span>
+                </div>
+
+                <div class="actions-wrapper">
+                    <button class="btn btn-view" onclick="viewReport('${r.complaintId}')">
+                        View Details
+                    </button>
+                    <button class="btn btn-resolve"
                         onclick="markAsResolved('${r.complaintId}')"
                         ${status === "resolved" ? "disabled" : ""}>
-                    ${status === "resolved" ? "Resolved" : "Resolve"}
-                </button>
+                        ${status === "resolved" ? "Resolved" : "Resolve"}
+                    </button>
+                </div>
             </div>
         `;
         cardsContainer.appendChild(card);
@@ -351,6 +364,7 @@ function filterReports() {
     
     if (filter === "all") {
         displayReports(allReports);
+        return;
     } else {
         const filtered = allReports.filter(r => 
             (r.status || "pending").toLowerCase() === filter.toLowerCase()
@@ -417,10 +431,8 @@ function displayReportModal(report) {
         <div class="detail-section">
             <h3>Vehicle Information</h3>
             <div class="detail-row"><span class="detail-label">Car ID:</span> <span class="detail-value">${report.carId || "N/A"}</span></div>
-            <div class="detail-row"><span class="detail-label">Make & Model:</span> <span class="detail-value">${report.carMake || ""} ${report.carModel || "N/A"}</span></div>
-            <div class="detail-row"><span class="detail-label">Color:</span> <span class="detail-value">${report.color || "N/A"}</span></div>
+            <div class="detail-row"><span class="detail-label">Maker & Model:</span> <span class="detail-value">${report.carMake || ""} ${report.carModel || "N/A"}</span></div>
             <div class="detail-row"><span class="detail-label">Plate Number:</span> <span class="detail-value">${report.plateNo || "N/A"}</span></div>
-            <div class="detail-row"><span class="detail-label">Seats:</span> <span class="detail-value">${report.seats || "N/A"}</span></div>
         </div>
 
         <div class="detail-section">

@@ -374,6 +374,34 @@ app.get("/api/admin/reports/:id", adminOnly, async (req, res) => {
     }
 });
 
+// Mark a report as resolved
+app.patch("/api/admin/reports/:id/status", adminOnly, async (req, res) => {
+    try {
+        const complaintId = req.params.id;
+        const { status } = req.body;
+
+        if (!status) {
+            return res.status(400).json({ error: "Status is required" });
+        }
+
+        const db = client.db(dbName);
+
+        const result = await db.collection("complaints").updateOne(
+            { complaintId: complaintId }, // Match by complaint ID
+            { $set: { status: status } } // Update the status
+        );
+
+        if (result.matchedCount === 0) {
+            return res.status(404).json({ error: "Complaint not found" });
+        }
+
+        res.json({ message: "Complaint status updated successfully" });
+
+    } catch (error) {
+        console.error("Error updating complaint:", error);
+        res.status(500).json({ error: "Internal server error" });
+    }
+});
 
 app.listen(4000, () => {
     console.log("Admin NodeJS backend running at port 4000");
