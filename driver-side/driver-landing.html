@@ -24,8 +24,7 @@
     </ul>
     <div class="nav-right">
         <div class="nav-bell">
-            <img src="../images/bell.png" class="bell-icon" alt="Notifications"
-                 onclick="toggleDriverNotifications()">
+              <img src="../images/bell.png" class="bell-icon" alt="Notifications">
             <div id="notificationsContainer">
                 <div class="notifications-dropdown" id="notificationsDropdown">
                     <div class="notif-tabs">
@@ -80,18 +79,7 @@
 
 <script src="../js/location-map.js" defer></script>
 
-<script>
-    function toggleDriverNotifications() {
-        const dd = document.getElementById('notificationsDropdown');
-        if (dd) dd.classList.toggle('show');
-    }
-
-    document.addEventListener('click', (e) => {
-        const inside = e.target.closest('.nav-bell');
-        const dd = document.getElementById('notificationsDropdown');
-        if (dd && !inside) dd.classList.remove('show');
-    });
-</script>
+<!-- Notifications toggle handled in ../js/notifications.js -->
 
 <script src="../js/notifications.js" defer></script>
 
