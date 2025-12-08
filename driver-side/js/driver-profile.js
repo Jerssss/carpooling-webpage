@@ -1,7 +1,39 @@
 document.addEventListener('DOMContentLoaded', () => {
   loadDriverProfile();
   setupEditSave();
+  setupLicenseUpload();
 });
+function setupLicenseUpload() {
+  const input = document.getElementById('licenseUpload');
+  if (!input) return;
+  input.addEventListener('change', async () => {
+    const file = input.files && input.files[0];
+    if (!file) return;
+    if (!file.type.startsWith('image/')) {
+      alert('Please upload an image file (PNG, JPG, etc.).');
+      input.value = '';
+      return;
+    }
+    const formData = new FormData();
+    formData.append('licenseImage', file);
+    try {
+      const res = await fetch('../includes/upload_driver_license.php', {
+        method: 'POST',
+        body: formData,
+        credentials: 'include'
+      });
+      const data = await res.json();
+      if (!data.success) throw new Error(data.message || 'Upload failed');
+      alert('Driver license uploaded successfully.');
+    } catch (e) {
+      console.error(e);
+      alert('Failed to upload driver license.');
+    } finally {
+      input.value = '';
+    }
+  });
+}
+
 
 function resolvePath(path) {
   if (!path) return '../images/speed.jpg';
