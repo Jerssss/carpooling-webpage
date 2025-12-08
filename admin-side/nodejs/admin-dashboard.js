@@ -192,6 +192,10 @@ async function viewUserDetails(userID) {
             document.getElementById("revokeBtn").style.display = "none";
         }
 
+        showUserModalUI(true);
+        document.getElementById("modalContent").style.display = "none";
+
+
         openModal();
 
     } catch (err) {
@@ -538,7 +542,13 @@ async function reviewBookings(rideId) {
             `;
         });
 
+       // Switch modal to "ride mode"
+        showUserModalUI(false);
+
+        document.getElementById("modalName").textContent = `Ride ${rideId}`;
         document.getElementById("modalContent").innerHTML = html;
+        document.getElementById("modalContent").style.display = "block";
+
         openModal();
     } catch (err) {
         console.error(err);
@@ -553,6 +563,31 @@ function openModal() {
 function closeModal() {
     document.getElementById("modalOverlay").classList.add("hidden");
 }
+
+// Modal to hide on overlay click
+function showUserModalUI(show) {
+    const display = show ? "block" : "none";
+
+    // USER INFO (first modal-info block)
+    document.querySelectorAll(".modal-info")[0].style.display = display;
+
+    // BUTTON CONTAINER (this is what was missing)
+    document.querySelector(".modal-buttons").style.display = display;
+
+    // IMAGE CONTAINER
+    document.querySelector(".picture-container").style.display = display;
+}
+
+function closeModal() {
+    document.getElementById("modalOverlay").classList.add("hidden");
+
+    // Reset modal for next use
+    showUserModalUI(true);
+    document.getElementById("modalContent").innerHTML = "";
+    document.getElementById("modalContent").style.display = "none";
+}
+
+
 
 
 // Initialise functions
