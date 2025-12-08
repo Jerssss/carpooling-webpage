@@ -50,10 +50,6 @@ nav {
     font-weight: 700;
 }
 
-.nav-right {
-    /* empty for now */
-}
-
 /* PAGE WRAPPER */
 .page-wrapper {
     flex: 1;
@@ -140,6 +136,7 @@ button {
     cursor: pointer;
     font-weight: 700;
     transition: transform 0.2s, box-shadow 0.3s;
+    margin-top: 10px;
 }
 
 button:hover {
@@ -229,4 +226,47 @@ button:hover {
 .modal-option:hover {
     transform: scale(1.05);
     box-shadow: 0 6px 16px rgba(255,200,0,0.45);
+}
+
+/* ===== CUSTOM MODERN DROPDOWN ===== */
+.custom-dropdown {
+    position: relative;
+}
+
+.custom-dropdown select {
+    appearance: none;           /* remove default arrow */
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    width: 100%;
+    padding: 13px;
+    border-radius: 10px;
+    border: 1px solid var(--input-border);
+    background: #ffffffc7;
+    font-size: 15px;
+    cursor: pointer;
+    transition: border-color 0.25s, box-shadow 0.25s;
+}
+
+.custom-dropdown select:focus {
+    border-color: var(--input-focus);
+    box-shadow: 0 0 8px rgba(255, 217, 0, 0.45);
+    outline: none;
+}
+
+/* Arrow styling */
+.dropdown-arrow {
+    position: absolute;
+    top: 50%;
+    right: 15px;
+    transform: translateY(-50%);
+    pointer-events: none;
+    font-size: 14px;
+    color: #555;
+    transition: transform 0.3s;
+}
+
+/* rotate arrow on focus */
+.custom-dropdown select:focus + .dropdown-arrow {
+    transform: translateY(-50%) rotate(180deg);
+    color: var(--primary-yellow);
 }
