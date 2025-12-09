@@ -30,44 +30,56 @@ document.addEventListener("DOMContentLoaded", () => {
         });
 
     function loadSchedule() {
-        fetch(scheduleEndpoint)
-            .then(res => res.json())
-            .then(data => {
-                scheduleList.innerHTML = "";
-                rightPanel.innerHTML = "";
+    fetch(scheduleEndpoint)
+        .then(res => res.json())
+        .then(data => {
+            scheduleList.innerHTML = "";
+            rightPanel.innerHTML = "";
 
-                const rides = data.rides || [];
+            const rides = Array.isArray(data.rides) ? data.rides : [];
+            const today = new Date();
+            today.setHours(0, 0, 0, 0); // normalize time
 
-                rides.forEach(ride => {
-                    if (!ride.passengers) ride.passengers = [];
-
-                    // Filter out driver mistakenly appearing as passenger
-                    const filteredPassengers = ride.passengers.filter(
-                        p => p.userId !== driverId
-                    );
-
-                    // ✅ KEEP rides even if there are no passengers
-                    ride.passengers = filteredPassengers;
-
-                    const dateKey = ride.date.replace(/\D/g, "");
-
-                    scheduleList.innerHTML += `
-                        <div class="schedule-card" data-target="day-${dateKey}">
-                            <p class="date">${ride.date}</p>
-                            <p class="route">${ride.from} → ${ride.to}</p>
-                            <p class="desc">Passengers: ${ride.passengers.length}</p>
-                        </div>
-                    `;
-
-                    createScheduleWindow(ride, dateKey);
-                });
-
-                assignClicks();
+            rides
+            .filter(ride => ride.status !== "completed")
+            .filter(ride => {
+                const rideDate = new Date(ride.date);
+                rideDate.setHours(0, 0, 0, 0);
+                return rideDate >= today; // ✅ only today or future
             })
-            .catch(err => {
-                console.error("Error fetching schedule:", err);
+            .forEach(ride => {
+
+                if (!Array.isArray(ride.passengers)) {
+                    ride.passengers = [];
+                }
+
+                // Remove driver if they appear in passenger list
+                ride.passengers = ride.passengers.filter(
+                    p => p.userId !== driverId
+                );
+
+                // ✅ Hide cards if there are no passengers
+                if (ride.passengers.length === 0) return;
+
+                const dateKey = ride.date.replace(/\D/g, "");
+
+                scheduleList.innerHTML += `
+                    <div class="schedule-card" data-target="day-${dateKey}">
+                        <p class="date">${ride.date}</p>
+                        <p class="route">${ride.from} → ${ride.to}</p>
+                        <p class="desc">Passengers: ${ride.passengers.length}</p>
+                    </div>
+                `;
+
+                createScheduleWindow(ride, dateKey);
             });
-    }
+
+            assignClicks();
+        })
+        .catch(err => {
+            console.error("Error fetching schedule:", err);
+        });
+}
 
     function createScheduleWindow(ride, dateKey) {
         const div = document.createElement("div");
@@ -131,7 +143,9 @@ document.addEventListener("DOMContentLoaded", () => {
         cards.forEach(card => {
             card.addEventListener('click', () => {
                 const target = card.getAttribute('data-target');
+
                 windows.forEach(w => w.classList.remove('active'));
+
                 const targetWindow = document.getElementById(target);
                 if (targetWindow) targetWindow.classList.add('active');
             });
