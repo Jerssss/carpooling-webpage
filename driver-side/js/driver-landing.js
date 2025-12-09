@@ -45,7 +45,7 @@ document.addEventListener("DOMContentLoaded", () => {
             .filter(ride => {
                 const rideDate = new Date(ride.date);
                 rideDate.setHours(0, 0, 0, 0);
-                return rideDate >= today; // ✅ only today or future
+                return rideDate >= today; 
             })
             .forEach(ride => {
 
@@ -58,7 +58,6 @@ document.addEventListener("DOMContentLoaded", () => {
                     p => p.userId !== driverId
                 );
 
-                // ✅ Hide cards if there are no passengers
                 if (ride.passengers.length === 0) return;
 
                 const dateKey = ride.date.replace(/\D/g, "");
