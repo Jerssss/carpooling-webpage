@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Manage Carpools</title>
+    <link rel="stylesheet" href="css/driver.css">
+    <link rel="stylesheet" href="css/driver-management.css">
+</head>
+<body>
+
+<nav class="navbar">
+    <a href="driver-landing.html">Home</a>
+    <a href="driver-history.html">History</a>
+    <a href="driver-management.html" class="active">Manage</a>
+</nav>
+
+<div class="container">
+    <h1>Manage Your Carpools</h1>
+
+    <div class="manage-list"></div>
+</div>
+
+<!-- Edit Modal -->
+<div id="editModal" class="modal hidden">
+    <div class="modal-content">
+        <h2>Edit Carpool</h2>
+
+        <input type="hidden" id="edit_rideId">
+
+        <label>Date</label>
+        <input type="text" id="edit_date">
+
+        <label>Time</label>
+        <input type="text" id="edit_time">
+
+        <label>From</label>
+        <input type="text" id="edit_from">
+
+        <label>To</label>
+        <input type="text" id="edit_to">
+
+        <label>Available Seats</label>
+        <input type="number" id="edit_seats">
+
+        <label>Price</label>
+        <input type="number" id="edit_price">
+
+        <div class="modal-actions">
+            <button id="saveEditBtn">Save</button>
+            <button id="cancelEditBtn">Cancel</button>
+        </div>
+    </div>
+</div>
+
+<script src="js/driver-management.js"></script>
+</body>
+</html>

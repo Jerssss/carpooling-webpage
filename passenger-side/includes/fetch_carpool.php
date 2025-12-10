@@ -1,6 +1,7 @@
 <?php
 // Use the shared root includes DB connector
 require_once __DIR__ . '/../../includes/session.php';
+require_once __DIR__ . '/../../includes/cookies.php';
 require_once __DIR__ . '/../../includes/db_connect.php';
 
 if (!isset($_SESSION['user_id']) || $_SESSION['role'] !== 'passenger') {
@@ -41,6 +42,20 @@ $pipeline = [
 
 
 $match = [];
+
+// Save search filters as cookies - store last filters used
+if (isset($_GET['search'])) {
+    set_app_cookie('last_search', $_GET['search']);
+}
+
+if (isset($_GET['seat'])) {
+    set_app_cookie('last_seat', $_GET['seat']);
+}
+
+if (isset($_GET['for'])) {
+    set_app_cookie('last_for', $_GET['for']);
+}
+
 
 
 if (!empty($_GET['search'])) {

@@ -427,6 +427,11 @@ footer {
   gap: 10px;
 }
 
+.modal-info:empty {
+    display: none;
+}
+
+
 .btn {
   flex: 1;
   padding: 10px 0;

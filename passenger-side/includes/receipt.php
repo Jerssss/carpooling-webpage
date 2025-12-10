@@ -2,6 +2,7 @@
 header('Content-Type: application/json');
 // Use the shared root DB connector
 require_once __DIR__ . '/../../includes/session.php';
+require_once __DIR__ . '/../../includes/cookies.php';
 require_once __DIR__ . '/../../includes/db_connect.php';
 
 header('Content-Type: application/json');
@@ -12,13 +13,18 @@ if (!isset($_SESSION['user_id']) || $_SESSION['role'] !== 'passenger') {
     exit;
 }
 
-
 try {
     // Connect to MongoDB
     // $db already available from db_connect.php
 
     // Get rideId from URL parameter
     $rideId = $_GET['rideId'] ?? null;
+
+    // Store last receipt viewed - to remember which receipt the user last viewed
+    if ($rideId) {
+    set_app_cookie('last_receipt_ride', $rideId);
+    }
+    
     if (!$rideId) {
         http_response_code(400);
         echo json_encode(['error' => 'Ride ID is required']);

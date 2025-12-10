@@ -2,6 +2,7 @@
 require_once 'db_connect.php';
 header('Content-Type: application/json');
 
+// BASIC INPUTS
 $email = strtolower(trim($_POST['email'] ?? ''));
 $password = $_POST['password'] ?? '';
 $roleType = strtolower(trim($_POST['roleType'] ?? ''));
@@ -11,73 +12,101 @@ $phone = trim($_POST['contact'] ?? '');
 $occupation = trim($_POST['occupation'] ?? '');
 
 if (!$email || !$password || !$roleType || !$name || !$phone || !$occupation) {
-    echo json_encode(['success'=>false, 'message'=>'Missing fields']);
+    echo json_encode(['success' => false, 'message' => 'Missing fields']);
     exit;
 }
 
-// Determine roles FIRST 
-$roles = [];
+
+// DETERMINE ROLES
 if ($roleType === 'both') {
     $roles = ['passenger', 'driver'];
 } else {
     $roles = [$roleType];
 }
 
-// Driver document upload 
-// register_user.php is inside project root
-$driverSideRoot = realpath(__DIR__ . '/driver-side');
+// INIT COLLECTIONS
+$users    = $db->users;
+$vehicles = $db->vehicles;
 
-// Absolute filesystem path (for move_uploaded_file)
-$absoluteDir = $driverSideRoot . '/images/driver_documents/';
+// DUPLICATE EMAIL CHECK
+if ($users->findOne(['email' => $email])) {
+    echo json_encode(['success' => false, 'message' => 'Email already registered']);
+    exit;
+}
 
-// Public path (stored in MongoDB)
-$publicDir = 'driver-side/images/driver_documents/';
+// EARLY VEHICLE VALIDATION
+if (in_array('driver', $roles)) {
+    if (
+        empty($_POST['car-make']) ||
+        empty($_POST['car-model']) ||
+        empty($_POST['year-model']) ||
+        empty($_POST['plate-number']) ||
+        empty($_FILES['car-photo'])
+    ) {
+        echo json_encode([
+            'success' => false,
+            'message' => 'Vehicle details and car photo are required for drivers'
+        ]);
+        exit;
+    }
+}
 
+// DRIVER DOCUMENT UPLOADS
 $licensePath = null;
 $vehicleRegPath = null;
 
 if (in_array('driver', $roles)) {
 
-    if (!is_dir($absoluteDir)) {
-        mkdir($absoluteDir, 0777, true);
+    $driverSideRoot = realpath(__DIR__ . '/driver-side');
+    $docAbsDir = $driverSideRoot . '/images/driver_documents/';
+    $docPublicDir = 'driver-side/images/driver_documents/';
+
+    if (!is_dir($docAbsDir)) {
+        mkdir($docAbsDir, 0777, true);
     }
 
+    // License
     if (!empty($_FILES['license']) && $_FILES['license']['error'] === UPLOAD_ERR_OK) {
         $ext = pathinfo($_FILES['license']['name'], PATHINFO_EXTENSION);
         $filename = uniqid('license_') . '.' . $ext;
-
-        move_uploaded_file(
-            $_FILES['license']['tmp_name'],
-            $absoluteDir . $filename
-        );
-
-        $licensePath = $publicDir . $filename;
+        move_uploaded_file($_FILES['license']['tmp_name'], $docAbsDir . $filename);
+        $licensePath = $docPublicDir . $filename;
     }
 
+    // Vehicle Registration
     if (!empty($_FILES['vehicle-reg']) && $_FILES['vehicle-reg']['error'] === UPLOAD_ERR_OK) {
         $ext = pathinfo($_FILES['vehicle-reg']['name'], PATHINFO_EXTENSION);
         $filename = uniqid('vehreg_') . '.' . $ext;
-
-        move_uploaded_file(
-            $_FILES['vehicle-reg']['tmp_name'],
-            $absoluteDir . $filename
-        );
-
-        $vehicleRegPath = $publicDir . $filename;
+        move_uploaded_file($_FILES['vehicle-reg']['tmp_name'], $docAbsDir . $filename);
+        $vehicleRegPath = $docPublicDir . $filename;
     }
 }
 
-$users = $db->users;
+// CAR PHOTO UPLOAD
+$carPhotoPath = null;
 
-// Prevent duplicate email 
-if ($users->findOne(['email' => $email])) {
-    echo json_encode(['success'=>false, 'message'=>'Email already registered']);
-    exit;
+if (in_array('driver', $roles)) {
+
+    $carPhotoAbsDir = realpath(__DIR__ . '/driver-side') . '/images/car_pics/';
+    $carPhotoPublicDir = 'driver-side/images/car_pics/';
+
+    if (!is_dir($carPhotoAbsDir)) {
+        mkdir($carPhotoAbsDir, 0777, true);
+    }
+
+    if (!empty($_FILES['car-photo']) && $_FILES['car-photo']['error'] === UPLOAD_ERR_OK) {
+        $ext = pathinfo($_FILES['car-photo']['name'], PATHINFO_EXTENSION);
+        $filename = uniqid('car_') . '.' . $ext;
+        move_uploaded_file($_FILES['car-photo']['tmp_name'], $carPhotoAbsDir . $filename);
+        $carPhotoPath = $carPhotoPublicDir . $filename;
+    }
 }
 
-// Create user 
+// CREATE USER
+$userID = uniqid('U');
+
 $newUser = [
-    'userID' => uniqid('U'),
+    'userID' => $userID,
     'name' => $name,
     'email' => $email,
     'phoneNo' => $phone,
@@ -88,7 +117,6 @@ $newUser = [
     'createdAt' => new MongoDB\BSON\UTCDateTime()
 ];
 
-// Attach driver docs ONLY if driver 
 if (in_array('driver', $roles)) {
     $newUser['driverDocs'] = [
         'licenseImage' => $licensePath,
@@ -98,6 +126,26 @@ if (in_array('driver', $roles)) {
 
 $users->insertOne($newUser);
 
+// CREATE VEHICLE RECORD
+if (in_array('driver', $roles)) {
+
+    $newVehicle = [
+        'carId' => uniqid('C'),
+        'ownerId' => $userID,
+        'carMake' => trim($_POST['car-make']),
+        'carModel' => trim($_POST['car-model']),
+        'year' => (int) $_POST['year-model'],
+        'plateNo' => trim($_POST['plate-number']),
+        'cap' => 4,
+        'isVerified' => false,
+        'carPhoto' => $carPhotoPath,
+        'createdAt' => new MongoDB\BSON\UTCDateTime()
+    ];
+
+    $vehicles->insertOne($newVehicle);
+}
+
+// RESPONSE
 echo json_encode([
     'success' => true,
     'message' => 'Registration successful'

@@ -1,6 +1,13 @@
-// payment-gateway.js
+import { getCookie } from "../../js/frontend-utils.js";
 
+// Main functionality
 document.addEventListener("DOMContentLoaded", () => {
+  // Prevent multiple submissions
+  if (getCookie("payment_lock")) {
+      alert("Payment already being processed. Please wait.");
+      return;
+  }
+
   const BASE = '/9467_it312-teamarc_midtermproject';
   // === Tab Switching ===
   const gcashTab = document.getElementById("gcash-tab");
@@ -47,7 +54,10 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
   // Load user info from DB
-  fetch(`${BASE}/includes/get_user_info.php?rideId=${rideId}`)
+  fetch(`${BASE}/includes/get_user_info.php?rideId=${rideId}`, {
+      credentials: 'same-origin'
+  })
+
     .then((res) => res.json())
     .then((data) => {
       if (data.success && data.user) {
@@ -90,6 +100,7 @@ document.addEventListener("DOMContentLoaded", () => {
       fetch(`${BASE}/passenger-side/includes/payment_handler.php`, {
         method: "POST",
         body: formData,
+        credentials: 'same-origin'
       })
         .then((res) => res.json())
         .then((data) => {

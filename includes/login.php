@@ -1,6 +1,6 @@
 <?php
 require __DIR__ . '/../vendor/autoload.php';
-session_start();
+require_once __DIR__ . '/../includes/cookies.php';
 
 try {
     $client = new MongoDB\Client("mongodb://localhost:27017");
@@ -30,7 +30,7 @@ try {
             exit;
         }
 
-        // SESSION HANDLING (PROFESSOR-APPROVED)
+        // SESSION HANDLING 
         $_SESSION['user_id'] = $user->userID;
         $_SESSION['name']    = $user->name;
         $_SESSION['email']   = $user->email;
@@ -43,6 +43,10 @@ try {
             'email'  => $user->email,
             'role'   => $role
         ];
+
+        // NON-SENSITIVE cookie
+        set_app_cookie('user_id', $user->userID);
+        set_app_cookie('user_role', $role);
 
         $_SESSION['login_time'] = time();
 

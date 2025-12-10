@@ -9,7 +9,7 @@ console.log("MONGO_URI =", process.env.MONGO_URI);
 const app = express();
 app.use(express.json());
 app.use(cors({
-    origin: "http://localhost:8888", // your frontend origin
+    origin: "http://localhost:8888", // Note: Remove 8888 if you're not on MAC
     credentials: true
 }));
 
@@ -197,17 +197,211 @@ app.get("/api/admin/payments", adminOnly, async (req, res) => {
     res.json(payments);
 });
 
-// Manage Reports and Complaints
+// Manage Reports and Complaints. Note to self: be careful with aggregations and pipelines cuz they're case sensitive
 app.get("/api/admin/reports", adminOnly, async (req, res) => {
-    const db = client.db(dbName);
+    try {
+        const db = client.db(dbName);
 
-    const reports = await db.collection("history")
-        .find({ report_description: { $ne: "" } })
-        .toArray();
+        const reports = await db.collection("complaints").aggregate([
+            // JOIN passenger user info
+            {
+                $lookup: {
+                    from: "users",
+                    localField: "passengerId",
+                    foreignField: "userID",
+                    as: "passenger"
+                }
+            },
+            { $unwind: "$passenger" },
 
-    res.json(reports);
+            // JOIN driver user info
+            {
+                $lookup: {
+                    from: "users",
+                    localField: "driverId",
+                    foreignField: "userID",
+                    as: "driver"
+                }
+            },
+            { $unwind: "$driver" },
+
+            // JOIN ride info
+            {
+                $lookup: {
+                    from: "rides",
+                    localField: "rideId",
+                    foreignField: "rideId",
+                    as: "ride"
+                }
+            },
+            { $unwind: "$ride" },
+
+            // Final output format
+            {
+                $project: {
+                    _id: 0,
+                    complaintId: 1,
+                    rideId: 1,
+                    driverId: 1,
+                    passengerId: 1,
+                    complaintMessage: 1,
+                    status: 1,
+                    createdAt: 1,
+
+                    passengerName: "$passenger.name",
+                    passengerEmail: "$passenger.email",
+
+                    driverName: "$driver.name",
+                    driverEmail: "$driver.email",
+
+                    rideDate: "$ride.date",
+                    rideOrigin: "$ride.pickupLocation",
+                    rideDestination: "$ride.dropoffLocation"
+                }
+            }
+        ]).toArray();
+
+        res.json(reports);
+    } catch (error) {
+        console.error("Error fetching reports:", error);
+        res.status(500).json({ error: "Internal server error" });
+    }
 });
 
+// Get single report details based on the complaint ID
+app.get("/api/admin/reports/:id", adminOnly, async (req, res) => {
+    try {
+        const complaintId = req.params.id;
+        const db = client.db(dbName);
+
+        const report = await db.collection("complaints").aggregate([
+            // Match complaint by complaintId
+            { $match: { complaintId: complaintId } },
+
+            // JOIN passenger user info
+            {
+                $lookup: {
+                    from: "users",
+                    localField: "passengerId",
+                    foreignField: "userID",
+                    as: "passenger"
+                }
+            },
+            { $unwind: { path: "$passenger", preserveNullAndEmptyArrays: true } },
+
+            // JOIN driver user info
+            {
+                $lookup: {
+                    from: "users",
+                    localField: "driverId",
+                    foreignField: "userID",
+                    as: "driver"
+                }
+            },
+            { $unwind: { path: "$driver", preserveNullAndEmptyArrays: true } },
+
+            // JOIN ride info
+            {
+                $lookup: {
+                    from: "rides",
+                    localField: "rideId",
+                    foreignField: "rideId",
+                    as: "ride"
+                }
+            },
+            { $unwind: { path: "$ride", preserveNullAndEmptyArrays: true } },
+
+            // JOIN vehicle info (driver's vehicle)
+            {
+                $lookup: {
+                    from: "vehicles",
+                    localField: "driverId",
+                    foreignField: "ownerId",
+                    as: "vehicle"
+                }
+            },
+            { $unwind: { path: "$vehicle", preserveNullAndEmptyArrays: true } },
+
+            // Project all necessary fields
+            {
+                $project: {
+                    _id: 0,
+                    complaintId: 1,
+                    rideId: 1,
+                    driverId: 1,
+                    passengerId: 1,
+                    complaintMessage: 1,
+                    status: 1,
+                    createdAt: 1,
+
+                    // Passenger details
+                    passengerName: "$passenger.name",
+                    passengerEmail: "$passenger.email",
+                    passengerOccupation: "$passenger.occupation",
+                    passengerPhone: "$passenger.phoneNo",
+
+                    // Driver details
+                    driverName: "$driver.name",
+                    driverEmail: "$driver.email",
+                    driverOccupation: "$driver.occupation",
+                    driverPhone: "$driver.phoneNo",
+                    driverIDNumber: "$driver.userID",
+
+                    // Ride details
+                    rideDate: "$ride.date",
+                    rideOrigin: "$ride.pickupLocation",
+                    rideDestination: "$ride.dropoffLocation",
+
+                    // Vehicle details
+                    carId: "$vehicle.carId",
+                    carMake: "$vehicle.carMake",
+                    carModel: "$vehicle.carModel",
+                    plateNo: "$vehicle.plateNo",
+                    color: "$vehicle.color",
+                    seats: "$vehicle.seats"
+                }
+            }
+        ]).toArray();
+
+        if (!report || report.length === 0) {
+            return res.status(404).json({ message: "Report not found" });
+        }
+
+        res.json(report[0]); // return single report object
+    } catch (err) {
+        console.error("Error fetching report details:", err);
+        res.status(500).json({ error: "Internal server error" });
+    }
+});
+
+// Mark a report as resolved
+app.patch("/api/admin/reports/:id/status", adminOnly, async (req, res) => {
+    try {
+        const complaintId = req.params.id;
+        const { status } = req.body;
+
+        if (!status) {
+            return res.status(400).json({ error: "Status is required" });
+        }
+
+        const db = client.db(dbName);
+
+        const result = await db.collection("complaints").updateOne(
+            { complaintId: complaintId }, // Match by complaint ID
+            { $set: { status: status } } // Update the status
+        );
+
+        if (result.matchedCount === 0) {
+            return res.status(404).json({ error: "Complaint not found" });
+        }
+
+        res.json({ message: "Complaint status updated successfully" });
+
+    } catch (error) {
+        console.error("Error updating complaint:", error);
+        res.status(500).json({ error: "Internal server error" });
+    }
+});
 
 app.listen(4000, () => {
     console.log("Admin NodeJS backend running at port 4000");

@@ -1,5 +1,7 @@
 <?php
 // Use the shared root includes DB connector
+require_once __DIR__ . '/../../includes/session.php';
+require_once __DIR__ . '/../../includes/cookies.php';
 require_once __DIR__ . '/../../includes/db_connect.php';
 
 function normalize_asset_path($path, $default) {
@@ -19,6 +21,9 @@ if (!$rideId) {
     echo json_encode(['error' => 'No ride ID has been found']);
     exit;
 }
+
+// Store last viewed ride - to remember which ride the user last viewed
+set_app_cookie('last_viewed_ride', $rideId);
 
 // Collections
 $ridesCollection = $db->rides;

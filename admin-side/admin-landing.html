@@ -6,6 +6,7 @@
     <title>CARMA | Admin Dashboard</title>
     <link rel="stylesheet" href="../driver-side/css/driver-style.css">
     <link rel="stylesheet" href="../admin-side/css/admin-landing.css">
+    <link rel="stylesheet" href="../admin-side/css/reports.css">
 </head>
 
 <body>
@@ -57,9 +58,8 @@
             <div id="user-accounts" class="content-window active">
                 <header class="page-header">
                     <h1>User Accounts</h1>
-                    <p>Showing all passengers & car owners</p>
+                    <p>Showing all passengers & drivers</p>
                 </header>
-
 
                 <!-- Search bar -->
                 <div class="search-container">
@@ -91,15 +91,30 @@
                 <div class="list-container" id="vehicleList"></div>
             </div>
 
-            <!-- REPORTS & COMPLAINTS WINDOW -->
-            <div id="reports-complaints" class="content-window">
-                <header class="page-header">
-                    <h1>Reports & Complaints</h1>
-                    <p>Displaying all submitted reports</p>
-                </header>
-
-                <div class="list-container" id="reportList"></div>
+            <!-- REPORTS WINDOW -->
+             <div id = "reports-complaints" class="content-window">
+                <div id="reportList">
+                    <div class="loading">Loading reports...</div>
+                </div>
             </div>
+            <!-- Modal for Report Details -->
+             <div id="reportModal" class="modal">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h2>Report Details</h2>
+                        <span class="close" onclick="closeReportModal()">&times;</span>
+                    </div>
+                    <div class="modal-body" id="modalBody">
+                        <!-- Content will be loaded dynamically -->
+                        </div>
+                        <div class="modal-footer">
+                            <button class="btn btn-resolve" id="resolveBtn" onclick="markAsResolved()">
+                                Mark as Resolved
+                            </button>
+                            <button class="btn btn-close-modal" onclick="closeReportModal()">Close</button>
+                        </div>
+                    </div>
+                </div>
 
             <!-- ACTIVE RIDES WINDOW -->
             <div id="active-rides" class="content-window">
@@ -143,6 +158,8 @@
                 <button class="btn btn-reject" id="rejectBtn">Reject</button>
                 <button class="btn btn-revoke" id="revokeBtn">Revoke Verification</button>
             </div>
+
+            <div class="modal-info" id="modalContent"></div>
         </div>
     </div>
 

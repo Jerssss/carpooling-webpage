@@ -1,7 +1,7 @@
 // js/notifications.js
 document.addEventListener('DOMContentLoaded', () => {
     initializeNotificationTabs();
-    // Load for the session user on initial load
+    // Load for the session user on initial load (no-op if list absent)
     loadNotifications('all');
     // Wire bell toggle and outside-click close globally (no inline handlers needed)
     setupNotificationToggle();
@@ -133,16 +133,21 @@ function timeAgoISO(iso) {
 
 function setupNotificationToggle() {
     try {
+        if (window.__notifToggleWired) return;
         const bell = document.querySelector('.nav-bell .bell-icon');
-        const dropdown = document.getElementById('notificationsDropdown');
-        if (!bell || !dropdown) return;
+        if (!bell) return;
+        window.__notifToggleWired = true;
 
         bell.addEventListener('click', (e) => {
             e.stopPropagation();
+            const dropdown = document.getElementById('notificationsDropdown');
+            if (!dropdown) return;
             dropdown.classList.toggle('show');
         });
 
         document.addEventListener('click', (e) => {
+            const dropdown = document.getElementById('notificationsDropdown');
+            if (!dropdown) return;
             const inside = e.target.closest('.nav-bell');
             if (!inside && dropdown.classList.contains('show')) {
                 dropdown.classList.remove('show');
@@ -152,3 +157,10 @@ function setupNotificationToggle() {
         // no-op
     }
 }
+
+// Allow re-initialization after injecting notifications.html
+window.initNotificationsUI = function () {
+    initializeNotificationTabs();
+    setupNotificationToggle();
+    loadNotifications(getActiveFilter());
+};

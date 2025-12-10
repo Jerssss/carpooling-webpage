@@ -1,3 +1,19 @@
+import { getCookie } from "../../js/frontend-utils.js";
+
+// Restore last search filters
+document.addEventListener("DOMContentLoaded", () => {
+    const search = getCookie("last_search");
+    const seat   = getCookie("last_seat");
+    const type   = getCookie("last_for");
+
+    if (search) document.getElementById("searchInput").value = decodeURIComponent(search);
+    if (seat)   document.getElementById("seatSelect").value = seat;
+    if (type)   document.getElementById("forSelect").value = type;
+
+    fetchCarpools(); // normal AJAX fetch
+});
+
+// Main functionality
 document.addEventListener("DOMContentLoaded", () => {
   const container = document.querySelector(".carpool-container");
   const BASE = '/9467_it312-teamarc_midtermproject';
@@ -5,6 +21,14 @@ document.addEventListener("DOMContentLoaded", () => {
     const forFilter = document.getElementById("forFilter");
     const seatFilter = document.getElementById("seatsFilter");
     const roleFilter = document.getElementById("roleFilter");
+
+    console.log('Fetching carpools with:', {
+      search: searchInput.value,
+      for: forFilter.value,
+      seat: seatFilter.value,
+      role: roleFilter.value
+    });
+
   
     async function fetchCarpools() {
       const params = new URLSearchParams({
@@ -15,7 +39,9 @@ document.addEventListener("DOMContentLoaded", () => {
       });
   
       try {
-        const response = await fetch(`${BASE}/passenger-side/includes/fetch_carpool.php?${params.toString()}`);
+        const response = await fetch(`${BASE}/passenger-side/includes/fetch_carpool.php?${params.toString()}`, {
+            credentials: 'same-origin'
+        });
         const data = await response.json();
         renderCarpools(data);
       } catch (error) {

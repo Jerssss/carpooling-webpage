@@ -1,6 +1,7 @@
 <?php
 // Use the shared root includes DB connector
 require_once __DIR__ . '/../../includes/session.php';
+require_once __DIR__ . '/../../includes/cookies.php';
 require_once __DIR__ . '/../../includes/db_connect.php';
 
 if (!isset($_SESSION['user_id']) || $_SESSION['role'] !== 'passenger') {
@@ -103,6 +104,18 @@ if (strcasecmp($method, 'GCash') === 0) {
         exit;
     }
 }
+
+// Prevent rapid multiple submissions using a cookie lock
+if (isset($_COOKIE['payment_lock'])) {
+    echo json_encode([
+        'success' => false,
+        'message' => 'Payment already in progress. Please wait.'
+    ]);
+    exit;
+}
+
+// Lock payments for 30 seconds
+set_app_cookie('payment_lock', '1', 0.01); // ~15-30 seconds
 
 // Build payment data
 // Build base payment data
@@ -255,6 +268,8 @@ try {
         // Don't block on history failures
         error_log('History append failed: ' . $e->getMessage());
     }
+
+    delete_app_cookie('payment_lock');
 
     echo json_encode(['success' => true, 'message' => 'Payment saved successfully']);
 } catch (Exception $e) {

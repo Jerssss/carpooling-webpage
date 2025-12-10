@@ -10,6 +10,12 @@
     --light-color: #fff;
 }
 
+/* hides any horizontal overflow */
+html, body {
+  overflow-x: hidden;
+}
+
+
 /* ===== NAVIGATION BAR ===== */
 nav {
   background: #2C2C2C;
