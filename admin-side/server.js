@@ -9,7 +9,7 @@ console.log("MONGO_URI =", process.env.MONGO_URI);
 const app = express();
 app.use(express.json());
 app.use(cors({
-    origin: "http://localhost", // Note: Remove 8888 if you're not on MAC
+    origin: "http://localhost:8888", // Note: Remove 8888 if you're not on MAC
     credentials: true
 }));
 
