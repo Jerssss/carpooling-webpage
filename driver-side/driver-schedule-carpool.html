@@ -5,34 +5,67 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Schedule Carpool - Carma</title>
+
     <link rel="stylesheet" href="css/driver-style.css">
     <link rel="stylesheet" href="css/driver-schedule-carpool.css">
     <link rel="stylesheet" href="../css/notifications.css">
+
     <script src="../js/notifications.js" defer></script>
     <script src="../js/notifications-loader.js" defer></script>
-
-
 </head>
 
 <body>
     <!-- NAVBAR -->
     <nav>
-    <div class="nav-left">
-        <img src="../images/carma-logo.png" class="logo" />
-        <span class="site-name">Carma</span>
-    </div>
-    <ul>
-        <li><a href="../driver-side/driver-landing.html">Home</a></li>
-        <li><a href="../driver-side/driver-history.html">History</a></li>
-    </ul>
-    <div class="nav-right">
-        <div class="nav-bell">
-              <img src="../images/bell.png" class="bell-icon" alt="Notifications">
-            <div id="notificationsContainer"></div>
+        <!-- Left -->
+        <div class="nav-left">
+            <img src="../images/carma-logo.png" class="logo" alt="CARMA Logo">
+            <span class="site-name">CARMA</span>
         </div>
-        <img src="../images/bod.jpg" class="user-pic" />
-    </div>
-</nav>
+
+        <!-- Center Links -->
+        <ul>
+            <li><a href="driver-landing.html">Home</a></li>
+            <li><a href="driver-history.html">History</a></li>
+        </ul>
+
+        <!-- Right -->
+        <div class="nav-right">
+            <div class="hamburger" id="hamburger" onclick="toggleMobileMenu()">
+                <div></div>
+                <div></div>
+                <div></div>
+            </div>
+
+            <div class="nav-bell">
+                <img src="../images/bell.png" class="bell-icon">
+                <div id="notificationsContainer"></div>
+            </div>
+
+            <img src="../images/speed.jpg" class="user-pic" onclick="toggleMenu()">
+        </div>
+
+        <!-- Dropdown -->
+        <div class="sub-menu-wrap" id="subMenu">
+            <div class="sub-menu">
+                <div class="user-info">
+                    <img src="../images/speed.jpg" alt="User">
+                    <h2 id="userName">Loading...</h2>
+                </div>
+                <hr>
+                <a href="driver-profile.html" class="sub-menu-link">
+                    <img src="../images/user.png">
+                    <p>Driver Profile</p>
+                    <span>&gt;</span>
+                </a>
+                <a href="#" class="sub-menu-link">
+                    <img src="../images/user-logout.png">
+                    <p>Logout</p>
+                    <span>&gt;</span>
+                </a>
+            </div>
+        </div>
+    </nav>
 
     <!-- FORM SECTION -->
     <div class="form-container">
@@ -41,10 +74,8 @@
             <div class="form-group">
                 <label for="start-location">Starting Location</label>
                 <div class="input-icon-wrap">
-                    <input type="text" id="start-location" name="start-location" placeholder="Enter your location"
-                        required autocomplete="off">
-                    <img id="openStartMapPicker" class="input-icon" src="../images/location.png" alt="Pick start on map"
-                        title="Pick start on map">
+                    <input type="text" id="start-location" name="start-location" placeholder="Enter your location" required autocomplete="off">
+                    <img id="openStartMapPicker" class="input-icon" src="../images/location.png" alt="Pick start on map" title="Pick start on map">
                 </div>
                 <input type="hidden" id="start-lat" name="start-lat">
                 <input type="hidden" id="start-lng" name="start-lng">
@@ -53,10 +84,8 @@
             <div class="form-group">
                 <label for="destination">Destination</label>
                 <div class="input-icon-wrap">
-                    <input type="text" id="destination" name="destination" placeholder="Enter destination" required
-                        autocomplete="off">
-                    <img id="openDestMapPicker" class="input-icon" src="../images/location.png"
-                        alt="Pick destination on map" title="Pick destination on map">
+                    <input type="text" id="destination" name="destination" placeholder="Enter destination" required autocomplete="off">
+                    <img id="openDestMapPicker" class="input-icon" src="../images/location.png" alt="Pick destination on map" title="Pick destination on map">
                 </div>
                 <input type="hidden" id="dest-lat" name="dest-lat">
                 <input type="hidden" id="dest-lng" name="dest-lng">
@@ -98,28 +127,32 @@
         </div>
     </div>
 
-    <!-- ===== FOOTER SECTION ===== -->
+    <!-- FOOTER -->
     <footer class="site-footer">
-    <div class="social-icons">
-        <a href="#"><img src="../images/facebook-app-symbol.png" alt="Facebook"></a>
-        <a href="#"><img src="../images/instagram.png" alt="Instagram"></a>
-        <a href="#"><img src="../images/twitter.png" alt="Twitter"></a>
-        <a href="#"><img src="../images/google.png" alt="Google"></a>
-        <a href="#"><img src="../images/youtube.png" alt="YouTube"></a>
-    </div>
+        <div class="social-icons">
+            <a href="#"><img src="../images/facebook-app-symbol.png" alt="Facebook"></a>
+            <a href="#"><img src="../images/instagram.png" alt="Instagram"></a>
+            <a href="#"><img src="../images/twitter.png" alt="Twitter"></a>
+            <a href="#"><img src="../images/google.png" alt="Google"></a>
+            <a href="#"><img src="../images/youtube.png" alt="YouTube"></a>
+        </div>
 
-    <ul class="footer-nav">
-        <li><a href="driver-landing.html">Home</a></li>
-        <li><a href="driver-schedule-carpool.html">Schedule</a></li>
-        <li><a href="driver-history.html">Feedbacks</a></li>
-    </ul>
+        <ul class="footer-nav">
+            <li><a href="driver-landing.html">Home</a></li>
+            <li><a href="driver-schedule-carpool.html">Schedule</a></li>
+            <li><a href="driver-history.html">Feedbacks</a></li>
+        </ul>
 
-    <p class="footer-copy">Copyright ©2025 | Designed by <span>Carma</span></p>
-</footer>
+        <p class="footer-copy">Copyright ©2025 | Designed by <span>Carma</span></p>
+    </footer>
 
-        <script src="js/driver-schedule-carpool.js"></script>
-        <!-- Notifications toggle handled in ../js/notifications.js -->
-        <script src="../js/notifications.js" defer></script>
+    <script src="js/driver-schedule-carpool.js"></script>
+
+    <!-- Dropdown Toggle Fix -->
+    <script>
+        function toggleMenu() {
+            document.getElementById("subMenu").classList.toggle("open-menu");
+        }
+    </script>
 </body>
-
 </html>
