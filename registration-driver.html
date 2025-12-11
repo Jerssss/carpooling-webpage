@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Driver Registration | Carpool</title>
-    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/style-start.css">
     <link rel="stylesheet" href="css/registration-driver.css">
 </head>
 <body data-role="driver">
@@ -23,92 +23,153 @@
 
         <form class="registration-form" enctype="multipart/form-data">
 
-            <div class="form-group">
-                <label for="fullname">Full Name</label>
-                <input type="text" id="fullname" name="fullname" placeholder="Enter full name" required>
+    <!-- STEP PROGRESS / STEPPER (smaller, number-free) -->
+    <div class="stepper" aria-hidden="true">
+        <div class="step" data-step="1">
+            <div class="step-circle" aria-hidden="true"></div>
+            <div class="step-label">Personal</div>
+        </div>
+        <div class="step" data-step="2">
+            <div class="step-circle" aria-hidden="true"></div>
+            <div class="step-label">Car</div>
+        </div>
+        <div class="step" data-step="3">
+            <div class="step-circle" aria-hidden="true"></div>
+            <div class="step-label">Documents</div>
+        </div>
+        <div class="step" data-step="4">
+            <div class="step-circle" aria-hidden="true"></div>
+            <div class="step-label">Account</div>
+        </div>
+    </div>
+
+    <!-- STEP 1 -->
+    <div class="form-step" data-step="1">
+        <h2 class="step-title">Personal Details</h2>
+
+        <div class="form-group">
+            <label for="fullname">Full Name</label>
+            <input type="text" id="fullname" name="fullname" placeholder="Enter full name" required>
+        </div>
+
+        <div class="form-group">
+            <label for="idnumber">ID Number</label>
+            <input type="text" id="idnumber" name="idnumber" placeholder="Enter ID number" required>
+        </div>
+
+        <div class="form-group">
+            <label for="email">Email</label>
+            <input type="email" id="email" name="email" placeholder="Enter email" required>
+        </div>
+
+        <div class="form-group">
+            <label for="contact">Contact Number</label>
+            <input type="text" id="contact" name="contact" placeholder="Enter contact number" required>
+        </div>
+
+        <div class="form-group">
+            <label for="occupation">Occupation</label>
+            <div class="custom-dropdown">
+              <select id="occupation" name="occupation" required>
+                <option value="">Select occupation</option>
+                <option value="student">Student</option>
+                <option value="faculty">Faculty</option>
+                <option value="staff">Staff</option>
+              </select>
+              <span class="dropdown-arrow">&#9662;</span>
             </div>
+            
+        </div>
+    </div>
 
-            <div class="form-group">
-                <label for="idnumber">ID Number</label>
-                <input type="text" id="idnumber" name="idnumber" placeholder="Enter ID number" required>
+    <!-- STEP 2 -->
+    <div class="form-step" data-step="2" hidden>
+        <h2 class="step-title">Car Details</h2>
+
+        <div class="form-group">
+            <label for="car-make">Car Make</label>
+            <input type="text" id="car-make" name="car-make" placeholder="e.g., Toyota" required>
+        </div>
+
+        <div class="form-group">
+            <label for="car-model">Car Model</label>
+            <input type="text" id="car-model" name="car-model" placeholder="e.g., Vios" required>
+        </div>
+
+        <div class="form-group">
+            <label for="year-model">Year Model</label>
+            <input type="text" id="year-model" name="year-model" placeholder="e.g., 2022" required>
+        </div>
+
+        <div class="form-group">
+            <label for="plate-number">Plate Number</label>
+            <input type="text" id="plate-number" name="plate-number" placeholder="Enter plate number" required>
+        </div>
+
+        <div class="form-group">
+            <label for="car-photo">Upload Car Photo</label>
+            <div class="file-upload-big">
+                <input type="file" id="car-photo" name="car-photo" accept="image/*" required>
+                <span class="file-label">
+                    <img src="../9467_it312-teamarc_midtermproject/images/uploadimage.png" alt="Upload Icon">
+                    Upload Car Photo
+                </span>
             </div>
+        </div>
+    </div>
 
-            <div class="form-group">
-                <label for="email">Email</label>
-                <input type="email" id="email" name="email" placeholder="Enter email" required>
+    <!-- STEP 3 -->
+    <div class="form-step" data-step="3" hidden>
+        <h2 class="step-title">Vehicle Documents</h2>
+
+        <div class="form-group">
+            <label>Upload Driver's License</label>
+            <div class="file-upload-big">
+                <input type="file" id="license" name="license" accept="image/*" required>
+                <span class="file-label">
+                    <img src="../9467_it312-teamarc_midtermproject/images/uploadimage.png" alt="Upload Icon">
+                    Upload Driver's License
+                </span>
             </div>
+        </div>
 
-            <div class="form-group">
-                <label for="contact">Contact Number</label>
-                <input type="text" id="contact" name="contact" placeholder="Enter contact number" required>
+        <div class="form-group">
+            <label>Upload Vehicle Registration</label>
+            <div class="file-upload-big">
+                <input type="file" id="vehicle-reg" name="vehicle-reg" accept="image/*" required>
+                <span class="file-label">
+                    <img src="../9467_it312-teamarc_midtermproject/images/uploadimage.png" alt="Upload Icon">
+                    Upload Vehicle Registration
+                </span>
             </div>
+        </div>
+    </div>
 
-            <div class="form-group">
-                <label for="occupation">Occupation</label>
-                <input type="text" id="occupation" name="occupation" placeholder="Enter occupation" required>
-            </div>
+    <!-- STEP 4 -->
+    <div class="form-step" data-step="4" hidden>
+        <h2 class="step-title">Create Account</h2>
 
-            <div class="form-group">
-                <label for="car-make">Car Make</label>
-                <input type="text" id="car-make" name="car-make" placeholder="e.g., Toyota" required>
-            </div>
+        <div class="form-group">
+            <label for="password">Password</label>
+            <input type="password" id="password" name="password" placeholder="Enter password" required>
+        </div>
 
-            <div class="form-group">
-                <label for="car-model">Car Model</label>
-                <input type="text" id="car-model" name="car-model" placeholder="e.g., Vios" required>
-            </div>
+        <div class="form-group">
+            <label for="confirm-password">Confirm Password</label>
+            <input type="password" id="confirm-password" name="confirm-password" placeholder="Confirm password" required>
+        </div>
+    </div>
 
-            <div class="form-group">
-                <label for="year-model">Year Model</label>
-                <input type="text" id="year-model" name="year-model" placeholder="e.g., 2022" required>
-            </div>
+    <!-- NAVIGATION BUTTONS -->
+    <div class="form-navigation">
+        <button type="button" class="prev-btn" aria-label="Previous" hidden>Previous</button>
+        <button type="button" class="next-btn" aria-label="Next">Next</button>
+        <button type="submit" class="submit-btn" hidden>Register</button>
+    </div>
 
-            <div class="form-group">
-                <label for="plate-number">Plate Number</label>
-                <input type="text" id="plate-number" name="plate-number" placeholder="Enter plate number" required>
-            </div>
+</form>
 
-            <div class="form-group">
-                <label>Upload Documents</label>
 
-                <div class="file-upload-big">
-                    <input type="file" id="license" name="license" accept="image/*" required>
-                    <span class="file-label">
-                        <img src="../9467_it312-teamarc_midtermproject/images/uploadimage.png" alt="Upload Icon">
-                        Upload Driver's License
-                    </span>
-                </div>
-
-                <div class="file-upload-big">
-                    <input type="file" id="vehicle-reg" name="vehicle-reg" accept="image/*" required>
-                    <span class="file-label">
-                        <img src="../9467_it312-teamarc_midtermproject/images/uploadimage.png" alt="Upload Icon">
-                        Upload Vehicle Registration
-                    </span>
-                </div>
-
-                <div class="file-upload-big">
-                    <input type="file" id="car-photo" name="car-photo" accept="image/*" required>
-                    <span class="file-label">
-                        <img src="../9467_it312-teamarc_midtermproject/images/uploadimage.png" alt="Upload Icon">
-                        Upload Car Photo
-                    </span>
-                </div>
-
-            </div>
-
-            <div class="form-group">
-                <label for="password">Password</label>
-                <input type="password" id="password" name="password" placeholder="Enter password" required>
-            </div>
-
-            <div class="form-group">
-                <label for="confirm-password">Confirm Password</label>
-                <input type="password" id="confirm-password" name="confirm-password" placeholder="Confirm password" required>
-            </div>
-
-            <button type="submit" class="submit-btn">Register</button>
-        </form>
     </div>
 
     <script src="register.js" defer></script>

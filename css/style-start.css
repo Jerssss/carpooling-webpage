@@ -1,0 +1,157 @@
+* {
+    padding: 0;
+    margin: 0;
+    box-sizing: border-box;
+    font-family: 'Poppins', sans-serif;
+}
+
+:root {
+    --accent-color: #1a1a1a;   
+    --light-color: #fff;
+}
+
+/* hides any horizontal overflow */
+html, body {
+  overflow-x: hidden;
+}
+
+
+/* NAVBAR */
+nav {
+    width: 100%;
+    height: 80px;
+    background: #2e2e2e;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 1000; 
+    box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+}
+
+.nav-left {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.nav-left img {
+    width: 40px;
+    height: 40px;
+    border-radius: 5px;
+}
+
+.nav-left .site-name {
+    color: white;
+    font-size: 20px;
+    font-weight: 700;
+}
+
+/* ===== FOOTER ===== */
+.site-footer {
+  background-color: #1A1A1A;
+  color: #ccc;
+  text-align: center;
+  padding: 40px 0 20px;
+  font-family: 'Poppins', sans-serif;
+}
+
+.site-footer .social-icons {
+  margin-bottom: 20px;
+}
+
+.site-footer .social-icons a {
+  display: inline-block;
+  margin: 0 10px;
+  background-color: #fff;
+  border-radius: 50%;
+  padding: 10px;
+  width: 45px;
+  height: 45px;
+  transition: transform 0.3s ease, background-color 0.3s ease;
+}
+
+.site-footer .social-icons a:hover {
+  transform: scale(1.1);
+  background-color: #ffb300;
+}
+
+.site-footer .social-icons img {
+  width: 25px;
+  height: 25px;
+}
+
+.site-footer .footer-nav {
+  list-style: none;
+  padding: 0;
+  margin: 20px 0;
+}
+
+.site-footer .footer-nav li {
+  display: inline-block;
+  margin: 0 15px;
+}
+
+.site-footer .footer-nav li a {
+  color: #ccc;
+  text-decoration: none;
+  font-size: 18px;
+  transition: color 0.3s ease;
+}
+
+.site-footer .footer-nav li a:hover {
+  color: #fff;
+}
+
+.site-footer .footer-copy {
+  font-size: 15px;
+  margin-top: 15px;
+  color: #bfbfbf;
+}
+
+.site-footer .footer-copy span {
+  color: #FFB300;
+  font-weight: 600;
+}
+
+.view-btn {
+  background-color: #FFB300; /* golden amber */
+  color: #fff;
+  border: none;
+  border-radius: 50px;
+  padding: 10px 25px;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.view-btn:hover {
+  background-color: #e5a200; /* slightly darker amber */
+  transform: translateY(-2px);
+  box-shadow: 0 6px 18px rgba(0,0,0,0.15);
+}
+
+.view-btn:active {
+  transform: translateY(0);
+  box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+}
+
+/* Optional: add a small left arrow for back buttons */
+.view-btn.back {
+  font-size: 15px;
+  padding: 8px 20px;
+}
+
+.view-btn.back::before {
+  content: "←";
+  margin-right: 8px;
+  font-weight: bold;
+}
