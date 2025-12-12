@@ -54,33 +54,101 @@
 
         <!-- RIGHT PANEL -->
         <div class="right-panel">
-
+            
             <!-- USER ACCOUNTS WINDOW -->
-            <div id="user-accounts" class="content-window active">
+             <div id="user-accounts" class="content-window active">
                 <header class="page-header">
                     <h1>User Accounts</h1>
                     <p>Showing all passengers & drivers</p>
                 </header>
-
+                
                 <!-- Search bar -->
-                <div class="search-container">
+                 <div class="search-container">
                     <input 
                     type="text" 
                     id="userSearchInput" 
                     class="search-input" 
-                    placeholder="Search users..."
-                    >
+                    placeholder="Search users...">
                 </div>
-
                 <!-- Filter tabs -->
-                <div class="user-filter-tabs">
+                 <div class="user-filter-tabs">
                     <div class="filter-tab active" data-filter="all">All</div>
                     <div class="filter-tab" data-filter="verified">Verified</div>
                     <div class="filter-tab" data-filter="unverified">Unverified</div>
                 </div>
+                
+                <!-- User Table -->
+                 <div class="user-table-container">
+                    <div class="user-table-header">
+                        <div>NAME</div>
+                        <div>USER ID</div>
+                        <div style="text-align: center;">STATUS</div>
+                        <div style="text-align: center;">ACTION</div>
+                    </div>
+                    <div class="user-table-body" id="userList">
+                        <!-- User rows will be dynamically inserted here -->
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- USER DETAILS MODAL -->
+                 <div id="userModal" class="modal-overlay hidden">
+                    <div class="user-modal-box">
+                        <!-- Modal Header -->
+                         <div class="user-modal-header">
+                            <h2 id="modalUserName">User Name</h2>
+                            <button class="modal-close-btn" onclick="closeUserModal()">×</button>
+                        </div>
+                        
+                        <!-- Modal Body -->
+                         <div class="user-modal-body">
+                            <!-- User Details -->
+                             <div class="user-details-section">
+                                <div class="user-details-grid">
+                                    <span class="detail-label">User ID:</span>
+                                    <span class="detail-value" id="modalUserID">-</span>
 
-                <div class="list-container" id="userList"></div>
-            </div>
+                                    <span class="detail-label">Name:</span>
+                                    <span class="detail-value" id="modalName">-</span>
+                                    <span class="detail-label">Email:</span>
+                                    <span class="detail-value" id="modalEmail">-</span>
+
+                                    <span class="detail-label">Phone Number:</span>
+                                    <span class="detail-value" id="modalPhone">-</span>
+
+                                    <span class="detail-label">Occupation:</span>
+                                    <span class="detail-value" id="modalOccupation">-</span>
+
+                                    <span class="detail-label">Roles:</span>
+                                    <span class="detail-value" id="modalRoles">-</span>
+
+                                    <span class="detail-label">Status:</span>
+                                    <span class="detail-value" id="modalStatus">-</span>
+                                </div>
+                            </div>
+                            
+                            <!-- Documents Section -->
+                             <div class="documents-section" id="documentsSection">
+                                <h3>Uploaded Documents</h3>
+                                <div class="documents-grid" id="documentsGrid">
+                                    <!-- Documents will be inserted here dynamically -->
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- Modal Actions -->
+                             <div class="user-modal-actions">
+                                <button class="modal-action-btn btn-approve" id="verifyBtn">
+                                    Approve Verification
+                                </button>
+                                <button class="modal-action-btn btn-revoke" id="revokeBtn">
+                                    Revoke Verification
+                                </button>
+                                <button class="modal-action-btn btn-cancel" onclick="closeUserModal()">
+                                    Cancel
+                                </button>
+                            </div>
+                        </div>
+                    </div>
 
             <!-- VEHICLE REGISTRATIONS WINDOW -->
             <div id="vehicle-registrations" class="content-window">

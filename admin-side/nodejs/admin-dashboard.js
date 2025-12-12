@@ -85,7 +85,9 @@ async function checkAdminSession() {
 
 checkAdminSession();
 
-// Users functions
+// ========================================
+// User FUNCTIONS
+// ========================================
 async function loadUsers(filter = "all", search = "") {
     try {
         const res = await fetch(`${API}/users`, { credentials: "include" });
@@ -103,37 +105,45 @@ async function loadUsers(filter = "all", search = "") {
 
         // Applying search
         if (search.trim() !== "") {
+            const searchLower = search.toLowerCase();
             filtered = filtered.filter(u => 
-            u.name.toLowerCase().includes(search) ||
-            u.userID.toLowerCase().includes(search) ||
-            u.roles.join(", ").toLowerCase().includes(search)
+            u.name.toLowerCase().includes(searchLower) ||
+            u.userID.toLowerCase().includes(searchLower) ||
+            u.roles.join(", ").toLowerCase().includes(searchLower)
         );
     }
 
         const list = document.getElementById("userList");
-        list.innerHTML = "";
-
-
-        filtered.forEach(u => {
-            list.innerHTML += `
-                <div class="user-card">
-
-                    <div class="info">
-                        <div class="name">${u.name}</div>
-                        <div class="role">(${u.roles.join(", ")})</div>
-                    </div>
-
-                    <div class="status">
-                        ${u.isVerified ? "Verified" : "Unverified"}
-                    </div>
-
-                    <button class="view-btn" onclick="viewUserDetails('${u.userID}')">
-                        View Details
-                    </button>
-
+        // If no users found
+        if (filtered.length === 0) {
+            list.innerHTML = `
+                <div class="empty-state">
+                    <p>No users found</p>
                 </div>
             `;
-        });
+            return;
+        }
+
+        // Build table rows
+        list.innerHTML = filtered.map(u => `
+            <div class="user-row">
+                <div class="user-info">
+                    <div class="name">${u.name}</div>
+                    <div class="role">${u.roles ? u.roles.join(", ") : "N/A"}</div>
+                </div>
+                <div class="user-id">${u.userID}</div>
+                <div class="user-status">
+                    <span class="status-badge ${u.isVerified ? 'verified' : 'unverified'}">
+                        ${u.isVerified ? 'Verified' : 'Unverified'}
+                    </span>
+                </div>
+                <div class="user-action">
+                    <button class="view-details-btn" onclick="viewUserDetails('${u.userID}')">
+                        View Details
+                    </button>
+                </div>
+            </div>
+        `).join('');
     } catch (err) {
         console.error(err);
     }
@@ -144,86 +154,159 @@ async function viewUserDetails(userID) {
         const res = await fetch(`${API}/users/${userID}`, { credentials: "include" });
         console.log("Response status:", res.status, "Content-Type:", res.headers.get("content-type"));
         if (!res.ok) throw new Error("Failed to fetch user: " + res.status);
+        // Variable storing fetched data
         const u = await res.json();
 
-        // Fill modal fields
+        // Fill modal header
+        document.getElementById("modalUserName").textContent = u.name;
+
+        // Fill modal details
+        document.getElementById("modalUserID").textContent = u.userID;
         document.getElementById("modalName").textContent = u.name;
-        document.getElementById("modalEmail").textContent = `Email: ${u.email}`;
-        document.getElementById("modalPhone").textContent = `Phone: ${u.phoneNo}`;
-        document.getElementById("modalOccupation").textContent = `Occupation: ${u.occupation}`;
-        document.getElementById("modalRoles").textContent = `Roles: ${u.roles.join(", ")}`;
-        document.getElementById("modalStatus").innerHTML = `Status: <b>${u.isVerified ? "Verified" : "Unverified"}</b>`;
+        document.getElementById("modalEmail").textContent = u.email;
+        document.getElementById("modalPhone").textContent = u.phoneNo;
+        document.getElementById("modalOccupation").textContent = u.occupation || "N/A";
+        document.getElementById("modalRoles").textContent = u.roles ? u.roles.join(", ") : "N/A";
         
+        // Status with styling
+        const statusElement = document.getElementById("modalStatus");
+        statusElement.textContent = u.isVerified ? "Verified" : "Unverified";
+        statusElement.className = u.isVerified ? "detail-value verified" : "detail-value unverified";
         
-        // Images for driver roles 
-        if (u.roles.includes("driver") && u.driverDocs) {
+        // Handle documents section
+        const documentsGrid = document.getElementById("documentsGrid");
+        const documentsSection = document.getElementById("documentsSection");
 
-            // Profile image
-            document.getElementById("profilePicBox").innerHTML = `
-            <img src="../${u.driverDocs.profileImage}">
-            <p class="img-label">Profile Picture</p>
+        // Clear previous documents
+        documentsGrid.innerHTML = "";
+
+       // Check if user is a driver
+       const isDriver = u.roles && u.roles.includes("driver");
+
+        if (isDriver && u.driverDocs) {
+            // Driver: Show 3 images (Profile, License, Vehicle Registration)
+            documentsGrid.className = "documents-grid"; // 3 columns
+            
+            // Profile Picture
+            documentsGrid.innerHTML += `
+                <div class="document-box">
+                    <img src="../${u.picture || 'images/profile_pics/default-pic.png'}" 
+                         alt="Profile Picture"
+                         onerror="this.src='../images/profile_pics/default-pic.png'">
+                    <div class="document-label">Profile Picture</div>
+                </div>
             `;
             
-            // License image
-            document.getElementById("licensePicBox").innerHTML = `
-            <img src="../${u.driverDocs.licenseImage}">
-            <p class="img-label">License</p>
+            // Driver's License
+            documentsGrid.innerHTML += `
+                <div class="document-box">
+                    <img src="../${u.driverDocs.licenseImage || 'images/fallback_pics/default-license.png'}" 
+                         alt="Driver's License"
+                         onerror="this.src='../images/fallback_pics/default-license.png'">
+                    <div class="document-label">Driver's License</div>
+                </div>
             `;
             
-            // Vehicle registration
-            document.getElementById("vehiclePicBox").innerHTML = `
-            <img src="../${u.driverDocs.vehicleRegImage}">
-            <p class="img-label">Vehicle Registration</p>
+            // Vehicle Registration
+            documentsGrid.innerHTML += `
+                <div class="document-box">
+                    <img src="../${u.driverDocs.vehicleRegImage || 'images/fallback_pics/default-car.png'}" 
+                         alt="Vehicle Registration"
+                         onerror="this.src='../images/fallback_pics/default-car.png'">
+                    <div class="document-label">Vehicle Registration</div>
+                </div>
             `;
-        
+            
+            documentsSection.style.display = "block";
         } else {
-            // Clear if NOT a driver
-            document.getElementById("licensePicBox").innerHTML = "";
-            document.getElementById("vehiclePicBox").innerHTML = "";
+            // Passenger: Show only profile picture
+            documentsGrid.className = "documents-grid two-column"; // 2 columns for centering
+            
+            documentsGrid.innerHTML = `
+                <div class="document-box" style="grid-column: 1 / -1;">
+                    <img src="../${u.picture || 'images/default-profile.png'}" 
+                         alt="Profile Picture"
+                         onerror="this.src='../images/default-profile.png'">
+                    <div class="document-label">Profile Picture</div>
+                </div>
+            `;
+            
+            documentsSection.style.display = "block";
         }
 
-        // Buttons
-        document.getElementById("verifyBtn").onclick = () => updateUserVerification(u.userID, true);
-        document.getElementById("revokeBtn").onclick = () => updateUserVerification(u.userID, false);
+        // Handle action buttons
+        const verifyBtn = document.getElementById("verifyBtn");
+        const revokeBtn = document.getElementById("revokeBtn");
 
-        // Auto-hide/show buttons based on verification
+        verifyBtn.onclick = () => updateUserVerification(u.userID, true);
+        revokeBtn.onclick = () => updateUserVerification(u.userID, false);
+
+        // Show/hide buttons based on verification status
         if (u.isVerified) {
-            document.getElementById("verifyBtn").style.display = "none";
-            document.getElementById("rejectBtn").style.display = "none";
-            document.getElementById("revokeBtn").style.display = "block";
+            verifyBtn.style.display = "none";
+            revokeBtn.style.display = "block";
         } else {
-            document.getElementById("verifyBtn").style.display = "block";
-            document.getElementById("rejectBtn").style.display = "block"; // No functionality yet
-            document.getElementById("revokeBtn").style.display = "none";
+            verifyBtn.style.display = "block";
+            revokeBtn.style.display = "none";
         }
 
-        showUserModalUI(true);
-        document.getElementById("modalContent").style.display = "none";
-
-
-        openModal();
+        // Show modal
+        openUserModal();
 
     } catch (err) {
-        console.error(err);
+        console.error("Error viewing user details:", err);
+        alert("Failed to load user details. Please try again.");
     }
 }
 
 async function updateUserVerification(userID, status) {
     try {
-        await fetch(`${API}/users/${userID}/verify`, {
+        const res = await fetch(`${API}/users/${userID}/verify`, {
             method: "PATCH",
             headers: { "Content-Type": "application/json" },
             credentials: "include",
             body: JSON.stringify({ isVerified: status })
         });
-        closeModal();
+
+        if (!res.ok) throw new Error("Failed to update user verification");
+
+        // Close modal
+        closeUserModal();
         
-        // Reload users using the current filter 
+        // Reload users with current filter
         loadUsers(currentFilter, currentSearch);
+        
+        // Show success message (optional)
+        console.log(`User ${userID} ${status ? 'verified' : 'unverified'} successfully`);
+        
     } catch (err) {
-        console.error(err);
+        console.error("Error updating user verification:", err);
+        alert("Failed to update user verification. Please try again.");
     }
 }
+
+function openUserModal() {
+    document.getElementById("userModal").classList.remove("hidden");
+    document.body.style.overflow = "hidden"; // Prevent background scrolling
+}
+
+function closeUserModal() {
+    document.getElementById("userModal").classList.add("hidden");
+    document.body.style.overflow = "auto"; // Restore scrolling
+}
+
+// Close modal when clicking outside
+document.addEventListener('DOMContentLoaded', () => {
+    const modal = document.getElementById("userModal");
+    if (modal) {
+        modal.addEventListener('click', (e) => {
+            if (e.target === modal) {
+                closeUserModal();
+            }
+        });
+    }
+});
+
 
 // ========================================
 // VEHICLE REGISTRATION FUNCTIONS
