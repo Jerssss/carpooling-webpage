@@ -43,6 +43,9 @@ try {
 
     $notificationsCol = $db->selectCollection('notifications');
 
+    // Audience filtering: respect explicit aud param if provided
+    $audParam = isset($_GET['aud']) ? strtolower((string)$_GET['aud']) : null; // 'driver' | 'passenger' | null
+
     // Query notifications where current user is involved
     $baseQuery = [
         '$or' => [
@@ -51,18 +54,26 @@ try {
         ],
     ];
 
+    // If audience is explicitly requested, add filter
+    if ($audParam === 'driver' || $audParam === 'passenger') {
+        $baseQuery['audience'] = $audParam;
+    }
+
     $cursor = $notificationsCol->find($baseQuery);
 
     $results = [];
     foreach ($cursor as $doc) {
         $audience = $doc['audience'] ?? null;
 
-        // Filter by audience only if user does not have both roles
-        if ($audience === 'driver' && !$isDriver && $isPassenger) {
+        // Server-side audience enforcement:
+        // - If audParam is set, strictly match it
+        if ($audParam && $audience && $audience !== $audParam) {
             continue;
         }
-        if ($audience === 'passenger' && !$isPassenger && $isDriver) {
-            continue;
+        // - Otherwise, if user only has one role, match that audience
+        if (!$audParam) {
+            if ($audience === 'driver' && !$isDriver) { continue; }
+            if ($audience === 'passenger' && !$isPassenger) { continue; }
         }
 
         // Normalize timestamp variants: ISO string, Mongo UTCDateTime, or {$date}

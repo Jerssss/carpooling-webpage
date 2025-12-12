@@ -28,7 +28,10 @@ async function loadNotifications(filter = 'all') {
     try {
         // Resolve endpoint across pages (driver-side, passenger-side, root)
         const BASE = `${window.location.origin}/9467_it312-teamarc_midtermproject`;
-        const url = `${BASE}/includes/fetch_notifications.php${filter === 'unread' ? '?filter=unread' : ''}`;
+        // Determine audience based on page context (passenger-side vs driver-side)
+        const isPassengerPage = /\/passenger-side\//.test(window.location.pathname);
+        const aud = isPassengerPage ? 'passenger' : 'driver';
+        const url = `${BASE}/includes/fetch_notifications.php?aud=${aud}${filter === 'unread' ? '&filter=unread' : ''}`;
                 const res = await fetch(url, { credentials: 'include', cache: 'no-cache' });
                 if (!res.ok) throw new Error(`HTTP ${res.status}`);
                 const text = await res.text();
