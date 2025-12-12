@@ -7,15 +7,12 @@ if (session_status() === PHP_SESSION_NONE) {
 require_once __DIR__ . '/cookies.php';
 
 // Restore session from cookies if session is empty
+// Restore strictly from 'user_id' cookie to avoid ambiguity between multiple cookies
 if (!isset($_SESSION['user_id']) && isset($_COOKIE['user_id'])) {
     $_SESSION['user_id'] = $_COOKIE['user_id'];
-    // Role cookie set by login.php is 'user_role'
+    // Set role only from 'user_role' if present; avoid using legacy 'role' cookie
     if (isset($_COOKIE['user_role'])) {
         $_SESSION['role'] = $_COOKIE['user_role'];
-    } elseif (isset($_COOKIE['role'])) {
-        $_SESSION['role'] = $_COOKIE['role'];
-    } else {
-        $_SESSION['role'] = 'passenger';
     }
     if (!isset($_SESSION['login_time'])) {
         $_SESSION['login_time'] = time();

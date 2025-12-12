@@ -93,6 +93,32 @@ document.addEventListener('DOMContentLoaded', () => {
             nameEl.textContent = data.user.name || 'Unknown User';
           }
         }).catch(() => {});
+
+      // Wire logout link to clear cookies + session
+      const candidateLinks = Array.from(document.querySelectorAll('.sub-menu .sub-menu-link'));
+      // Match by text content or the logout icon
+      const logoutLink = candidateLinks.find(el => {
+        const text = (el.textContent || '').toLowerCase();
+        const img = el.querySelector('img');
+        const imgSrc = (img && img.getAttribute('src')) || '';
+        return text.includes('logout') || imgSrc.includes('user-logout');
+      });
+      if (logoutLink) {
+        logoutLink.addEventListener('click', async (e) => {
+          e.preventDefault();
+          e.stopPropagation();
+          // Close dropdown immediately for UX
+          const menu = document.getElementById('subMenu');
+          if (menu) menu.classList.remove('open-menu');
+          try {
+            const res = await fetch(`${BASE}/includes/logout.php`, { credentials: 'include', cache: 'no-cache' });
+            // Regardless of response, navigate to login to clear state
+            window.location.href = `${BASE}/login.html`;
+          } catch (_) {
+            window.location.href = `${BASE}/login.html`;
+          }
+        });
+      }
     } catch (_) {}
 });
 
