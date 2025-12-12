@@ -83,6 +83,17 @@ document.addEventListener('DOMContentLoaded', () => {
         dropdown.addEventListener('click', (e) => e.stopPropagation());
     }
     initializeNotificationTabs();
+    // Populate navbar user name from session-backed endpoint
+    try {
+      const BASE = `${window.location.origin}/9467_it312-teamarc_midtermproject`;
+      fetch(`${BASE}/includes/get_user_info.php`, { credentials: 'include', cache: 'no-cache' })
+        .then(r => r.json()).then(data => {
+          const nameEl = document.getElementById('userName');
+          if (nameEl && data && data.success && data.user) {
+            nameEl.textContent = data.user.name || 'Unknown User';
+          }
+        }).catch(() => {});
+    } catch (_) {}
 });
 
 // Close all dropdowns if clicking outside

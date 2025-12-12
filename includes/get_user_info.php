@@ -27,7 +27,12 @@ if (!$user) {
 // Default response
 $response = [
     'success' => true,
-    'user' => (array)$user,
+    'resolvedUserId' => $userId,
+    'user' => [
+        'name' => $user['name'] ?? '',
+        'idNo' => $user['idNo'] ?? ($user['idNumber'] ?? ''),
+        'email' => $user['email'] ?? '',
+    ],
 ];
 
 // Get ride info (if rideId provided)

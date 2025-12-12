@@ -52,5 +52,19 @@
     if (typeof window.initNotificationsUI === 'function') {
       window.initNotificationsUI();
     }
+
+    // Also populate navbar user name consistently across pages
+    try {
+      const BASE = `${window.location.origin}/9467_it312-teamarc_midtermproject`;
+      const res = await fetch(`${BASE}/includes/get_user_info.php`, { credentials: 'include', cache: 'no-cache' });
+      if (res.ok) {
+        const data = await res.json();
+        console.debug('Navbar session user:', data.resolvedUserId, data.user?.name);
+        const nameEl = document.getElementById('userName');
+        if (nameEl && data && data.success && data.user) {
+          nameEl.textContent = data.user.name || 'Unknown User';
+        }
+      }
+    } catch (_) { /* ignore */ }
   });
 })();

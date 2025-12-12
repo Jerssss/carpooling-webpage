@@ -123,9 +123,10 @@ $paymentData = [
     'paymentId' => uniqid('P'),
     'rideId' => $_POST['rideId'] ?? '',
     'userId' => $_SESSION['user_id'],
-    'name'   => $_POST['name'] ?? ($_SESSION['name'] ?? ''),
-    'idNumber' => $_POST['idNumber'] ?? ($_SESSION['idNumber'] ?? ''),
-    'email'  => $_POST['email'] ?? ($_SESSION['email'] ?? ''),
+    // Always trust server-side user profile over client-provided values
+    'name'   => '',
+    'idNumber' => '',
+    'email'  => '',
     'pickupType' => $_POST['pickupType'] ?? '',
     'pickupTime' => $_POST['pickupTime'] ?? '',
     'pickupLocation' => $_POST['pickupLocation'] ?? '',
@@ -147,6 +148,18 @@ if (isset($_POST['pickupLat']) && isset($_POST['pickupLng']) && $_POST['pickupLa
 
 // Try to insert in DB
 try {
+    // Populate user fields from DB to ensure booking uses logged-in user
+    try {
+        $userDoc = ($db->users)->findOne(['userID' => $_SESSION['user_id']]);
+        if ($userDoc) {
+            $paymentData['name'] = $userDoc['name'] ?? '';
+            $paymentData['email'] = $userDoc['email'] ?? '';
+            // support passenger id number field variants
+            $paymentData['idNumber'] = $userDoc['idNo'] ?? ($userDoc['idNumber'] ?? '');
+        }
+    } catch (Exception $e) {
+        // leave as empty if lookup fails
+    }
     $paymentsCollection->insertOne($paymentData);
 
     // Build and insert a success booking notification
