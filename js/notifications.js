@@ -26,15 +26,31 @@ async function loadNotifications(filter = 'all') {
      </div>`;
 
     try {
-        // Server resolves user from session; only send filter
-        const url = `../includes/fetch_notifications.php${filter === 'unread' ? '?filter=unread' : ''}`;
-        const res = await fetch(url);
-        if (!res.ok) throw new Error('Network response not ok');
+        // Resolve endpoint across pages (driver-side, passenger-side, root)
+        const BASE = `${window.location.origin}/9467_it312-teamarc_midtermproject`;
+        const url = `${BASE}/includes/fetch_notifications.php${filter === 'unread' ? '?filter=unread' : ''}`;
+                const res = await fetch(url, { credentials: 'include', cache: 'no-cache' });
+                if (!res.ok) throw new Error(`HTTP ${res.status}`);
+                const text = await res.text();
+                if (text.trim().startsWith('<')) {
+                        console.warn('Notifications endpoint returned HTML. First 200 chars:', text.slice(0,200));
+                        // Gracefully render empty state instead of erroring out
+                        list.innerHTML = `
+                                <div class="notif-item">
+                                    <div class="notif-content">
+                                        <p>No notifications.</p>
+                                    </div>
+                                </div>`;
+                        return;
+                }
+                const payload = JSON.parse(text);
 
-        const data = await res.json();
-        if (!Array.isArray(data)) throw new Error('Invalid data');
+        const data = Array.isArray(payload) ? payload : (payload?.notifications || []);
 
-        if (data.length === 0) {
+        // Local filter for unread if server didn't honor it
+        const filtered = filter === 'unread' ? data.filter(n => !n.isRead) : data;
+
+        if (filtered.length === 0) {
             list.innerHTML =
                 `<div class="notif-item">
                 <div class="notif-content">
@@ -45,12 +61,13 @@ async function loadNotifications(filter = 'all') {
         }
 
         list.innerHTML = '';
-        data.forEach(n => {
+        filtered.forEach(n => {
             const item = document.createElement('div');
             item.classList.add('notif-item');
             if (!n.isRead) item.classList.add('unread'); else item.classList.add('read');
 
-            item.dataset.notifId = n.id;
+            const id = n.id || n._id || '';
+            item.dataset.notifId = id;
 
             item.innerHTML = `
                 <img src="../images/user.png" alt="driver">
@@ -62,7 +79,7 @@ async function loadNotifications(filter = 'all') {
 
             item.addEventListener('click', async () => {
                 if (!n.isRead) {
-                    const ok = await markAsRead(n.id);
+                    const ok = await markAsRead(id);
                     if (ok) {
                         item.classList.remove('unread');
                         item.classList.add('read');
@@ -92,8 +109,11 @@ async function markAsRead(notifId) {
     try {
         const form = new FormData();
         form.append('notifId', notifId);
-        const res = await fetch('../includes/mark_read.php', { method: 'POST', body: form });
-        const json = await res.json();
+        const BASE = `${window.location.origin}/9467_it312-teamarc_midtermproject`;
+        const url = `${BASE}/includes/mark_read.php`;
+        const r = await fetch(url, { method: 'POST', body: form, credentials: 'include' });
+        if (!r.ok) throw new Error(`HTTP ${r.status}`);
+        const json = await r.json();
         return json.success === true;
     } catch (err) {
         console.error('Error marking as read', err);

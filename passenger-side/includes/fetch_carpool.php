@@ -4,10 +4,35 @@ require_once __DIR__ . '/../../includes/session.php';
 require_once __DIR__ . '/../../includes/cookies.php';
 require_once __DIR__ . '/../../includes/db_connect.php';
 
-if (!isset($_SESSION['user_id']) || $_SESSION['role'] !== 'passenger') {
+if (!isset($_SESSION['user_id'])) {
     http_response_code(401);
     echo json_encode(['error' => 'Unauthorized']);
     exit;
+}
+
+// Allow access if the user has passenger role in DB even if session role is different
+if (($_SESSION['role'] ?? '') !== 'passenger') {
+    try {
+        $u = $db->users->findOne(['userID' => $_SESSION['user_id']], ['projection' => ['roles' => 1, 'role' => 1]]);
+        $hasPassenger = false;
+        if ($u) {
+            if (isset($u['roles']) && is_array($u['roles'])) {
+                foreach ($u['roles'] as $r) { if (strtolower((string)$r) === 'passenger') { $hasPassenger = true; break; } }
+            }
+            if (!$hasPassenger && isset($u['role']) && strtolower((string)$u['role']) === 'passenger') {
+                $hasPassenger = true;
+            }
+        }
+        if (!$hasPassenger) {
+            http_response_code(403);
+            echo json_encode(['error' => 'Forbidden: passenger role required']);
+            exit;
+        }
+    } catch (Throwable $e) {
+        http_response_code(500);
+        echo json_encode(['error' => 'Role check failed']);
+        exit;
+    }
 }
 
 

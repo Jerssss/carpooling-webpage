@@ -1,4 +1,8 @@
-import { getCookie } from "../../js/frontend-utils.js";
+// Local cookie helper to avoid ESM import issues when script isn't loaded as a module
+function getCookie(name) {
+  const match = document.cookie.match(new RegExp('(?:^|; )' + name.replace(/([.$?*|{}()\[\]\\\/\+^])/g, '\\$1') + '=([^;]*)'));
+  return match ? decodeURIComponent(match[1]) : '';
+}
 
 // Restore last search filters
 document.addEventListener("DOMContentLoaded", () => {
@@ -40,7 +44,7 @@ document.addEventListener("DOMContentLoaded", () => {
   
       try {
         const response = await fetch(`${BASE}/passenger-side/includes/fetch_carpool.php?${params.toString()}`, {
-            credentials: 'same-origin'
+          credentials: 'include'
         });
         const data = await response.json();
         renderCarpools(data);

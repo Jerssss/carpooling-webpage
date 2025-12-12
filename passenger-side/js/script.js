@@ -122,7 +122,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
   // Fetch only the driver’s name from your PHP file
   try {
-    const response = await fetch(`${BASE}/passenger-side/includes/view_carpool.php?rideId=${rideId}`);
+    const response = await fetch(`${BASE}/passenger-side/includes/view_carpool.php?rideId=${rideId}`, { credentials: 'include' });
     const data = await response.json();
 
     if (!data || data.error) {
@@ -158,14 +158,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   }
 });
 
-document.addEventListener("DOMContentLoaded", () => {
-  fetch('../includes/get_user_name.php')
-    .then(response => response.text())
-    .then(name => {
-      document.getElementById("userName").textContent = name;
-    })
-    .catch(err => console.error("Failed to load user name:", err));
-});
+// Deprecated get_user_name; navbar is handled elsewhere now
 
 // Ensure hero video tries to play; fall back to first user interaction
 document.addEventListener('DOMContentLoaded', () => {

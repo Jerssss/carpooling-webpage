@@ -1,83 +1,106 @@
 <?php
 // includes/fetch_notifications.php
-// Returns notifications for the logged-in user (newest first). Supports filter=unread.
+// Returns notifications for the logged-in user (newest first).
 
-require_once __DIR__ . '/session.php';
+session_start();
 require_once __DIR__ . '/db_connect.php';
+
 header('Content-Type: application/json; charset=utf-8');
+header('Cache-Control: no-store');
 
-// Prefer session user; fallback to explicit userId (for dev/testing)
-$sessionUserId = $_SESSION['user_id'] ?? null;
-$sessionRole = $_SESSION['role'] ?? null; // 'passenger' or 'driver'
-$paramUserId = $_GET['userId'] ?? null;
-$userId = $sessionUserId ?: $paramUserId;
-$filter = $_GET['filter'] ?? 'all'; // 'all' or 'unread'
-
-if (!$userId) {
-    http_response_code(401);
-    echo json_encode(['error' => 'Unauthorized']);
-    exit;
-}
-
-$collection = $db->notifications;
-
-$q = [];
-if ($sessionRole === 'driver') {
-    $q['driverId'] = $userId;
-} else {
-    $q['passengerId'] = $userId;
-}
-if ($filter === 'unread') {
-    $q['isRead'] = false;
-}
-
-// Sort by timestamp descending (ISO strings sort lexicographically)
-$cursor = $collection->find($q, ['sort' => ['timestamp' => -1]]);
-
-$notifications = [];
-foreach ($cursor as $n) {
-    // Normalize timestamp to ISO string
-    $ts = null;
-    if (isset($n['timestamp'])) {
-        $t = $n['timestamp'];
-        if ($t instanceof MongoDB\BSON\UTCDateTime) {
-            $ts = $t->toDateTime()->format('c');
-        } elseif (is_array($t) && isset($t['$date'])) {
-            $ts = $t['$date'];
-        } elseif (is_string($t)) {
-            $ts = $t; // fallback for legacy string timestamps
-        }
+try {
+    // Restore session from cookies if needed
+    if (!isset($_SESSION['user_id']) && isset($_COOKIE['user_id'])) {
+        $_SESSION['user_id'] = $_COOKIE['user_id'];
     }
 
-    // Filter by audience: drivers see only driver-audience items; passengers see only passenger-audience items.
-    $audience = $n['audience'] ?? null;
-    $type = $n['type'] ?? null;
-    if ($sessionRole === 'driver') {
-        // Include only explicit driver-audience notifications.
-        if ($audience && $audience !== 'driver') {
-            continue;
-        }
-        // If audience is missing (legacy), include only safe driver-side types.
-        if (!$audience && !in_array($type, ['carpool_created'], true)) {
-            continue;
-        }
-    } else {
-        // Passenger role: include only explicit passenger-audience or legacy (no audience) items.
-        if ($audience && $audience !== 'passenger') {
-            continue;
-        }
+    $userId = $_SESSION['user_id'] ?? null;
+    if (!$userId) {
+        http_response_code(401);
+        echo json_encode(['success' => false, 'error' => 'Unauthorized']);
+        exit;
     }
 
-    $notifications[] = [
-        'id' => (string)($n['_id'] ?? ''),
-        'rideId' => $n['rideId'] ?? null,
-        'driverId' => $n['driverId'] ?? null,
-        'carId' => $n['carId'] ?? null,
-        'message' => $n['message'] ?? '',
-        'isRead' => isset($n['isRead']) ? (bool)$n['isRead'] : false,
-        'timestamp' => $ts
+    // Use shared $db from db_connect.php
+    if (!isset($db)) {
+        throw new Exception('Database connection not initialized');
+    }
+
+    // Determine user roles (supports role or roles[] schemas)
+    $usersCol = $db->selectCollection('users');
+    // Note: users dataset uses 'userID'
+    $userDoc = $usersCol->findOne(['userID' => $userId]);
+    $roles = [];
+    if ($userDoc) {
+        if (!empty($userDoc['roles']) && is_array($userDoc['roles'])) {
+            $roles = array_map('strtolower', $userDoc['roles']);
+        } elseif (!empty($userDoc['role']) && is_string($userDoc['role'])) {
+            $roles = [strtolower($userDoc['role'])];
+        }
+    }
+    $isDriver = in_array('driver', $roles, true);
+    $isPassenger = in_array('passenger', $roles, true);
+
+    $notificationsCol = $db->selectCollection('notifications');
+
+    // Query notifications where current user is involved
+    $baseQuery = [
+        '$or' => [
+            ['driverId' => $userId],
+            ['passengerId' => $userId],
+        ],
     ];
-}
 
-echo json_encode($notifications);
-exit;
+    $cursor = $notificationsCol->find($baseQuery);
+
+    $results = [];
+    foreach ($cursor as $doc) {
+        $audience = $doc['audience'] ?? null;
+
+        // Filter by audience only if user does not have both roles
+        if ($audience === 'driver' && !$isDriver && $isPassenger) {
+            continue;
+        }
+        if ($audience === 'passenger' && !$isPassenger && $isDriver) {
+            continue;
+        }
+
+        // Normalize timestamp variants: ISO string, Mongo UTCDateTime, or {$date}
+        $tsIso = null;
+        if (isset($doc['timestamp'])) {
+            $ts = $doc['timestamp'];
+            if ($ts instanceof MongoDB\BSON\UTCDateTime) {
+                $tsIso = $ts->toDateTime()->format(DATE_ATOM);
+            } elseif (is_array($ts) && isset($ts['$date'])) {
+                $dt = new DateTime(is_array($ts['$date']) ? ($ts['$date']['$numberLong'] ?? '') : $ts['$date']);
+                $tsIso = $dt->format(DATE_ATOM);
+            } elseif (is_string($ts)) {
+                $tsIso = (new DateTime($ts))->format(DATE_ATOM);
+            }
+        }
+
+        $results[] = [
+            '_id' => isset($doc['_id']) ? (string) $doc['_id'] : null,
+            'rideId' => $doc['rideId'] ?? null,
+            'driverId' => $doc['driverId'] ?? null,
+            'passengerId' => $doc['passengerId'] ?? null,
+            'carId' => $doc['carId'] ?? null,
+            'paymentId' => $doc['paymentId'] ?? null,
+            'type' => $doc['type'] ?? null,
+            'audience' => $audience,
+            'message' => $doc['message'] ?? '',
+            'timestamp' => $tsIso,
+            'isRead' => (bool) ($doc['isRead'] ?? false),
+        ];
+    }
+
+    // Sort by timestamp descending
+    usort($results, function ($a, $b) {
+        return strcmp(($b['timestamp'] ?? ''), ($a['timestamp'] ?? ''));
+    });
+
+    echo json_encode(['success' => true, 'notifications' => $results]);
+} catch (Throwable $e) {
+    http_response_code(500);
+    echo json_encode(['success' => false, 'error' => 'Server error', 'details' => $e->getMessage()]);
+}

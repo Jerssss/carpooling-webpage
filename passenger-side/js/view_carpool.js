@@ -21,7 +21,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     // Fetch ride details
     fetch(`${BASE}/passenger-side/includes/view_carpool.php?rideId=${rideId}`, {
-        credentials: 'same-origin' // important to send cookies
+        credentials: 'include' // important to send cookies across scenarios
         })
 
         .then(response => {

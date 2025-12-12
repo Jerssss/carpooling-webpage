@@ -8,7 +8,7 @@ document.addEventListener("DOMContentLoaded", () => {
         return;
     }
 
-    fetch(`${BASE}/passenger-side/includes/fetch_history.php`)
+    fetch(`${BASE}/passenger-side/includes/fetch_history.php`, { credentials: 'include' })
         .then(response => {
             if (!response.ok) {
                 throw new Error(`HTTP error! status: ${response.status}`);

@@ -1,4 +1,8 @@
-import { getCookie } from "../../js/frontend-utils.js";
+// Local helper: getCookie (avoid ES module import errors)
+function getCookie(name) {
+  const match = document.cookie.match(new RegExp('(?:^|; )' + name.replace(/([.$?*|{}()\[\]\\\/\+^])/g, '\\$1') + '=([^;]*)'));
+  return match ? decodeURIComponent(match[1]) : '';
+}
 
 // Main functionality
 document.addEventListener("DOMContentLoaded", () => {
@@ -54,9 +58,9 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
   // Load user info from DB
-  fetch(`${BASE}/includes/get_user_info.php?rideId=${rideId}`, {
-      credentials: 'same-origin'
-  })
+    fetch(`${BASE}/includes/get_user_info.php?rideId=${rideId}`, {
+      credentials: 'include'
+    })
 
     .then((res) => res.json())
     .then((data) => {
@@ -100,7 +104,7 @@ document.addEventListener("DOMContentLoaded", () => {
       fetch(`${BASE}/passenger-side/includes/payment_handler.php`, {
         method: "POST",
         body: formData,
-        credentials: 'same-origin'
+        credentials: 'include'
       })
         .then((res) => res.json())
         .then((data) => {
@@ -147,6 +151,7 @@ document.addEventListener("DOMContentLoaded", () => {
       fetch(`${BASE}/passenger-side/includes/payment_handler.php`, {
         method: "POST",
         body: formData,
+        credentials: 'include'
       })
         .then((res) => res.json())
         .then((data) => {

@@ -4,7 +4,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const BASE = '/9467_it312-teamarc_midtermproject';
     const endpoint = `${BASE}/passenger-side/includes/fetch_carpool.php`;
 
-    fetch(endpoint)
+    fetch(endpoint, { credentials: 'include' })
     .then(response => response.json())
     .then(data => {
       container.innerHTML = '';
