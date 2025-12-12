@@ -8,6 +8,7 @@
     <link rel="stylesheet" href="../admin-side/css/admin-landing.css">
     <link rel="stylesheet" href="../admin-side/css/reports.css">
     <link rel="stylesheet" href="../admin-side/css/vehicle-registration.css">
+    <link rel="stylesheet" href="../admin-side/css/active-rides.css">
 </head>
 
 <body>
@@ -211,17 +212,79 @@
 
             <!-- ACTIVE RIDES WINDOW -->
             <div id="active-rides" class="content-window">
-
                 <header class="page-header">
                     <h1>Active Rides</h1>
                     <p>Monitoring ongoing carpools</p>
                 </header>
 
-                <div class="list-container" id="rideList"></div>
+                <div class="list-container" id="rideList">
+                    <!-- Rides cards will dynamically load-->
+                </div>
             </div>
-
+            
+            <!-- ACTIVE RIDE DETAILS MODAL -->
+             <div id="rideModal" class="ride-modal-overlay hidden">
+                <div class="ride-modal-box">
+                    <!-- Modal Header -->
+                     <div class="ride-modal-header">
+                        <h2 class="ride-modal-title" id="modalRideTitle">Ride Details</h2>
+                        <p class="ride-modal-subtitle" id="modalRideSubtitle">Complete ride information</p>
+                        <button class="ride-modal-close" onclick="closeRideModal()">×</button>
+                    </div>
+                    
+                    <!-- Modal Body -->
+                     <div class="ride-modal-body">
+                        <!-- Ride Information Section -->
+                         <div class="modal-section">
+                            <h3 class="modal-section-title">Ride Information</h3>
+                            <div class="details-grid">
+                                <span class="detail-label">Ride ID:</span>
+                                <span class="detail-value" id="detailRideId">-</span>
+                                <span class="detail-label">Driver:</span>
+                                <span class="detail-value" id="detailDriver">-</span>
+                                <span class="detail-label">Car Model:</span>
+                                <span class="detail-value" id="detailCarModel">-</span>
+                                <span class="detail-label">Plate Number:</span>
+                                <span class="detail-value" id="detailPlateNumber">-</span>
+                            </div>
+                        </div>
+                        <!-- Trip Details Section -->
+                         <div class="modal-section">
+                            <h3 class="modal-section-title">Trip Details</h3>
+                            <div class="details-grid">
+                                <span class="detail-label">Date:</span>
+                                <span class="detail-value" id="detailDate">-</span>
+                                <span class="detail-label">Departure Time:</span>
+                                <span class="detail-value" id="detailDepartureTime">-</span>
+                                <span class="detail-label">Stationed At:</span>
+                                <span class="detail-value highlight" id="detailStationedAt">-</span>
+                                <span class="detail-label">Destination:</span>
+                                <span class="detail-value highlight" id="detailDestination">-</span>
+                                <span class="detail-label">Available Seats:</span>
+                                <span class="detail-value" id="detailAvailableSeats">-</span>
+                                <span class="detail-label">Purpose:</span>
+                                <span class="detail-value" id="detailPurpose">-</span>
+                                <span class="detail-label">Price per Seat:</span>
+                                <span class="detail-value price" id="detailPrice">-</span>
+                            </div>
+                        </div>
+                        
+                        <!-- Passengers Section -->
+                         <div class="modal-section">
+                            <h3 class="modal-section-title">Passengers</h3>
+                            <div class="passengers-list" id="passengersList">
+                                <!-- Passenger cards will be inserted here -->
+                                </div>
+                            </div>
+                        </div>
+                        <!-- Modal Footer -->
+                         <div class="ride-modal-footer">
+                            <button class="close-modal-btn" onclick="closeRideModal()">Close</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
-    </div>
 
     <!-- MODAL -->
     <div id="modalOverlay" class="modal-overlay hidden">

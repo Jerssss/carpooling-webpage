@@ -867,59 +867,270 @@ window.onclick = function(event) {
     }
 }
 
-// Active Rides
+// ========================================
+// MONITOR ACTIVE RIDES FUNCTIONS
+// ========================================
 async function loadRides() {
     try {
+        // Create fetch request to backend
         const res = await fetch(`${API}/rides/active`, { credentials: "include" });
         if (!res.ok) throw new Error("Failed to fetch rides");
+        // Store fetched data
         const rides = await res.json();
 
         const list = document.getElementById("rideList");
-        list.innerHTML = "";
-
-        rides.forEach(r => {
-            list.innerHTML += `
-                <div class="user-card">
-                    <p>Ride: ${r.rideId}</p>
-                    <p>Driver: ${r.driverId}</p>
-                    <button onclick="reviewBookings('${r.rideId}')">Review Bookings</button>
+        
+        // If no active rides
+        if (rides.length === 0) {
+            list.innerHTML = `
+                <div class="rides-empty-state">
+                    <svg viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8z"/>
+                        <path d="M12 6c-3.31 0-6 2.69-6 6s2.69 6 6 6 6-2.69 6-6-2.69-6-6-6z"/>
+                    </svg>
+                    <h3>No Active Rides</h3>
+                    <p>There are currently no ongoing carpools</p>
                 </div>
             `;
-        });
+            return;
+        }
+
+        // Build ride cards and generate dynamic content
+        list.innerHTML = rides.map(ride => `
+            <div class="ride-card">
+                <div class="ride-card-header">
+                    <div class="ride-id">${ride.rideId}</div>
+                    <div class="ride-status-badge">${ride.status}</div>
+                </div>
+                
+                <div class="ride-card-body">
+                    <div class="ride-info-row">
+                        <div class="ride-info-icon">👤</div>
+                        <div class="ride-info-content">
+                            <div class="ride-info-label">Driver</div>
+                            <div class="ride-info-value" id="driver-${ride.rideId}">Loading...</div>
+                        </div>
+                    </div>
+                    
+                    <div class="ride-info-row">
+                        <div class="ride-info-icon">📍</div>
+                        <div class="ride-info-content">
+                            <div class="ride-info-label">Destination</div>
+                            <div class="ride-info-value destination-text">${truncateText(ride.destination, 50)}</div>
+                        </div>
+                    </div>
+                    
+                    <div class="ride-info-row">
+                        <div class="ride-info-icon">📅</div>
+                        <div class="ride-info-content">
+                            <div class="ride-info-label">Schedule</div>
+                            <div class="ride-info-value">${ride.date}</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="ride-card-footer">
+                    <button class="view-ride-btn" onclick="viewRideDetails('${ride.rideId}')">
+                        View Details
+                    </button>
+                </div>
+            </div>
+        `).join('');
+
+        // Load driver names for each ride
+        rides.forEach(ride => loadDriverName(ride.driverId, ride.rideId));
+
     } catch (err) {
-        console.error(err);
+        console.error("Error loading rides:", err);
+        const list = document.getElementById("rideList");
+        list.innerHTML = `
+            <div class="rides-empty-state">
+                <h3>Error Loading Rides</h3>
+                <p>Please try again later</p>
+            </div>
+        `;
     }
 }
 
-async function reviewBookings(rideId) {
+// Helper function to load driver name
+async function loadDriverName(driverId, rideId) {
     try {
-        const res = await fetch(`${API}/bookings/${rideId}`, { credentials: "include" });
-        const bookings = await res.json();
-
-        let html = `<h3>Bookings for Ride ${rideId}</h3>`;
-        bookings.forEach(b => {
-            html += `
-                <p>
-                  Passenger: ${b.passengerId}<br>
-                  Seats: ${b.seatNo}<br>
-                  Price: ₱${b.price}<br>
-                  Status: ${b.status}
-                </p><hr>
-            `;
-        });
-
-       // Switch modal to "ride mode"
-        showUserModalUI(false);
-
-        document.getElementById("modalName").textContent = `Ride ${rideId}`;
-        document.getElementById("modalContent").innerHTML = html;
-        document.getElementById("modalContent").style.display = "block";
-
-        openModal();
+        const res = await fetch(`${API}/users/${driverId}`, { credentials: "include" });
+        if (res.ok) {
+            const driver = await res.json();
+            const element = document.getElementById(`driver-${rideId}`);
+            if (element) {
+                element.textContent = driver.name;
+            }
+        }
     } catch (err) {
-        console.error(err);
+        console.error("Error loading driver name:", err);
+        const element = document.getElementById(`driver-${rideId}`);
+        if (element) {
+            element.textContent = driverId;
+        }
     }
 }
+
+// Helper function to truncate text
+function truncateText(text, maxLength) {
+    if (!text) return 'N/A';
+    if (text.length <= maxLength) return text;
+    return text.substring(0, maxLength) + '...';
+}
+
+// View detailed ride information
+async function viewRideDetails(rideId) {
+    try {
+        // Fetch ride details
+        const rideRes = await fetch(`${API}/rides/active`, { credentials: "include" });
+        if (!rideRes.ok) throw new Error("Failed to fetch ride");
+        const rides = await rideRes.json();
+        const ride = rides.find(r => r.rideId === rideId);
+        
+        if (!ride) throw new Error("Ride not found");
+
+        // Fetch driver details
+        const driverRes = await fetch(`${API}/users/${ride.driverId}`, { credentials: "include" });
+        const driver = driverRes.ok ? await driverRes.json() : null;
+
+        // Fetch vehicle details
+        const vehicleRes = await fetch(`${API}/vehicles`, { credentials: "include" });
+        const vehicles = vehicleRes.ok ? await vehicleRes.json() : [];
+        const vehicle = vehicles.find(v => v.carId === ride.carId);
+
+        // Populate modal header
+        document.getElementById("modalRideTitle").textContent = `Ride ${ride.rideId}`;
+        document.getElementById("modalRideSubtitle").textContent = `Status: ${ride.status}`;
+
+        // Populate ride information
+        document.getElementById("detailRideId").textContent = ride.rideId;
+        document.getElementById("detailDriver").textContent = driver 
+            ? `${driver.name} (${driver.userID})` 
+            : ride.driverId;
+        document.getElementById("detailCarModel").textContent = vehicle 
+            ? `${vehicle.carMake} ${vehicle.carModel} (${vehicle.carId})` 
+            : ride.carId;
+        document.getElementById("detailPlateNumber").textContent = vehicle 
+            ? vehicle.plateNo 
+            : 'N/A';
+
+        // Populate trip details
+        document.getElementById("detailDate").textContent = ride.date || 'N/A';
+        document.getElementById("detailDepartureTime").textContent = ride.departureTime || 'N/A';
+        document.getElementById("detailStationedAt").textContent = ride.stationedAt || 'N/A';
+        document.getElementById("detailDestination").textContent = ride.destination || 'N/A';
+        document.getElementById("detailAvailableSeats").textContent = 
+            `${ride.availableSeats} / ${ride.availableSeats + (ride.bookedSeats || 0)} total`;
+        document.getElementById("detailPurpose").textContent = ride.for || 'N/A';
+        document.getElementById("detailPrice").textContent = `₱${ride.price || 0}`;
+
+        // Populate passengers
+        const passengersList = document.getElementById("passengersList");
+        
+        if (!ride.passengers || ride.passengers.length === 0) {
+            passengersList.innerHTML = `
+                <div class="no-passengers">
+                    No passengers booked yet
+                </div>
+            `;
+        } else {
+            // Fetch all passenger details
+            const passengerPromises = ride.passengers.map(async (passenger) => {
+                try {
+                    const userRes = await fetch(`${API}/users/${passenger.userId}`, { credentials: "include" });
+                    if (userRes.ok) {
+                        const user = await userRes.json();
+                        return {
+                            ...passenger,
+                            name: user.name,
+                            occupation: user.occupation,
+                            userID: user.userID
+                        };
+                    }
+                    return passenger;
+                } catch (err) {
+                    return passenger;
+                }
+            });
+
+            const passengersWithDetails = await Promise.all(passengerPromises);
+
+            passengersList.innerHTML = passengersWithDetails.map((passenger, index) => `
+                <div class="passenger-card">
+                    <div class="passenger-header">
+                        <div class="passenger-name">Passenger ${index + 1}</div>
+                        <div class="seat-badge">Seat ${passenger.seatNumber}</div>
+                    </div>
+                    <div class="passenger-details">
+                        <span class="detail-label">ID:</span>
+                        <span class="detail-value">${passenger.userID || passenger.userId}</span>
+                        
+                        <span class="detail-label">Name:</span>
+                        <span class="detail-value">${passenger.name || 'N/A'}</span>
+                        
+                        <span class="detail-label">Occupation:</span>
+                        <span class="detail-value">${passenger.occupation || 'N/A'}</span>
+                        
+                        <span class="detail-label">Booked At:</span>
+                        <span class="detail-value">${formatDate(passenger.bookingTime)}</span>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // Show modal
+        openRideModal();
+
+    } catch (err) {
+        console.error("Error viewing ride details:", err);
+        alert("Failed to load ride details. Please try again.");
+    }
+}
+
+// Format date helper
+function formatDate(dateString) {
+    if (!dateString) return 'N/A';
+    try {
+        const date = new Date(dateString);
+        return date.toLocaleString('en-US', {
+            year: 'numeric',
+            month: 'short',
+            day: 'numeric',
+            hour: '2-digit',
+            minute: '2-digit'
+        });
+    } catch (err) {
+        return dateString;
+    }
+}
+
+// Modal control functions
+function openRideModal() {
+    document.getElementById("rideModal").classList.remove("hidden");
+    document.body.style.overflow = "hidden";
+}
+
+function closeRideModal() {
+    document.getElementById("rideModal").classList.add("hidden");
+    document.body.style.overflow = "auto";
+}
+
+// Close modal when clicking outside
+document.addEventListener('DOMContentLoaded', () => {
+    const modal = document.getElementById("rideModal");
+    if (modal) {
+        modal.addEventListener('click', (e) => {
+            if (e.target === modal) {
+                closeRideModal();
+            }
+        });
+    }
+    
+    // Load rides on page load
+    loadRides();
+});
+
 
 // Modal Helpers 
 function openModal() {
@@ -952,8 +1163,6 @@ function closeModal() {
     document.getElementById("modalContent").innerHTML = "";
     document.getElementById("modalContent").style.display = "none";
 }
-
-
 
 
 // Initialise functions

@@ -1,0 +1,411 @@
+/* Rides grid container */
+.rides-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    gap: 20px;
+    margin-top: 25px;
+}
+
+/* Individual ride card */
+.ride-card {
+    background: #fff;
+    border-radius: 12px;
+    padding: 20px;
+    border: 2px solid #E8E8E8;
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+}
+
+.ride-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.12);
+    border-color: #FFC800;
+}
+
+/* Card top accent */
+.ride-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+    background: linear-gradient(90deg, #FFC800, #FFD700);
+}
+
+/* Ride card header */
+.ride-card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 16px;
+    padding-bottom: 12px;
+    border-bottom: 1px solid #F0F0F0;
+}
+
+.ride-id {
+    font-size: 18px;
+    font-weight: 700;
+    color: #1a1a1a;
+}
+
+.ride-status-badge {
+    padding: 4px 12px;
+    background: #E8F5E9;
+    color: #2E7D32;
+    border-radius: 12px;
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.3px;
+}
+
+/* Ride card body */
+.ride-card-body {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.ride-info-row {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+}
+
+.ride-info-icon {
+    color: #FFC800;
+    font-size: 16px;
+    margin-top: 2px;
+    min-width: 20px;
+}
+
+.ride-info-content {
+    flex: 1;
+}
+
+.ride-info-label {
+    font-size: 11px;
+    color: #888;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    font-weight: 600;
+    margin-bottom: 3px;
+}
+
+.ride-info-value {
+    font-size: 14px;
+    color: #333;
+    font-weight: 500;
+    line-height: 1.4;
+}
+
+/* Destination styling */
+.destination-text {
+    color: #1a73e8;
+    font-weight: 600;
+}
+
+/* Card footer with button */
+.ride-card-footer {
+    margin-top: 16px;
+    padding-top: 16px;
+    border-top: 1px solid #F0F0F0;
+}
+
+.view-ride-btn {
+    width: 100%;
+    padding: 12px;
+    background: #FFC800;
+    border: none;
+    border-radius: 8px;
+    font-weight: 600;
+    font-size: 14px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    color: white;
+}
+
+.view-ride-btn:hover {
+    background: #E6B400;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(255, 200, 0, 0.4);
+}
+
+/* Empty state */
+.rides-empty-state {
+    text-align: center;
+    padding: 80px 20px;
+    color: #999;
+}
+
+.rides-empty-state svg {
+    width: 80px;
+    height: 80px;
+    margin-bottom: 20px;
+    opacity: 0.3;
+}
+
+.rides-empty-state h3 {
+    font-size: 20px;
+    margin: 0 0 10px 0;
+    color: #666;
+}
+
+.rides-empty-state p {
+    font-size: 14px;
+    margin: 0;
+}
+
+/* MODAL Styles*/
+.ride-modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.6);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    backdrop-filter: blur(4px);
+    z-index: 9999;
+    animation: fadeIn 0.2s ease;
+}
+
+.ride-modal-box {
+    background: #ffffff;
+    width: 700px;
+    max-height: 90vh;
+    overflow-y: auto;
+    border-radius: 12px;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+    animation: slideUp 0.3s ease;
+    position: relative;
+}
+
+@keyframes slideUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Modal Header */
+.ride-modal-header {
+    background: #FFC800;
+    padding: 24px 30px;
+    border-radius: 12px 12px 0 0;
+    position: relative;
+}
+
+.ride-modal-title {
+    margin: 0;
+    font-size: 24px;
+    font-weight: 700;
+    color: #000;
+}
+
+.ride-modal-subtitle {
+    margin: 5px 0 0 0;
+    font-size: 14px;
+    color: #333;
+    opacity: 0.8;
+}
+
+.ride-modal-close {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    background: rgba(0, 0, 0, 0.1);
+    border: none;
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    font-size: 20px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s ease;
+    color: #000;
+}
+
+.ride-modal-close:hover {
+    background: rgba(0, 0, 0, 0.2);
+    transform: rotate(90deg);
+}
+
+/* Modal Body */
+.ride-modal-body {
+    padding: 30px;
+}
+
+/* Section styling */
+.modal-section {
+    margin-bottom: 30px;
+}
+
+.modal-section:last-child {
+    margin-bottom: 0;
+}
+
+.modal-section-title {
+    font-size: 18px;
+    font-weight: 700;
+    color: #1a1a1a;
+    margin: 0 0 15px 0;
+    padding-bottom: 10px;
+    border-bottom: 2px solid #FFC800;
+}
+
+/* Details grid */
+.details-grid {
+    display: grid;
+    grid-template-columns: 160px 1fr;
+    gap: 12px 20px;
+    font-size: 15px;
+}
+
+.detail-label {
+    font-weight: 600;
+    color: #555;
+}
+
+.detail-value {
+    color: #1a1a1a;
+}
+
+/* Highlighted values */
+.detail-value.highlight {
+    color: #1a73e8;
+    font-weight: 600;
+}
+
+.detail-value.price {
+    color: #2E7D32;
+    font-weight: 700;
+    font-size: 16px;
+}
+
+/* Passengers section */
+.passengers-list {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.passenger-card {
+    background: #F9F9F9;
+    border: 1px solid #E8E8E8;
+    border-radius: 8px;
+    padding: 16px;
+    transition: all 0.2s ease;
+}
+
+.passenger-card:hover {
+    background: #F5F5F5;
+    border-color: #FFC800;
+}
+
+.passenger-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid #E0E0E0;
+}
+
+.passenger-name {
+    font-weight: 700;
+    font-size: 16px;
+    color: #1a1a1a;
+}
+
+.seat-badge {
+    background: #FFC800;
+    color: #000;
+    padding: 4px 10px;
+    border-radius: 12px;
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+}
+
+.passenger-details {
+    display: grid;
+    grid-template-columns: 120px 1fr;
+    gap: 8px;
+    font-size: 14px;
+}
+
+.passenger-details .detail-label {
+    font-size: 13px;
+}
+
+.passenger-details .detail-value {
+    font-size: 14px;
+}
+
+/* No passengers state */
+.no-passengers {
+    text-align: center;
+    padding: 30px;
+    color: #999;
+    font-style: italic;
+}
+
+/* Modal footer */
+.ride-modal-footer {
+    padding: 20px 30px;
+    border-top: 1px solid #E8E8E8;
+    display: flex;
+    justify-content: flex-end;
+}
+
+.close-modal-btn {
+    padding: 12px 30px;
+    background: #6c757d;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-weight: 600;
+    font-size: 14px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.close-modal-btn:hover {
+    background: #5a6268;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(108, 117, 125, 0.3);
+}
+
+/* Hide modal */
+.hidden {
+    display: none !important;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .rides-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .ride-modal-box {
+        width: 95%;
+        max-width: 500px;
+    }
+    
+    .details-grid,
+    .passenger-details {
+        grid-template-columns: 1fr;
+        gap: 8px;
+    }
+}

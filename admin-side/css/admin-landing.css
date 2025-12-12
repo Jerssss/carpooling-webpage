@@ -335,45 +335,6 @@ footer {
     margin-top: auto; /* Push footer to bottom */
 }
 
-/* === REPORTS & COMPLAINTS === */
-.report-list {
-    display: flex;
-    flex-direction: column;
-    gap: 18px;
-}
-
-.report-card {
-    background: #fff;
-    padding: 20px;
-    border-radius: 12px;
-    border: 2px solid #E0E0E0;
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-    transition: 0.2s;
-}
-
-.report-card:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 3px 12px rgba(0,0,0,0.1);
-}
-
-.report-title {
-    font-size: 16px;
-    font-weight: 600;
-}
-
-.report-details {
-    font-size: 14px;
-    opacity: 0.75;
-}
-
-.report-status {
-    margin-top: 6px;
-    font-size: 13px;
-    font-weight: 600;
-    color: #666;
-}
 
 /* Design for Modal box that displays the user information */
 .modal-overlay {

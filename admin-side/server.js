@@ -102,6 +102,9 @@ app.get("/api/admin/dashboard", (req, res) => {
     res.json({ message: "Welcome, " + req.session.admin.name });
 });
 
+// ====================================
+// USER MANAGEMENT ROUTES AND ENDPOINTS
+// ====================================
 // Fetch all users
 app.get("/api/admin/users", adminOnly, async (req, res) => {
     console.log("GET /api/admin/users hit");
@@ -138,6 +141,9 @@ app.patch("/api/admin/users/:id/verify", adminOnly, async (req, res) => {
     res.json({ message: "User updated" });
 });
 
+// ========================================================
+// MANAGING VEHICLES AND REGISTRATION ROUTES AND  ENDPOINTS
+// ========================================================
 // Get all vehicles with owner information (with optional filter)
 app.get("/api/admin/vehicles", adminOnly, async (req, res) => {
     try {
@@ -281,32 +287,64 @@ app.patch("/api/admin/vehicles/:id", adminOnly, async (req, res) => {
     }
 });
 
+// ============================================
+// MONITORING ACTIVE RIDES ROUTES AND  ENDPOINTS
+// ============================================
 // Monitor active rides
 app.get("/api/admin/rides/active", adminOnly, async (req, res) => {
-    const db = client.db(dbName);
+    try {
+        const db = client.db(dbName);
+        const rides = await db.collection("rides")
+            .find({ status: "available" })
+            .toArray();
+        res.json(rides);
+    } catch (err) {
+        console.error("Error fetching active rides:", err);
+        res.status(500).json({ message: "Failed to fetch active rides" });
+    }
+});
 
-    const rides = await db.collection("rides")
-        .find({ status: "available" })
-        .toArray();
-
-    res.json(rides);
+// Get all vehicles (for matching carId with vehicle details)
+app.get("/api/admin/vehicles", adminOnly, async (req, res) => {
+    try {
+        const db = client.db(dbName);
+        const vehicles = await db.collection("vehicles").find().toArray();
+        res.json(vehicles);
+    } catch (err) {
+        console.error("Error fetching vehicles:", err);
+        res.status(500).json({ message: "Failed to fetch vehicles" });
+    }
 });
 
 // Get bookings per ride
 app.get("/api/admin/bookings/:rideId", adminOnly, async (req, res) => {
-    const db = client.db(dbName);
-    const bookings = await db.collection("bookings").find({ rideId: req.params.rideId }).toArray();
-    res.json(bookings);
+    try{
+        const db = client.db(dbName);
+        const bookings = await db.collection("bookings")
+            .find({ rideId: req.params.rideId })
+            .toArray();
+        res.json(bookings);
+    } catch(err){
+        console.error("Error fetching bookings:", err);
+        res.status(500).json({ message: "Failed to fetch bookings" });
+    }
 });
-
 
 // Monitor Transactions or Payments
 app.get("/api/admin/payments", adminOnly, async (req, res) => {
-    const db = client.db(dbName);
-    const payments = await db.collection("payments").find().toArray();
-    res.json(payments);
+    try {
+        const db = client.db(dbName);
+        const payments = await db.collection("payments").find().toArray();
+        res.json(payments);
+    } catch (err) {
+        console.error("Error fetching payments:", err);
+        res.status(500).json({ message: "Failed to fetch payments" });
+    }
 });
 
+// ====================================================
+// MANAGING COMPLAINTS AND REPORTS ROUTES AND  ENDPOINTS
+// =====================================================
 // Manage Reports and Complaints. Note to self: be careful with aggregations and pipelines cuz they're case sensitive
 app.get("/api/admin/reports", adminOnly, async (req, res) => {
     try {
