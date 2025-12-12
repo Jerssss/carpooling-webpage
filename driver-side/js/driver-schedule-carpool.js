@@ -359,7 +359,8 @@
         const res = await fetch(`${BASE}/driver-side/includes/create_carpool.php`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(payload)
+          body: JSON.stringify(payload),
+          credentials: 'include'
         });
         const json = await res.json();
         if (!res.ok || json.error) {

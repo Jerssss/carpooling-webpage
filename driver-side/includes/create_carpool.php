@@ -7,10 +7,25 @@ try {
     require_once __DIR__ . '/../../includes/session.php';
     require_once __DIR__ . '/../../includes/db_connect.php';
 
-    // Require authenticated driver
-    if (!isset($_SESSION['user_id']) || ($_SESSION['role'] ?? null) !== 'driver') {
+    // Require authenticated user and verify driver role from DB
+    if (!isset($_SESSION['user_id'])) {
         http_response_code(401);
         echo json_encode(['error' => 'Unauthorized']);
+        exit;
+    }
+    $currentUserId = $_SESSION['user_id'];
+    try {
+        $userDoc = $db->selectCollection('users')->findOne(['userID' => $currentUserId], ['projection' => ['roles' => 1, 'role' => 1]]);
+        $roles = isset($userDoc['roles']) && is_array($userDoc['roles']) ? array_map('strtolower', $userDoc['roles']) : [];
+        $roleStr = isset($userDoc['role']) ? strtolower((string)$userDoc['role']) : '';
+        if (!(in_array('driver', $roles, true) || $roleStr === 'driver')) {
+            http_response_code(403);
+            echo json_encode(['error' => 'Forbidden: driver role required']);
+            exit;
+        }
+    } catch (Throwable $e) {
+        http_response_code(500);
+        echo json_encode(['error' => 'Role check failed']);
         exit;
     }
 
@@ -40,7 +55,7 @@ try {
     $carId = null;
     try {
         $vehColl = $db->selectCollection('vehicles');
-        $cursor = $vehColl->find(['ownerId' => $_SESSION['user_id']]);
+        $cursor = $vehColl->find(['ownerId' => $currentUserId]);
         foreach ($cursor as $veh) {
             // Prefer verified vehicles
             if (isset($veh['isVerified']) && $veh['isVerified'] && isset($veh['carId'])) {
@@ -63,7 +78,7 @@ try {
     $doc = [
         'rideId' => $rideId,
         'carId' => $carId,
-        'driverId' => $_SESSION['user_id'],
+        'driverId' => $currentUserId,
         'date' => $datePart,
         'departureTime' => $timePart,
         'stationedAt' => $startLocation,
