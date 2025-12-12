@@ -2,12 +2,17 @@ console.log("admin-dashboard.js loaded");
 
 const API = "http://localhost:4000/api/admin";
 
+// User variables
 let currentFilter = "all"; // default filter for Users
 let currentSearch = "";
-
 // Report variables
 let allReports = [];
 let currentComplaintId = [];
+// Vehicle variables
+let currentVehicleId = null;
+let currentVehicleFilter = "pending"; // Default filter
+let currentVehicleSearch = ""; // Current search query
+let allVehiclesData = []; // Store all vehicles for filtering
 
 // Panel switching
 document.addEventListener("DOMContentLoaded", () => {
@@ -220,45 +225,323 @@ async function updateUserVerification(userID, status) {
     }
 }
 
-// Vehicles functions
-async function loadVehicles() {
+// ========================================
+// VEHICLE REGISTRATION FUNCTIONS
+// ========================================
+// Load vehicles with filter
+async function loadVehicles(filter = "pending") {
     try {
-        const res = await fetch(`${API}/vehicles/pending`, { credentials: "include" });
+        currentVehicleFilter = filter;
+        
+        const res = await fetch(`${API}/vehicles?filter=${filter}`, { credentials: "include" });
+        if (!res.ok) throw new Error("Failed to fetch vehicles");
         const vehicles = await res.json();
+        
+        allVehiclesData = vehicles; // Store for search filtering
+        displayVehicles(vehicles);
 
-        const list = document.getElementById("vehicleList");
-        list.innerHTML = "";
-
-        vehicles.forEach(v => {
-            list.innerHTML += `
-                <div class="vehicle-card">
-                    <p>${v.carMake} ${v.carModel} (${v.year})</p>
-                    <p>Plate: ${v.plateNo}</p>
-                    <p>Status: ${v.isVerified ? "Verified" : "Pending"}</p>
-
-                    <button onclick="updateVehicle('${v.carId}', true)">Approve</button>
-                    <button onclick="updateVehicle('${v.carId}', false)">Reject</button>
-                </div>
-            `;
-        });
     } catch (err) {
-        console.error(err);
+        console.error("Error loading vehicles:", err);
+        document.getElementById("vehicleList").innerHTML = `
+            <div class="empty-state">
+                <h3>Error loading vehicles</h3>
+                <p>Please try refreshing the page</p>
+            </div>
+        `;
     }
 }
 
-async function updateVehicle(carId, status) {
+
+// Display vehicles with search and filter
+function displayVehicles(vehicles) {
+    const list = document.getElementById("vehicleList");
+    
+
+    // Apply search filter
+    let filteredVehicles = vehicles;
+    if (currentVehicleSearch.trim() !== "") {
+        filteredVehicles = vehicles.filter(v => 
+            (v.ownerInfo?.name || "").toLowerCase().includes(currentVehicleSearch) ||
+            (v.carMake || "").toLowerCase().includes(currentVehicleSearch) ||
+            (v.carModel || "").toLowerCase().includes(currentVehicleSearch) ||
+            (v.plateNo || "").toLowerCase().includes(currentVehicleSearch) ||
+            (v.ownerId || "").toLowerCase().includes(currentVehicleSearch)
+        );
+    }
+
+
+    // Build search bar and filter tabs
+    let headerHTML = `
+        <div class="vehicle-search-container">
+            <input 
+                type="text" 
+                id="vehicleSearchInput" 
+                class="vehicle-search-input" 
+                placeholder="Search vehicles..."
+                value="${currentVehicleSearch}"
+            >
+        </div>
+        <div class="vehicle-filter-tabs">
+            <div class="vehicle-filter-tab ${currentVehicleFilter === 'all' ? 'active' : ''}" onclick="changeVehicleFilter('all')">
+                All
+            </div>
+            <div class="vehicle-filter-tab ${currentVehicleFilter === 'pending' ? 'active' : ''}" onclick="changeVehicleFilter('pending')">
+                Pending
+            </div>
+            <div class="vehicle-filter-tab ${currentVehicleFilter === 'approved' ? 'active' : ''}" onclick="changeVehicleFilter('approved')">
+                Approved
+            </div>
+        </div>
+    `;
+    
+    
+    if (filteredVehicles.length === 0) {
+        list.innerHTML = headerHTML + `
+            <div class="empty-state">
+                <h3>No ${currentVehicleFilter === 'all' ? '' : currentVehicleFilter.charAt(0).toUpperCase() + currentVehicleFilter.slice(1)} Vehicles Found</h3>
+                <p>${currentVehicleSearch ? 'Try adjusting your search terms' : 'No vehicles found in this category'}</p>
+            </div>
+        `;
+        
+        // Re-attach search listener and refocus
+        const searchInput = document.getElementById("vehicleSearchInput");
+        if (searchInput) {
+            attachVehicleSearchListener();
+            // Restore cursor position
+            setTimeout(() => {
+                searchInput.focus();
+                searchInput.setSelectionRange(currentVehicleSearch.length, currentVehicleSearch.length);
+            }, 0);
+        }
+        return;
+    }
+
+    list.innerHTML = headerHTML + `
+        <div class="vehicle-table-container">
+            <table class="vehicle-table">
+                <thead>
+                    <tr>
+                        <th>Car Owner</th>
+                        <th>Vehicle Name</th>
+                        <th>Plate Number</th>
+                        <th>Status</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody id="vehicleTableBody">
+                </tbody>
+            </table>
+        </div>
+    `;
+
+    const tbody = document.getElementById("vehicleTableBody");
+    
+    filteredVehicles.forEach(v => {
+        const row = document.createElement("tr");
+        row.innerHTML = `
+            <td>${v.ownerInfo?.name || v.ownerId}</td>
+            <td>${v.carMake} ${v.carModel} (${v.year})</td>
+            <td>${v.plateNo}</td>
+            <td>
+                <span class="status-badge ${v.isVerified ? 'status-verified' : 'status-pending'}">
+                    ${v.isVerified ? 'Approved' : 'Pending'}
+                </span>
+            </td>
+            <td>
+                <button class="btn-view-vehicle" onclick="viewVehicleDetails('${v.carId}')">
+                    View Details
+                </button>
+            </td>
+        `;
+        tbody.appendChild(row);
+    });
+    
+    // Attach search listener after rendering and restore focus
+    const searchInput = document.getElementById("vehicleSearchInput");
+    if (searchInput) {
+        attachVehicleSearchListener();
+        // Restore focus and cursor position
+        setTimeout(() => {
+            searchInput.focus();
+            searchInput.setSelectionRange(currentVehicleSearch.length, currentVehicleSearch.length);
+        }, 0);
+    }
+}
+
+// Change filter tab
+function changeVehicleFilter(filter) {
+    currentVehicleSearch = ""; // Reset search when changing filter
+    loadVehicles(filter);
+}
+
+// Attach search input listener
+function attachVehicleSearchListener() {
+    const searchInput = document.getElementById("vehicleSearchInput");
+    if (searchInput) {
+        searchInput.addEventListener("input", (e) => {
+            currentVehicleSearch = e.target.value.toLowerCase();
+            displayVehicles(allVehiclesData);
+        });
+    }
+}
+
+// View vehicle details in modal
+async function viewVehicleDetails(carId) {
     try {
-        await fetch(`${API}/vehicles/${carId}`, {
+        currentVehicleId = carId;
+        
+        const res = await fetch(`${API}/vehicles/${carId}`, { 
+            credentials: "include" 
+        });
+        
+        if (!res.ok) throw new Error("Failed to fetch vehicle details");
+        
+        const vehicle = await res.json();
+        displayVehicleModal(vehicle);
+        
+        document.getElementById("vehicleModal").style.display = "block";
+    } catch (err) {
+        console.error("Error viewing vehicle:", err);
+        alert("Failed to load vehicle details");
+    }
+}
+
+
+// Display vehicle details in modal
+function displayVehicleModal(vehicle) {
+    const owner = vehicle.ownerInfo || {};
+    
+    // Dynamically generate content
+    document.getElementById("vehicleModalBody").innerHTML = `
+        <div class="vehicle-detail-section">
+            <h3>Car Owner Information</h3>
+            <div class="vehicle-detail-row">
+                <span class="vehicle-detail-label">Name:</span>
+                <span class="vehicle-detail-value">${owner.name || "N/A"}</span>
+            </div>
+            <div class="vehicle-detail-row">
+                <span class="vehicle-detail-label">User ID:</span>
+                <span class="vehicle-detail-value">${owner.userID || vehicle.ownerId}</span>
+            </div>
+            <div class="vehicle-detail-row">
+                <span class="vehicle-detail-label">Email:</span>
+                <span class="vehicle-detail-value">${owner.email || "N/A"}</span>
+            </div>
+            <div class="vehicle-detail-row">
+                <span class="vehicle-detail-label">Phone Number:</span>
+                <span class="vehicle-detail-value">${owner.phoneNo || "N/A"}</span>
+            </div>
+            <div class="vehicle-detail-row">
+                <span class="vehicle-detail-label">Occupation:</span>
+                <span class="vehicle-detail-value">${owner.occupation || "N/A"}</span>
+            </div>
+            <div class="vehicle-detail-row">
+                <span class="vehicle-detail-label">Registration Status:</span>
+                <span class="vehicle-detail-value">
+                    <span class="status-badge ${vehicle.isVerified ? 'status-verified' : 'status-pending'}">
+                        ${vehicle.isVerified ? 'Verified' : 'Pending'}
+                    </span>
+                </span>
+            </div>
+        </div>
+
+        <div class="vehicle-detail-section">
+            <h3>Vehicle Information</h3>
+            <div class="vehicle-detail-row">
+                <span class="vehicle-detail-label">Car ID:</span>
+                <span class="vehicle-detail-value">${vehicle.carId}</span>
+            </div>
+            <div class="vehicle-detail-row">
+                <span class="vehicle-detail-label">Car Maker & Model:</span>
+                <span class="vehicle-detail-value">${vehicle.carMake} ${vehicle.carModel}</span>
+            </div>
+            <div class="vehicle-detail-row">
+                <span class="vehicle-detail-label">Year:</span>
+                <span class="vehicle-detail-value">${vehicle.year}</span>
+            </div>
+            <div class="vehicle-detail-row">
+                <span class="vehicle-detail-label">Plate Number:</span>
+                <span class="vehicle-detail-value">${vehicle.plateNo}</span>
+            </div>
+            <div class="vehicle-detail-row">
+                <span class="vehicle-detail-label">Seating Capacity:</span>
+                <span class="vehicle-detail-value">${vehicle.cap || vehicle.seats || "N/A"}</span>
+            </div>
+            
+            ${vehicle.carPhoto ? `
+                <div class="vehicle-image-container">
+                    <img src="../${vehicle.carPhoto}" alt="${vehicle.carMake} ${vehicle.carModel}" onerror="this.src='../images/placeholder-car.png'">
+                    <p class="vehicle-image-label">Vehicle Photo</p>
+                </div>
+            ` : ''}
+        </div>
+    `;
+
+    // Update approve/reject buttons based on verification status
+    const approveBtn = document.getElementById("approveVehicleBtn");
+    const rejectBtn = document.getElementById("rejectVehicleBtn");
+    
+    if (vehicle.isVerified) {
+        approveBtn.disabled = true;
+        approveBtn.textContent = "Already Approved";
+        rejectBtn.disabled = false;
+        rejectBtn.textContent = "Revoke Approval";
+    } else {
+        approveBtn.disabled = false;
+        approveBtn.textContent = "Approve";
+        rejectBtn.disabled = false;
+        rejectBtn.textContent = "Reject";
+    }
+}
+
+// Update vehicle verification status
+async function updateVehicle(status) {
+    const carId = currentVehicleId;
+
+    // Error handling
+    if (!carId) {
+        alert("No vehicle selected");
+        return;
+    }
+
+    const action = status ? "approve" : "reject";
+    if (!confirm(`Are you sure you want to ${action} this vehicle registration?`)) {
+        return;
+    }
+
+    try {
+        // Send fetch request
+        const res = await fetch(`${API}/vehicles/${carId}`, {
             method: "PATCH",
             headers: { "Content-Type": "application/json" },
             credentials: "include",
             body: JSON.stringify({ isVerified: status })
         });
-        loadVehicles();
+
+        if (!res.ok) throw new Error("Failed to update vehicle");
+
+        alert(`Vehicle registration ${status ? "approved" : "rejected"}!`);
+        closeVehicleModal();
+        loadVehicles(currentVehicleFilter); // Reload the list with the current filter
     } catch (err) {
-        console.error(err);
+        console.error("Error updating vehicle:", err);
+        alert("Failed to update vehicle registration");
     }
 }
+
+// Close vehicle modal
+function closeVehicleModal() {
+    document.getElementById("vehicleModal").style.display = "none";
+    currentVehicleId = null;
+}
+
+// Close modal when clicking outside
+window.addEventListener('click', function(event) {
+    const vehicleModal = document.getElementById("vehicleModal");
+    if (event.target === vehicleModal) {
+        closeVehicleModal();
+    }
+});
 
 // ========================================
 // REPORTS & COMPLAINTS FUNCTIONS

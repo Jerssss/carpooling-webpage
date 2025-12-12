@@ -156,6 +156,8 @@ body {
 }
 
 .filter-tab:hover {
+    background: #d0d0d0;
+    color: #333;
     opacity: 0.8;
 }
 

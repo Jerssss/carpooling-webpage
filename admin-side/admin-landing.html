@@ -7,6 +7,7 @@
     <link rel="stylesheet" href="../driver-side/css/driver-style.css">
     <link rel="stylesheet" href="../admin-side/css/admin-landing.css">
     <link rel="stylesheet" href="../admin-side/css/reports.css">
+    <link rel="stylesheet" href="../admin-side/css/vehicle-registration.css">
 </head>
 
 <body>
@@ -90,6 +91,30 @@
 
                 <div class="list-container" id="vehicleList"></div>
             </div>
+            
+            <!-- Modal for Vehicle Details -->
+             <div id="vehicleModal" class="vehicle-modal">
+                <div class="vehicle-modal-content">
+                    <div class="vehicle-modal-header">
+                        <h2>Vehicle Registration Details</h2>
+                        <span class="vehicle-close" onclick="closeVehicleModal()">&times;</span>
+                    </div>
+                    <div class="vehicle-modal-body" id="vehicleModalBody">
+                        <!-- Content will be loaded dynamically -->
+                        </div>
+                        <div class="vehicle-modal-footer">
+                            <button class="btn btn-approve" id="approveVehicleBtn" onclick="updateVehicle(true)">
+                                Approve
+                            </button>
+                            <button class="btn btn-reject" id="rejectVehicleBtn" onclick="updateVehicle(false)">
+                                Reject
+                            </button>
+                            <button class="btn btn-cancel" onclick="closeVehicleModal()">
+                                Cancel
+                            </button>
+                        </div>
+                    </div>
+                </div>
 
             <!-- REPORTS WINDOW -->
              <div id = "reports-complaints" class="content-window">

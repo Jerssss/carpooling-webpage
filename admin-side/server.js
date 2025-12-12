@@ -9,7 +9,7 @@ console.log("MONGO_URI =", process.env.MONGO_URI);
 const app = express();
 app.use(express.json());
 app.use(cors({
-    origin: "http://localhost:8888", // Note: Remove 8888 if you're not on MAC
+    origin: "http://localhost", // Note: Remove 8888 if you're not on MAC
     credentials: true
 }));
 
@@ -125,7 +125,7 @@ app.get("/api/admin/users/:id", adminOnly, async (req, res) => {
 });
 
 
-// Verify or Unveryfy a user
+// Verify or Unverify a user
 app.patch("/api/admin/users/:id/verify", adminOnly, async (req, res) => {
     const db = client.db(dbName);
     const { isVerified } = req.body;
@@ -138,15 +138,120 @@ app.patch("/api/admin/users/:id/verify", adminOnly, async (req, res) => {
     res.json({ message: "User updated" });
 });
 
-// Get pending vehicles
+// Get all vehicles with owner information (with optional filter)
+app.get("/api/admin/vehicles", adminOnly, async (req, res) => {
+    try {
+        const db = client.db(dbName);
+        const { filter } = req.query; // 'all', 'pending', 'approved'
+
+        let matchCondition = {};
+        
+        if (filter === 'pending') {
+            matchCondition = { isVerified: false };
+        } else if (filter === 'approved') {
+            matchCondition = { isVerified: true };
+        }
+        // If filter is 'all' or undefined, matchCondition stays empty (matches all)
+
+        const vehicles = await db.collection("vehicles").aggregate([
+            {
+                $match: matchCondition
+            },
+            {
+                $lookup: {
+                    from: "users",
+                    localField: "ownerId",
+                    foreignField: "userID",
+                    as: "ownerInfo"
+                }
+            },
+            {
+                $unwind: {
+                    path: "$ownerInfo",
+                    preserveNullAndEmptyArrays: true
+                }
+            },
+            {
+                $sort: { _id: -1 } // Most recent first
+            }
+        ]).toArray();
+
+        res.json(vehicles);
+    } catch (err) {
+        console.error("Error fetching vehicles:", err);
+        res.status(500).json({ message: "Server error" });
+    }
+});
+
+// Get pending vehicles with owner information
 app.get("/api/admin/vehicles/pending", adminOnly, async (req, res) => {
-    const db = client.db(dbName);
+    try {
+        const db = client.db(dbName);
 
-    const vehicles = await db.collection("vehicles")
-        .find({ isVerified: false })
-        .toArray();
+        const vehicles = await db.collection("vehicles").aggregate([
+            {
+                $match: { isVerified: false }
+            },
+            {
+                $lookup: {
+                    from: "users",
+                    localField: "ownerId",
+                    foreignField: "userID",
+                    as: "ownerInfo"
+                }
+            },
+            {
+                $unwind: {
+                    path: "$ownerInfo",
+                    preserveNullAndEmptyArrays: true
+                }
+            },
+            {
+                $sort: { _id: -1 } // Most recent first
+            }
+        ]).toArray();
 
-    res.json(vehicles);
+        res.json(vehicles);
+    } catch (err) {
+        console.error("Error fetching pending vehicles:", err);
+        res.status(500).json({ message: "Server error" });
+    }
+});
+
+// Get single vehicle with full details
+app.get("/api/admin/vehicles/:id", adminOnly, async (req, res) => {
+    try {
+        const db = client.db(dbName);
+        
+        const vehicle = await db.collection("vehicles").aggregate([
+            {
+                $match: { carId: req.params.id }
+            },
+            {
+                $lookup: {
+                    from: "users",
+                    localField: "ownerId",
+                    foreignField: "userID",
+                    as: "ownerInfo"
+                }
+            },
+            {
+                $unwind: {
+                    path: "$ownerInfo",
+                    preserveNullAndEmptyArrays: true
+                }
+            }
+        ]).toArray();
+
+        if (vehicle.length === 0) {
+            return res.status(404).json({ message: "Vehicle not found" });
+        }
+
+        res.json(vehicle[0]);
+    } catch (err) {
+        console.error("Error fetching vehicle:", err);
+        res.status(500).json({ message: "Server error" });
+    }
 });
 
 // Update vehicle verification status (approve/reject)
@@ -157,7 +262,12 @@ app.patch("/api/admin/vehicles/:id", adminOnly, async (req, res) => {
     try {
         const result = await db.collection("vehicles").updateOne(
             { carId: req.params.id },
-            { $set: { isVerified } }
+            { 
+                $set: { 
+                    isVerified,
+                    updatedAt: new Date()
+                } 
+            }
         );
 
         if (result.matchedCount === 0) {
