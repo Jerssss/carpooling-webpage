@@ -1,5 +1,5 @@
-// js/notifications-loader.js
-// Loads the shared notifications.html snippet into any page and initializes the UI.
+// js/header-ui-loader.js
+// Loads the shared notifications.html, snippet and the logout feature into any page and initializes the UI.
 (function () {
   async function fetchSnippet() {
     const candidates = [
