@@ -36,35 +36,41 @@ document.addEventListener("DOMContentLoaded", () => {
         upcomingContainer.innerHTML = '';
         finishedContainer.innerHTML = '';
 
-        // Upcoming rides
+        // Upcoming rides - no report button
         if (data.upcoming && data.upcoming.length > 0) {
-            data.upcoming.forEach(ride => upcomingContainer.appendChild(createRideCard(ride)));
+            data.upcoming.forEach(ride => upcomingContainer.appendChild(createRideCard(ride, false)));
         } else {
             upcomingContainer.innerHTML = `<p>No upcoming rides.</p>`;
         }
 
-        // Finished rides
+        // Finished rides - with report button
         if (data.finished && data.finished.length > 0) {
-            data.finished.forEach(ride => finishedContainer.appendChild(createRideCard(ride)));
+            data.finished.forEach(ride => finishedContainer.appendChild(createRideCard(ride, true)));
         } else {
             finishedContainer.innerHTML = `<p>No finished rides.</p>`;
         }
     }
 
-    function createRideCard(ride) {
+    function createRideCard(ride, showReportButton = false) {
         const card = document.createElement('div');
         card.classList.add('ride-card');
 
         // Fix image paths
         const carIcon = "../images/car.png";
         const clockIcon = "../images/clock-icon.png";
+        const reportIcon = "../images/report.png"; 
+
+        // Get driver ID from ride data
+        const driverId = ride.userId || 'UNKNOWN';
+        const rideId = ride.rideId || '';
+        const driverName = ride.name || 'Unknown Driver';
 
         card.innerHTML = `
             <div class="ride-header">
                 <div class="ride-left">
                     <div class="ride-icon"><img src="${carIcon}" /></div>
                     <div class="ride-info">
-                        <h2>${ride.name}</h2>
+                        <h2>${driverName}</h2>
                         <p><img class="user-icon" src="${clockIcon}" /> ${ride.departureTime}</p>
                     </div>
                 </div>
@@ -86,6 +92,13 @@ document.addEventListener("DOMContentLoaded", () => {
                     </div>
                 </div>
             </div>
+            
+            ${showReportButton ? `
+                <button class="report-btn" onclick="openComplaintModal('${rideId}', '${driverId}', '${driverName}')" title="Report this driver">
+                    <img src="${reportIcon}" alt="Report" />
+                    <span>Report</span>
+                </button>
+            ` : ''}
         `;
         return card;
     }

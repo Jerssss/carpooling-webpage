@@ -13,6 +13,7 @@
   <script src="../js/notifications.js" defer></script>
   <script src="../js/header-ui-loader.js" defer></script>
   <script src="js/fetch_history.js" defer></script>
+  <script src="js/complaint.js" defer></script>
 </head>
 
 <body>
@@ -87,7 +88,58 @@
 
       <!-- Finished Rides -->
       <h3 class="ride-section-title">Finished Rides</h3>
-      <div id="finishedRidesContainer" class="ride-list"></div>
+      <div id="finishedRidesContainer" class="ride-list">
+        <!-- Dynamic content loads here -->
+      </div>
+      
+      <!-- Complaint Modal -->
+       <div id="complaintModal" class="complaint-modal">
+        <div class="complaint-modal-content">
+          <div class="complaint-modal-header">
+            <h2>Report Driver</h2>
+            <button class="complaint-close" onclick="closeComplaintModal()">&times;</button>
+          </div>
+          
+          <div class="complaint-modal-body">
+            <div id="complaintMessage" class="complaint-message"></div>
+            <div class="complaint-info">
+              <p>You are reporting</p>
+              <p class="driver-name" id="complaintDriverName"></p>
+            </div>
+            <form id="complaintForm">
+              <input type="hidden" id="complaintRideId" name="rideId">
+              <input type="hidden" id="complaintDriverId" name="driverId">
+              
+              <div class="complaint-form-group">
+                <label for="complaintText">Tell us what happened...</label>
+                <textarea 
+                id="complaintText" 
+                name="complaintMessage" 
+                class="complaint-textarea" 
+                placeholder="Please describe the issue in detail. This will help us address your concern effectively."
+                maxlength="1000"
+                required
+                ></textarea>
+                <div class="char-counter">
+                  <span id="charCount">0</span> / 1000 characters
+                </div>
+              </div>
+            </form>
+            <div class="complaint-loading">
+              <div class="spinner"></div>
+              <p>Submitting your report...</p>
+            </div>
+          </div>
+          <div class="complaint-modal-footer">
+            <button class="complaint-btn complaint-btn-submit" onclick="submitComplaint()">
+              Submit Report
+            </button>
+            <button class="complaint-btn complaint-btn-cancel" onclick="closeComplaintModal()">
+              Cancel
+            </button>
+          </div>
+        </div>
+      </div>
     </section>
   </main>
 
@@ -109,6 +161,5 @@
 
     <p class="footer-copy">Copyright ©2025 | Designed by <span>Carma</span></p>
   </footer>
-
 </body>
 </html>

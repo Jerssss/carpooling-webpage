@@ -68,6 +68,9 @@ try {
                 $createdAt = (new DateTime(is_array($h['createdAt']['$date']) ? ($h['createdAt']['$date']['$numberLong'] ?? '') : $h['createdAt']['$date']))->format(DATE_ATOM);
             }
         }
+        // Get driver ID from history
+        $driverId = $h['driverId'] ?? '';
+
         $item = [
             'rideId' => $h['rideId'] ?? '',
             'stationedAt' => '',
@@ -79,6 +82,7 @@ try {
             'pickupLocation' => $h['pickupLocation'] ?? '',
             'status' => [$status],
             'createdAt' => $createdAt,
+            'driverId' => $driverId, // Include driver ID
         ];
 
         // Normalize statuses to upcoming vs finished buckets
@@ -150,6 +154,7 @@ try {
                 'pickupLocation' => $payment['pickupLocation'] ?? ($ride['stationedAt'] ?? ''),
                 'status' => [$status],
                 'createdAt' => $createdAt,
+                'driverId' => $driverId, // Include driver ID
             ];
         }
     }
@@ -186,6 +191,7 @@ try {
                     'pickupLocation' => $ride['stationedAt'] ?? '',
                     'status' => [$status],
                     'createdAt' => $createdAt,
+                    'driverId' => $driverId, // Include driver ID
                 ];
                 if (in_array($status, ['pending','booked','scheduled','reserved','ongoing','available'], true)) {
                     $upcoming[] = $item;
