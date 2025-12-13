@@ -2,15 +2,19 @@
 require __DIR__ . '/../vendor/autoload.php';
 require_once __DIR__ . '/../includes/cookies.php';
 
+session_start();
+
 try {
     $client = new MongoDB\Client("mongodb://localhost:27017");
     $usersCollection = $client->carpooling_data->users;
 
     if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-        $email = $_POST['email'] ?? '';
-        $password = $_POST['password'] ?? '';
-        $role = $_POST['role'] ?? 'passenger';
 
+        $email    = $_POST['email'] ?? '';
+        $password = $_POST['password'] ?? '';
+        $role     = $_POST['role'] ?? 'passenger';
+
+        // Find user by email AND check if selected role exists in roles array
         $user = $usersCollection->findOne([
             'email' => $email,
             'roles' => ['$in' => [$role]] // search the roles array using $in operator
@@ -44,13 +48,13 @@ try {
             'role'   => $role
         ];
 
-        // NON-SENSITIVE cookie
+        // NON-SENSITIVE cookies
         set_app_cookie('user_id', $user->userID);
         set_app_cookie('user_role', $role);
 
         $_SESSION['login_time'] = time();
 
-        // Redirect
+        // Redirect based on role
         if ($role === 'passenger') {
             header("Location: ../passenger-side/index.html");
         } elseif ($role === 'driver') {
