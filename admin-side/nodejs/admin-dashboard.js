@@ -51,22 +51,49 @@ document.addEventListener("DOMContentLoaded", () => {
     // Filter button for All, Verified, and Unverified
     const filterTabs = document.querySelectorAll(".filter-tab");
     filterTabs.forEach(tab => {
-        tab.addEventListener("click", () => {
+            tab.addEventListener("click", () => {
 
-        // Update active tab UI
-        filterTabs.forEach(t => t.classList.remove("active"));
-        tab.classList.add("active");
+            // Update active tab UI
+            filterTabs.forEach(t => t.classList.remove("active"));
+            tab.classList.add("active");
 
-        // Get filter type
-        currentFilter = tab.dataset.filter; // Save current filter
+            // Get filter type
+            currentFilter = tab.dataset.filter; // Save current filter
 
-        // Reload user list with filter
-        loadUsers(currentFilter, currentSearch);
+            // Reload user list with filter
+            loadUsers(currentFilter, currentSearch);
+        });
     });
-});
 
     // Load default tab (User Accounts)
     loadUsers("all");
+
+    const logoutBtn = document.getElementById("logoutBtn");
+
+    if (!logoutBtn) {
+        console.warn("Logout button not found");
+        return;
+    }
+
+    logoutBtn.addEventListener("click", async () => {
+        if (!confirm("Are you sure you want to logout?")) return;
+
+        try {
+            const res = await fetch(`${API}/logout`, {
+                method: "POST",
+                credentials: "include"
+            });
+
+            if (res.ok) {
+                window.location.href = "/9467_it312-teamarc_midtermproject/login.html";
+            } else {
+                alert("Logout failed. Please try again.");
+            }
+        } catch (err) {
+            console.error("Logout error:", err);
+            alert("Server error during logout.");
+        }
+    });
 });
 
 // Session check
@@ -75,19 +102,15 @@ async function checkAdminSession() {
         const res = await fetch(`${API}/dashboard`, { credentials: "include" });
         if (!res.ok) {
             alert("Session expired. Please login again.");
-            window.location.href = "../login.html";
+            window.location.href = "/9467_it312-teamarc_midtermproject/login.html";
         }
     } catch (err) {
         console.error("Session check error:", err);
-        window.location.href = "../login.html";
+        window.location.href = "/9467_it312-teamarc_midtermproject/login.html";
     }
 }
 
-checkAdminSession();
-
-// ========================================
 // User FUNCTIONS
-// ========================================
 async function loadUsers(filter = "all", search = "") {
     try {
         const res = await fetch(`${API}/users`, { credentials: "include" });
@@ -308,9 +331,8 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 
-// ========================================
 // VEHICLE REGISTRATION FUNCTIONS
-// ========================================
+
 // Load vehicles with filter
 async function loadVehicles(filter = "pending") {
     try {
@@ -626,9 +648,8 @@ window.addEventListener('click', function(event) {
     }
 });
 
-// ========================================
 // REPORTS & COMPLAINTS FUNCTIONS
-// ========================================
+
 // Load all reports
 async function loadReports() {
     try {
@@ -867,9 +888,8 @@ window.onclick = function(event) {
     }
 }
 
-// ========================================
 // MONITOR ACTIVE RIDES FUNCTIONS
-// ========================================
+
 async function loadRides() {
     try {
         // Create fetch request to backend
@@ -1166,7 +1186,6 @@ function closeModal() {
 
 
 // Initialise functions
-checkAdminSession();
 loadUsers();
 loadVehicles();
 loadReports();

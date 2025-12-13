@@ -9,7 +9,7 @@ console.log("MONGO_URI =", process.env.MONGO_URI);
 const app = express();
 app.use(express.json());
 app.use(cors({
-    origin: "http://localhost", // Note: Remove 8888 if you're not on MAC
+    origin: "http://localhost:8888", // Note: Remove 8888 if you're not on MAC
     credentials: true
 }));
 
@@ -23,7 +23,7 @@ app.get("/api/test", (req, res) => {
 app.use(session({
     secret: "supersecretadminkey",
     resave: false,
-    saveUninitialized: true,
+    saveUninitialized: false,
     cookie: {
         maxAge: 30 * 60 * 1000,
         sameSite: "lax", // for cross-origin
@@ -559,4 +559,19 @@ app.listen(4000, () => {
 app.get("/api/admin/check", (req, res) => {
     res.json({ session: req.session });
 });
+
+// Admin logout route
+app.post("/api/admin/logout", (req, res) => {
+    req.session.destroy(err => {
+        if (err) {
+            console.error("Logout error:", err);
+            return res.status(500).json({ message: "Logout failed" });
+        }
+
+        res.clearCookie("connect.sid");
+        res.json({ message: "Logged out successfully" });
+    });
+});
+
+
 
