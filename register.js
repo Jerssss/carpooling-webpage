@@ -4,6 +4,32 @@ document.addEventListener("DOMContentLoaded", () => {
   const form = document.querySelector(".registration-form");
   if (!form) return;
 
+  // ===== OCCUPATION-BASED ID NUMBER VISIBILITY =====
+  const occupationSelect = document.querySelector("#occupation");
+  const idNumberInput = document.querySelector("#idnumber");
+  const idNumberGroup = idNumberInput?.closest(".form-group");
+
+  function toggleIdNumberField() {
+    if (!occupationSelect || !idNumberGroup) return;
+
+    if (occupationSelect.value === "student") {
+      idNumberGroup.style.display = "flex";
+      idNumberInput.setAttribute("required", "required");
+    } else {
+      idNumberGroup.style.display = "none";
+      idNumberInput.removeAttribute("required");
+      idNumberInput.value = "";     // clear value when hidden
+      clearError(idNumberInput);    // remove validation error if any
+    }
+  }
+
+// run once on load
+toggleIdNumberField();
+
+// listen for changes
+occupationSelect.addEventListener("change", toggleIdNumberField);
+
+
   // ===== STEP WIZARD LOGIC =====
   const steps = Array.from(document.querySelectorAll(".form-step"));
   const prevBtn = document.querySelector(".prev-btn");

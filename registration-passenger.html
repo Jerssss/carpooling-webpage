@@ -1,69 +1,103 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Passenger Registration | Carpool</title>
-    <link rel="stylesheet" href="css/style.css">
-    <link rel="stylesheet" href="css/registration-passenger.css">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Passenger Registration | Carpool</title>
+  <link rel="stylesheet" href="css/style-start.css">
+  <link rel="stylesheet" href="css/registration-passenger.css">
 </head>
 <body data-role="passenger">
 
-    <!-- NAVBAR -->
-    <nav>
-        <div class="nav-left">
-            <img src="images/carma-logo.png" class="logo" alt="Carma Logo">
-            <span class="site-name">CARMA</span>
+  <!-- NAVBAR -->
+  <nav>
+      <div class="nav-left">
+          <img src="images/carma-logo.png" class="logo" alt="Carma Logo">
+          <span class="site-name">CARMA</span>
+      </div>
+      <div class="nav-right"></div>
+  </nav>
+
+  <div class="form-container">
+      <h1>Passenger Registration</h1>
+
+      <form class="registration-form" novalidate>
+
+        <!-- STEP PROGRESS / STEPPER -->
+        <div class="stepper" aria-hidden="true">
+            <div class="step" data-step="1">
+                <div class="step-circle" aria-hidden="true"></div>
+                <div class="step-label">Personal</div>
+            </div>
+            <div class="step" data-step="2">
+                <div class="step-circle" aria-hidden="true"></div>
+                <div class="step-label">Account</div>
+            </div>
         </div>
-        <div class="nav-right"></div>
-    </nav>
 
-    <div class="form-container">
-        <h1>Passenger Registration</h1>
+        <!-- STEP 1 : Personal -->
+        <div class="form-step" data-step="1">
+          <h2 class="step-title">Personal Details</h2>
 
-        <form class="registration-form">
+          <div class="form-group">
+              <label for="fullname">Full Name</label>
+              <input type="text" id="fullname" name="fullname" placeholder="Enter full name" required>
+          </div>
 
-            <div class="form-group">
-                <label for="fullname">Full Name</label>
-                <input type="text" id="fullname" name="fullname" placeholder="Enter full name" required>
+          <div class="form-group">
+              <label for="email">Email</label>
+              <input type="email" id="email" name="email" placeholder="Enter email" required>
+          </div>
+
+          <div class="form-group">
+              <label for="contact">Phone Number</label>
+              <input type="text" id="contact" name="contact" placeholder="Enter phone number" required>
+          </div>
+
+          <div class="form-group">
+            <label for="occupation">Occupation</label>
+            <div class="custom-dropdown">
+              <select id="occupation" name="occupation" required>
+                <option value="">Select occupation</option>
+                <option value="student">Student</option>
+                <option value="faculty">Faculty</option>
+                <option value="staff">Staff</option>
+              </select>
+              <span class="dropdown-arrow">&#9662;</span>
             </div>
+          </div>
 
-            <!-- ✅ NEW FIELD -->
-            <div class="form-group">
-                <label for="idnumber">ID Number</label>
-                <input type="text" id="idnumber" name="idnumber" placeholder="Enter ID number" required>
-            </div>
+          <div class="form-group">
+            <label for="idnumber">ID Number</label>
+            <input type="text" id="idnumber" name="idnumber" placeholder="Enter ID number" required>
+          </div>
+        </div>
 
-            <div class="form-group">
-                <label for="email">Email</label>
-                <input type="email" id="email" name="email" placeholder="Enter email" required>
-            </div>
+        <!-- STEP 2 : Account -->
+        <div class="form-step" data-step="2" hidden>
+          <h2 class="step-title">Create Account</h2>
 
-            <div class="form-group">
-                <label for="phone">Phone Number</label>
-                <input type="text" id="phone" name="phone" placeholder="Enter phone number" required>
-            </div>
+          <div class="form-group">
+              <label for="password">Password</label>
+              <input type="password" id="password" name="password" placeholder="Enter password" required>
+          </div>
 
-            <div class="form-group">
-                <label for="occupation">Occupation</label>
-                <input type="text" id="occupation" name="occupation" placeholder="Enter occupation" required>
-            </div>
+          <div class="form-group">
+              <label for="confirm-password">Confirm Password</label>
+              <input type="password" id="confirm-password" name="confirm-password" placeholder="Confirm password" required>
+          </div>
+        </div>
 
-            <div class="form-group">
-                <label for="password">Password</label>
-                <input type="password" id="password" name="password" placeholder="Enter password" required>
-            </div>
+        <!-- NAVIGATION BUTTONS -->
+        <div class="form-navigation">
+            <button type="button" class="prev-btn" aria-label="Previous" hidden>Previous</button>
+            <button type="button" class="next-btn" aria-label="Next">Next</button>
+            <button type="submit" class="submit-btn" hidden>Register</button>
+        </div>
 
-            <div class="form-group">
-                <label for="confirm-password">Confirm Password</label>
-                <input type="password" id="confirm-password" name="confirm-password" placeholder="Confirm password" required>
-            </div>
+      </form>
+  </div>
 
-            <button type="submit" class="submit-btn">Register</button>
-        </form>
-    </div>
-
-    <script src="register.js" defer></script>
-
+  <script src="register.js" defer></script>
 </body>
 </html>
