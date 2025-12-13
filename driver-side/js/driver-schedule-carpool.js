@@ -12,6 +12,7 @@
   const MAP_ID = 'ENV_MAP_ID_KEY'; // MAP ID FROM JERS, PLEASE DON'T LEAK
   if (!window.GMAPS_MAP_ID) { window.GMAPS_MAP_ID = MAP_ID; }
 
+  // Form + UI elements: inputs, buttons, and hidden coord fields
   const destinationInput = document.getElementById('destination');
   const openDestBtn = document.getElementById('openDestMapPicker');
   const startInput = document.getElementById('start-location');
@@ -27,16 +28,19 @@
   const startLatEl = document.getElementById('start-lat');
   const startLngEl = document.getElementById('start-lng');
 
+  // Runtime map state: toggles and instances created lazily
   let mapsLoaded = false;
   let autocompleteDest = null;
   let autocompleteStart = null;
   let map = null;
-  let marker = null;
+  let marker = null; 
   let geocoder = null;
-  let initialCenter = { lat: 16.4023, lng: 120.5960 }; // Baguio City center
-  let pickerContext = 'destination'; // or 'start'
+  let initialCenter = { lat: 16.4023, lng: 120.5960 }; // Baguio City center default
+  let pickerContext = 'destination';
 
   // Safely extract {lat, lng} from AdvancedMarkerElement or classic markers
+  // AdvancedMarkerElement exposes a plain position object (lat/lng) or getter functions.
+  // This normalizes both cases and returns a simple {lat, lng}.
   function getMarkerLatLng() {
     if (!marker || !marker.position) return null;
     const pos = marker.position;
@@ -47,6 +51,7 @@
   }
 
   // Dynamically loads the Google Maps script (Places lib included).
+  // Lazy-load to keep page fast; only fetch when needed.
   function loadGoogleMaps(cb) {
     if (mapsLoaded) return cb();
     const script = document.createElement('script');
@@ -62,6 +67,7 @@
   }
 
   // Wire up Places Autocomplete for both inputs; bias results to Baguio/Benguet.
+  // Uses componentRestrictions and manual bounds to keep results relevant.
   function initAutocomplete() {
     if (!window.google || !google.maps || !google.maps.places) return;
     autocompleteDest = new google.maps.places.Autocomplete(destinationInput, {
@@ -90,6 +96,7 @@
     autocompleteStart.setOptions({ strictBounds: false });
 
     autocompleteDest.addListener('place_changed', () => {
+      // When a place is selected, sync hidden lat/lng and guard against out-of-bounds picks
       const place = autocompleteDest.getPlace();
       if (!place || !place.geometry || !place.geometry.location) return;
       const location = place.geometry.location;
@@ -109,6 +116,7 @@
     });
 
     autocompleteStart.addListener('place_changed', () => {
+      // Mirror of destination logic for the start location
       const place = autocompleteStart.getPlace();
       if (!place || !place.geometry || !place.geometry.location) return;
       const location = place.geometry.location;
@@ -128,6 +136,7 @@
   }
 
   // Opens the map modal and initializes/centers the map + marker for current field context.
+  // Keeps focus management simple to avoid aria warnings.
   function openModal() {
     if (!mapsLoaded) {
       loadGoogleMaps(() => {
@@ -187,6 +196,7 @@
     }
 
     // Use AdvancedMarkerElement (no classic Marker fallback per project decision).
+    // Advanced markers need a Map ID with vector basemap enabled.
     if (!(google.maps.marker && google.maps.marker.AdvancedMarkerElement)) {
       showMapsError('Advanced Markers unavailable. Provide a valid Map ID (window.GMAPS_MAP_ID) and ensure billing/APIs are enabled.');
       return;
@@ -198,6 +208,7 @@
     });
 
     // Update hidden lat/lng + input text when the user drags the pin.
+    // Keeps text inputs in sync via reverse geocoding after a drag.
     marker.addListener('dragend', function () {
       const p = getMarkerLatLng();
       if (!p) return;
@@ -213,6 +224,7 @@
     });
 
     // If we don't have coordinates yet but there is typed text, geocode it to place the pin
+    // This helps when users type an address first and open the picker later.
     const typedValue = pickerContext === 'destination' ? (destinationInput && destinationInput.value) : (startInput && startInput.value);
     const hasCoords = !isNaN(existingLat) && !isNaN(existingLng);
     if (!hasCoords && typedValue && typedValue.trim().length > 0) {
@@ -324,6 +336,8 @@
   }
 
   // POST handler for the form: builds JSON payload including coords and sends to backend.
+  // Reads values directly from DOM when FormData names aren't present.
+  // Formats the second slot as a display string and keeps ISO from the first slot.
   function hookFormSubmit() {
     const form = document.querySelector('.form-container form');
     if (!form) return;
@@ -340,6 +354,8 @@
       }
 
       // Validate time slots
+      // First slot: future, not Sunday, within 07:30–20:00
+      // Second slot: same day, later than first, min 10-minute gap
       const startVal = startSlotInput && startSlotInput.value;
       const endVal = endSlotInput && endSlotInput.value;
       if (!validateDeparture(startVal)) {
@@ -356,6 +372,7 @@
         alert('Second slot must be later and at least 10 minutes after the first.');
         return;
       }
+      // Display uses local 12-hour format: "HH:MM AM/PM - HH:MM AM/PM"
       const fmt = (d) => {
         const hh = d.getHours();
         const mm = String(d.getMinutes()).padStart(2, '0');
@@ -366,10 +383,12 @@
       const departureDisplay = `${fmt(s)} - ${fmt(e2)}`;
 
       const payload = {
+        // Prefer direct DOM values when available (IDs are present); fallback to FormData
         startLocation: document.getElementById('start-location') ? document.getElementById('start-location').value : data.get('start-location'),
         destination: destinationText,
         seats: (function(){ const el = document.getElementById('seats'); return el ? Number(el.value) : Number(data.get('seats')); })(),
         cost: (function(){ const el = document.getElementById('cost'); return el ? Number(el.value) : Number(data.get('cost')); })(),
+        // Send ISO from the first slot; backend uses this for date/overlap checks
         departure: startVal,
         departureTimeDisplay: departureDisplay,
         destLat: (function(){ const el = document.getElementById('dest-lat'); return el && el.value ? Number(el.value) : (lat ? Number(lat) : null); })(),
@@ -377,6 +396,7 @@
       };
 
       try {
+        // JSON POST with credentials included for session-bound endpoints
         const res = await fetch(`${BASE}/driver-side/includes/create_carpool.php`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
@@ -445,6 +465,7 @@
   });
 
   // Applies min/max and change validation for the departure datetime input.
+  // This couples the two slots: same day, order, and minimum gap.
   function setupTimePairConstraints() {
     if (!startSlotInput || !endSlotInput) return;
 
@@ -473,6 +494,7 @@
     }
 
     function lockEndToStartDate() {
+      // Locks second slot's min/max to the first slot's day
       const sVal = startSlotInput.value;
       if (!sVal) return;
       const s = new Date(sVal);
@@ -503,6 +525,7 @@
       }
       lockEndToStartDate();
       if (endSlotInput.value) {
+        // Re-check ordering and minimum gap if second slot is already chosen
         const s = new Date(startSlotInput.value);
         const e = new Date(endSlotInput.value);
         if (e <= s) {
@@ -549,6 +572,7 @@
         endSlotInput.value = '';
         return;
       }
+      // Bound check for second slot on the same day
       const min = new Date(s.getFullYear(), s.getMonth(), s.getDate(), 7, 30, 0);
       const max = new Date(s.getFullYear(), s.getMonth(), s.getDate(), 20, 0, 0);
       if (!(e >= min && e <= max)) {
@@ -559,6 +583,7 @@
   }
 
   // Ensures selected datetime is a future non-Sunday and within 07:30–20:00 window.
+  // Also disallows selecting "today" to keep lead time.
   function validateDeparture(val) {
     if (!val) return false;
     const selected = new Date(val);
@@ -586,6 +611,7 @@
   }
 
   // Computes the earliest selectable date (tomorrow or next non-Sunday if tomorrow is Sunday).
+  // Simple loop to skip Sundays; returns a Date positioned at midnight.
   function getEarliestAllowedDate() {
     const d = new Date();
     d.setDate(d.getDate() + 1); // start from tomorrow
