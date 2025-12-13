@@ -9,6 +9,14 @@ document.addEventListener("DOMContentLoaded", () => {
   const idNumberInput = document.querySelector("#idnumber");
   const idNumberGroup = idNumberInput?.closest(".form-group");
 
+  // ===== ID NUMBER: numbers only while typing =====
+  if (idNumberInput) {
+    idNumberInput.addEventListener("input", () => {
+      // Removes anything that is not a digit
+      idNumberInput.value = idNumberInput.value.replace(/\D/g, "");
+    });
+  }
+
   function toggleIdNumberField() {
     if (!occupationSelect || !idNumberGroup) return;
 
@@ -18,8 +26,8 @@ document.addEventListener("DOMContentLoaded", () => {
     } else {
       idNumberGroup.style.display = "none";
       idNumberInput.removeAttribute("required");
-      idNumberInput.value = "";     // clear value when hidden
-      clearError(idNumberInput);    // remove validation error if any
+      idNumberInput.value = "";     // empty value when hidden
+      clearError(idNumberInput);    
     }
   }
 
@@ -139,9 +147,8 @@ occupationSelect.addEventListener("change", toggleIdNumberField);
   // basic validators:
   function validateEmailDomain(email) {
     if (!email) return false;
-    // enforce @carpool.com domain
-    // NOTE: to change later to @slu.edu.ph, replace allowedDomain value below.
-    const allowedDomain = "@carpool.com";
+    // enforce @slu.edu.ph domain
+    const allowedDomain = "@slu.edu.ph";
     return email.toLowerCase().endsWith(allowedDomain);
   }
 
@@ -151,6 +158,26 @@ occupationSelect.addEventListener("change", toggleIdNumberField);
     const pattern1 = /^09\d{9}$/;     // 09xxxxxxxxx
     const pattern2 = /^\+639\d{9}$/;  // +639xxxxxxxxx
     return pattern1.test(value) || pattern2.test(value);
+  }
+
+  function validateIdNumber(value) {
+    if (!value) return false;
+    return /^\d{7}$/.test(value); // exactly 7 digits
+  }
+
+  function validatePlateNumber(value) {
+    if (!value) return false;
+
+    value = value.trim().replace(/\s+/g, " ");
+
+    // regex patterns for the 3 formats
+    const patternOld = /^\d{4} [A-Z]{3}$/;       // 1234 ABC (pre-2018)
+    const patternCurrent = /^[A-Z]{3} \d{4}$/;   // ABC 1234 (2018-present)
+    const patternAlternative = /^[A-Z]{3} \d{3}$/; // ABC 123 (older format)
+
+    return patternOld.test(value.toUpperCase()) ||
+          patternCurrent.test(value.toUpperCase()) ||
+          patternAlternative.test(value.toUpperCase());
   }
 
   // validate required inputs in given step element, show inline messages
@@ -197,7 +224,7 @@ occupationSelect.addEventListener("change", toggleIdNumberField);
         if (!validateEmailDomain(control.value)) {
           valid = false;
           if (!firstInvalid) firstInvalid = control;
-          showError(control, "Email must end with @carpool.com.");
+          showError(control, "Email must end with @slu.edu.ph");
         }
       }
 
@@ -207,6 +234,15 @@ occupationSelect.addEventListener("change", toggleIdNumberField);
           valid = false;
           if (!firstInvalid) firstInvalid = control;
           showError(control, "Enter a valid PH number (e.g. 09171234567 or +639171234567).");
+        }
+      }
+
+      // ID number validation (7 digits only)
+      if (control.id === "idnumber") {
+        if (!validateIdNumber(control.value.trim())) {
+          valid = false;
+          if (!firstInvalid) firstInvalid = control;
+          showError(control, "ID number must be exactly 7 digits.");
         }
       }
 
@@ -221,12 +257,12 @@ occupationSelect.addEventListener("change", toggleIdNumberField);
         }
       }
 
-      // plate-number basic length check (optional)
+      // plate-number validation (all 3 PH formats)
       if (control.id === "plate-number") {
-        if (control.value.trim().length < 4) {
+        if (!validatePlateNumber(control.value.trim())) {
           valid = false;
           if (!firstInvalid) firstInvalid = control;
-          showError(control, "Enter a valid plate number.");
+          showError(control, "Enter a valid Philippine plate number (e.g. 1234 ABC, ABC 1234, or ABC 123).");
         }
       }
     });
