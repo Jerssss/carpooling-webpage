@@ -16,7 +16,8 @@
   const openDestBtn = document.getElementById('openDestMapPicker');
   const startInput = document.getElementById('start-location');
   const openStartBtn = document.getElementById('openStartMapPicker');
-  const departureInput = document.getElementById('departure');
+  const startSlotInput = document.getElementById('carpool-start-time');
+  const endSlotInput = document.getElementById('carpool-departure-time');
   const mapModal = document.getElementById('mapModal');
   const closeMapBtn = document.getElementById('closeMapPicker');
   const useLocationBtn = document.getElementById('useLocation');
@@ -338,21 +339,41 @@
         return;
       }
 
-      // Validate departure window per product rules
-      const departureVal = data.get('departure');
-      if (!validateDeparture(departureVal)) {
-        alert('Please select a valid departure time: future non-Sunday between 7:30 AM and 8:00 PM.');
+      // Validate time slots
+      const startVal = startSlotInput && startSlotInput.value;
+      const endVal = endSlotInput && endSlotInput.value;
+      if (!validateDeparture(startVal)) {
+        alert('Please select a valid first time slot: future non-Sunday between 7:30 AM and 8:00 PM.');
         return;
       }
+      if (!endVal) {
+        alert('Please select the second time slot.');
+        return;
+      }
+      const s = new Date(startVal);
+      const e2 = new Date(endVal);
+      if (e2 <= s || (e2.getTime() - s.getTime()) < 10 * 60 * 1000) {
+        alert('Second slot must be later and at least 10 minutes after the first.');
+        return;
+      }
+      const fmt = (d) => {
+        const hh = d.getHours();
+        const mm = String(d.getMinutes()).padStart(2, '0');
+        const ampm = hh >= 12 ? 'PM' : 'AM';
+        const hour12 = ((hh + 11) % 12) + 1;
+        return `${hour12}:${mm} ${ampm}`;
+      };
+      const departureDisplay = `${fmt(s)} - ${fmt(e2)}`;
 
       const payload = {
-        startLocation: data.get('start-location'),
+        startLocation: document.getElementById('start-location') ? document.getElementById('start-location').value : data.get('start-location'),
         destination: destinationText,
-        seats: Number(data.get('seats')),
-        cost: Number(data.get('cost')),
-        departure: departureVal,
-        destLat: lat ? Number(lat) : null,
-        destLng: lng ? Number(lng) : null
+        seats: (function(){ const el = document.getElementById('seats'); return el ? Number(el.value) : Number(data.get('seats')); })(),
+        cost: (function(){ const el = document.getElementById('cost'); return el ? Number(el.value) : Number(data.get('cost')); })(),
+        departure: startVal,
+        departureTimeDisplay: departureDisplay,
+        destLat: (function(){ const el = document.getElementById('dest-lat'); return el && el.value ? Number(el.value) : (lat ? Number(lat) : null); })(),
+        destLng: (function(){ const el = document.getElementById('dest-lng'); return el && el.value ? Number(el.value) : (lng ? Number(lng) : null); })()
       };
 
       try {
@@ -420,12 +441,12 @@
         initAutocomplete();
       });
     }
-    setupDepartureConstraints();
+    setupTimePairConstraints();
   });
 
   // Applies min/max and change validation for the departure datetime input.
-  function setupDepartureConstraints() {
-    if (!departureInput) return;
+  function setupTimePairConstraints() {
+    if (!startSlotInput || !endSlotInput) return;
 
     // Earliest allowed date: tomorrow or next non-Sunday day if tomorrow is Sunday
     const earliest = getEarliestAllowedDate();
@@ -438,8 +459,8 @@
     const maxDate = new Date(earliest); maxDate.setFullYear(maxDate.getFullYear() + 1); const maxY = maxDate.getFullYear(); const maxM = String(maxDate.getMonth() + 1).padStart(2, '0'); const maxD = String(maxDate.getDate()).padStart(2, '0');
     const maxStr = `${maxY}-${maxM}-${maxD}T20:00`;
 
-    departureInput.min = minStr;
-    departureInput.max = maxStr;
+    startSlotInput.min = minStr;
+    startSlotInput.max = maxStr;
 
     // Info message if first selectable day was pushed because tomorrow is Sunday
     const tomorrow = new Date(); tomorrow.setDate(tomorrow.getDate() + 1);
@@ -448,14 +469,91 @@
       msg.style.color = '#d00';
       msg.style.marginTop = '6px';
       msg.textContent = `Sunday is not bookable. Earliest available: ${yyyy}-${mm}-${dd} (07:30–20:00).`;
-      departureInput.parentElement && departureInput.parentElement.appendChild(msg);
+      startSlotInput.parentElement && startSlotInput.parentElement.appendChild(msg);
     }
 
-    departureInput.addEventListener('change', function () {
-      const val = departureInput.value;
+    function lockEndToStartDate() {
+      const sVal = startSlotInput.value;
+      if (!sVal) return;
+      const s = new Date(sVal);
+      if (isNaN(s.getTime())) return;
+      const y = s.getFullYear();
+      const m = String(s.getMonth() + 1).padStart(2, '0');
+      const d0 = String(s.getDate()).padStart(2, '0');
+      endSlotInput.min = `${y}-${m}-${d0}T07:40`;
+      endSlotInput.max = `${y}-${m}-${d0}T20:00`;
+      if (endSlotInput.value) {
+        const e = new Date(endSlotInput.value);
+        if (e.getFullYear() !== y || e.getMonth() !== s.getMonth() || e.getDate() !== s.getDate()) {
+          alert('Second time slot date is locked to the first time slot.');
+          endSlotInput.value = '';
+        }
+      }
+    }
+
+    lockEndToStartDate();
+
+    startSlotInput.addEventListener('change', function () {
+      const val = startSlotInput.value;
       if (!validateDeparture(val)) {
-        alert('Invalid time. Use a future non-Sunday date between 07:30 AM and 08:00 PM.');
-        departureInput.value = '';
+        alert('Invalid start time. Choose a future non-Sunday between 07:30 and 20:00.');
+        startSlotInput.value = '';
+        endSlotInput.value = '';
+        return;
+      }
+      lockEndToStartDate();
+      if (endSlotInput.value) {
+        const s = new Date(startSlotInput.value);
+        const e = new Date(endSlotInput.value);
+        if (e <= s) {
+          alert('Second time slot must be later than the first.');
+          endSlotInput.value = '';
+        } else {
+          const diffMs = e.getTime() - s.getTime();
+          if (diffMs < 10 * 60 * 1000) {
+            alert('There must be at least a 10-minute gap between the two time slots.');
+            endSlotInput.value = '';
+          }
+        }
+      }
+    });
+
+    endSlotInput.addEventListener('change', function () {
+      if (!startSlotInput.value) {
+        alert('Please select the first time slot before the second.');
+        endSlotInput.value = '';
+        return;
+      }
+      const s = new Date(startSlotInput.value);
+      const e = new Date(endSlotInput.value);
+      if (e.getFullYear() !== s.getFullYear() || e.getMonth() !== s.getMonth() || e.getDate() !== s.getDate()) {
+        alert('Second time slot date is locked to the first time slot.');
+        endSlotInput.value = '';
+        return;
+      }
+      if (e <= s) {
+        alert('Second time slot must be later than the first.');
+        endSlotInput.value = '';
+        return;
+      }
+      const diffMs = e.getTime() - s.getTime();
+      if (diffMs < 10 * 60 * 1000) {
+        alert('There must be at least a 10-minute gap between the two time slots.');
+        endSlotInput.value = '';
+        return;
+      }
+      const okStart = validateDeparture(startSlotInput.value);
+      if (!okStart) {
+        alert('Invalid first time slot.');
+        startSlotInput.value = '';
+        endSlotInput.value = '';
+        return;
+      }
+      const min = new Date(s.getFullYear(), s.getMonth(), s.getDate(), 7, 30, 0);
+      const max = new Date(s.getFullYear(), s.getMonth(), s.getDate(), 20, 0, 0);
+      if (!(e >= min && e <= max)) {
+        alert('Second time slot must be between 07:30 and 20:00.');
+        endSlotInput.value = '';
       }
     });
   }

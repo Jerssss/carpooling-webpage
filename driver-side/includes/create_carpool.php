@@ -1,8 +1,9 @@
 <?php
+// Return JSON responses from this endpoint
 header('Content-Type: application/json');
 
 try {
-    // Session + DB
+    // Boot up session and database connection
     require_once __DIR__ . '/../../includes/session.php';
     require_once __DIR__ . '/../../includes/db_connect.php';
 
@@ -12,9 +13,11 @@ try {
         exit;
     }
 
+    // Grab the logged-in user's id from session
     $currentUserId = $_SESSION['user_id'];
 
     try {
+        // Fetch the user's document to verify they're a driver
         $userDoc = $db->selectCollection('users')->findOne(
             ['userID' => $currentUserId],
             ['projection' => ['roles' => 1, 'role' => 1]]
@@ -28,6 +31,7 @@ try {
             ? strtolower((string)$userDoc['role'])
             : '';
 
+        // If the user isn't a driver, block the request
         if (!(in_array('driver', $roles, true) || $roleStr === 'driver')) {
             http_response_code(403);
             echo json_encode(['error' => 'Forbidden: driver role required']);
@@ -39,6 +43,7 @@ try {
         exit;
     }
 
+    // Read and decode the JSON request body
     $raw = file_get_contents('php://input');
     $data = json_decode($raw, true);
 
@@ -48,14 +53,17 @@ try {
         exit;
     }
 
-    $startLocation = trim($data['startLocation'] ?? '');
-    $destination   = trim($data['destination'] ?? '');
-    $seats         = isset($data['seats']) ? (int)$data['seats'] : 0;
-    $cost          = isset($data['cost']) ? (float)$data['cost'] : 0.0;
-    $departure     = trim($data['departure'] ?? '');
+    // Extract user-supplied fields; keep simple defaults for validation below
+    $startLocation     = trim($data['startLocation'] ?? '');
+    $destination       = trim($data['destination'] ?? '');
+    $seats             = isset($data['seats']) ? (int)$data['seats'] : 0;
+    $cost              = isset($data['cost']) ? (float)$data['cost'] : 0.0;
+    $departure         = trim($data['departure'] ?? ''); // ISO datetime (first slot)
+    $departureDisplay  = trim($data['departureTimeDisplay'] ?? ''); // "hh:mm AM/PM - hh:mm AM/PM"
     $destLat       = $data['destLat'] ?? null;
     $destLng       = $data['destLng'] ?? null;
 
+    // Basic field checks to avoid inserting broken documents
     if (
         $startLocation === '' ||
         $destination === '' ||
@@ -68,6 +76,7 @@ try {
         exit;
     }
 
+    // Parse ISO datetime from the first time slot; used for date + overlap checks
     $newStart = DateTime::createFromFormat('Y-m-d\TH:i', $departure);
     if (!$newStart) {
         http_response_code(422);
@@ -75,11 +84,14 @@ try {
         exit;
     }
 
+    // Default duration window used for overlap checks (30 minutes)
     $newEnd = clone $newStart;
     $newEnd->modify('+30 minutes');
 
+    // Normalize ride date (YYYY-MM-DD) for grouping and conflict detection
     $rideDate = $newStart->format('Y-m-d');
 
+    // Find the current user's rides on the same date that aren't completed
     $ridesColl = $db->selectCollection('rides');
     $existingRides = $ridesColl->find([
         'driverId' => $currentUserId,
@@ -90,6 +102,7 @@ try {
     foreach ($existingRides as $ride) {
         if (!isset($ride['departureTime'])) continue;
 
+        // Convert stored time (H:i) into a DateTime for overlap checking
         $existingStart = DateTime::createFromFormat(
             'Y-m-d H:i',
             $rideDate . ' ' . $ride['departureTime']
@@ -100,6 +113,7 @@ try {
         $existingEnd = clone $existingStart;
         $existingEnd->modify('+30 minutes');
 
+        // Simple overlap check: windows intersect
         if ($newStart < $existingEnd && $existingStart < $newEnd) {
             http_response_code(409);
             echo json_encode([
@@ -109,6 +123,7 @@ try {
         }
     }
 
+    // Try to pick a verified vehicle for the driver, else fall back to first available
     $carId = null;
     try {
         $vehColl = $db->selectCollection('vehicles');
@@ -126,14 +141,17 @@ try {
     } catch (Throwable $e) {
     }
 
+    // Simple ride id generator; replace with a stronger scheme if needed
     $rideId = 'R' . str_pad((string)rand(1, 999999), 4, '0', STR_PAD_LEFT);
 
+    // Assemble the ride document for insertion
     $doc = [
         'rideId'         => $rideId,
         'carId'          => $carId,
         'driverId'       => $currentUserId,
         'date'           => $rideDate,
-        'departureTime'  => $newStart->format('H:i'),
+        // Store the two-slot display string when provided; fallback to HH:MM
+        'departureTime'  => ($departureDisplay !== '' ? $departureDisplay : $newStart->format('H:i')),
         'stationedAt'    => $startLocation,
         'destination'    => $destination,
         'availableSeats' => $seats,
@@ -151,10 +169,12 @@ try {
         ];
     }
 
+    // Insert the ride into the database
     $collection = $db->selectCollection('rides');
     $result = $collection->insertOne($doc);
 
     try {
+        // Create a simple driver notification confirming creation (deduped)
         $notifColl = $db->selectCollection('notifications');
         $notif = [
             'rideId'      => $rideId,
@@ -178,9 +198,10 @@ try {
             $notifColl->insertOne($notif);
         }
     } catch (Throwable $e) {
-        // Non-fatal
+        // Notifications are best-effort; ignore failures
     }
 
+    // Success response with ids for client reference
     echo json_encode([
         'ok' => true,
         'rideId' => $rideId,
