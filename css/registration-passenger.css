@@ -5,20 +5,21 @@ body {
 
 /* ===== FORM CONTAINER ===== */
 .form-container {
-    max-width: 640px;
-    margin: 20px auto;
+    max-width: 600px;
+    margin: 20px auto; /* moved up */
     background: #ffffff;
-    padding: 36px;
-    border-radius: 16px;
-    box-shadow: 0 18px 40px rgba(0, 0, 0, 0.12);
+    padding: 20px 35px;
+    border-radius: 20px;
+    box-shadow: 0 15px 40px rgba(0,0,0,0.12);
+    transition: all 0.3s ease;
     position: relative;
 }
 
 /* ===== PAGE TITLE ===== */
 .form-container h1 {
     text-align: center;
-    margin-bottom: 18px;
-    font-size: 22px;
+    margin-bottom: 10px;
+    font-size: 24px;
     color: #1a1a1a;
 }
 
@@ -30,34 +31,33 @@ body {
 
 /* ===== FORM GROUP ===== */
 .form-group {
-    margin-bottom: 14px;
+    margin-bottom: 20px;
     display: flex;
     flex-direction: column;
 }
 
 .form-group label {
+    margin-bottom: 8px;
     font-weight: 600;
     color: #444;
-    margin-bottom: 6px;
-    font-size: 14px;
+    font-size: 15px;
 }
 
-/* ===== INPUTS & SELECT ===== */
 .form-group input[type="text"],
 .form-group input[type="email"],
-.form-group input[type="password"],
-.form-group select {
+.form-group input[type="password"] {
     padding: 12px 14px;
     border-radius: 10px;
     border: 1px solid #d0d0d0;
     font-size: 15px;
-    transition: all 0.22s ease;
+    transition: all 0.3s ease;
 }
 
-.form-group input:focus,
-.form-group select:focus {
+.form-group input[type="text"]:focus,
+.form-group input[type="email"]:focus,
+.form-group input[type="password"]:focus {
     border-color: #ffb300;
-    box-shadow: 0 0 10px rgba(255, 179, 0, 0.18);
+    box-shadow: 0 0 10px rgba(255,179,0,0.3);
     outline: none;
 }
 
@@ -67,7 +67,7 @@ body {
     justify-content: center;
     align-items: center;
     gap: 10px;
-    margin-bottom: 18px;
+    margin-bottom: 20px;
 }
 
 .step {
@@ -98,14 +98,6 @@ body {
 
 .step.completed .step-circle {
     background: #fedf8f;
-}
-
-/* ===== STEP TITLE ===== */
-.step-title {
-    font-size: 16px;
-    font-weight: 700;
-    color: #222;
-    margin: 6px 0 12px;
 }
 
 .custom-dropdown {
@@ -153,8 +145,8 @@ body {
 /* ===== NAVIGATION BUTTONS ===== */
 .form-navigation {
     display: flex;
+    justify-content: space-between;
     gap: 12px;
-    margin-top: 12px;
 }
 
 .prev-btn,
@@ -178,7 +170,8 @@ body {
 /* Next */
 .next-btn {
     background: linear-gradient(160deg, #ffb300, #ffd46a);
-    color: #111;
+    color: #1a1a1a;
+    box-shadow: 0 6px 18px rgba(255,179,0,0.18);
 }
 
 /* Submit */
@@ -201,6 +194,23 @@ body {
     border-color: #e74c3c !important;
     box-shadow: 0 0 0 4px rgba(231, 76, 60, 0.06) !important;
     animation: shake 0.18s ease-in-out 1;
+}
+
+.login-text {
+    margin-top: 18px;
+    font-size: 16px;
+    color: #555;
+    text-align: center;
+}
+
+.login-text a {
+    color: #ffb300;
+    font-weight: 600;
+    text-decoration: none;
+}
+
+.login-text a:hover {
+    text-decoration: underline;
 }
 
 /* Shake animation for invalid fields */
