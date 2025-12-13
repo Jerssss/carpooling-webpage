@@ -17,19 +17,16 @@
 <body>
     <!-- NAVBAR -->
     <nav>
-        <!-- Left -->
         <div class="nav-left">
             <img src="../images/carma-logo.png" class="logo" alt="CARMA Logo">
             <span class="site-name">CARMA</span>
         </div>
 
-        <!-- Center Links -->
         <ul>
             <li><a href="driver-landing.html">Home</a></li>
             <li><a href="driver-history.html">History</a></li>
         </ul>
 
-        <!-- Right -->
         <div class="nav-right">
             <div class="hamburger" id="hamburger" onclick="toggleMobileMenu()">
                 <div></div>
@@ -45,7 +42,6 @@
             <img src="../images/speed.jpg" class="user-pic" onclick="toggleMenu()">
         </div>
 
-        <!-- Dropdown -->
         <div class="sub-menu-wrap" id="subMenu">
             <div class="sub-menu">
                 <div class="user-info">
@@ -70,71 +66,70 @@
     <!-- FORM SECTION -->
     <div class="form-container">
         <h1>Schedule a Carpool</h1>
+
         <form>
             <div class="form-group">
                 <label for="start-location">Starting Location</label>
                 <div class="input-icon-wrap">
-                    <input type="text" id="start-location" name="start-location" placeholder="Enter your location" required autocomplete="off">
-                    <img id="openStartMapPicker" class="input-icon" src="../images/location.png" alt="Pick start on map" title="Pick start on map">
+                    <input type="text" id="start-location" name="start-location"
+                        placeholder="Enter your location" required autocomplete="off">
+                    <img id="openStartMapPicker" class="input-icon"
+                        src="../images/location.png" title="Pick start on map">
                 </div>
-                <input type="hidden" id="start-lat" name="start-lat">
-                <input type="hidden" id="start-lng" name="start-lng">
+                <input type="hidden" id="start-lat">
+                <input type="hidden" id="start-lng">
             </div>
 
             <div class="form-group">
                 <label for="destination">Destination</label>
                 <div class="input-icon-wrap">
-                    <input type="text" id="destination" name="destination" placeholder="Enter destination" required autocomplete="off">
-                    <img id="openDestMapPicker" class="input-icon" src="../images/location.png" alt="Pick destination on map" title="Pick destination on map">
+                    <input type="text" id="destination" name="destination"
+                        placeholder="Enter destination" required autocomplete="off">
+                    <img id="openDestMapPicker" class="input-icon"
+                        src="../images/location.png" title="Pick destination on map">
                 </div>
-                <input type="hidden" id="dest-lat" name="dest-lat">
-                <input type="hidden" id="dest-lng" name="dest-lng">
+                <input type="hidden" id="dest-lat">
+                <input type="hidden" id="dest-lng">
             </div>
 
             <div class="form-group">
                 <label for="seats">Available Seats</label>
-                <input type="number" id="seats" name="seats" min="1" placeholder="Number of seats available" required>
+                <input type="number" id="seats" min="1"
+                    placeholder="Number of seats available" required>
             </div>
 
             <div class="form-group">
                 <label for="cost">Cost per Seat (₱)</label>
-                <input type="number" id="cost" name="cost" min="0" step="0.01" placeholder="Price per seat" required>
+                <input type="number" id="cost" min="0" step="0.01"
+                    placeholder="Price per seat" required>
             </div>
 
+            <!-- NEW FIELD -->
             <div class="form-group">
-                <label for="departure">Departure Time</label>
-                <input type="datetime-local" id="departure" name="departure" required>
+                <label for="carpool-start-time">Carpool Start Time</label>
+                <input type="datetime-local" id="carpool-start-time"
+                    name="carpool-start-time" required>
+            </div>
+
+            <!-- NEW FIELD -->
+            <div class="form-group">
+                <label for="carpool-departure-time">Carpool Departure Time</label>
+                <input type="datetime-local" id="carpool-departure-time"
+                    name="carpool-departure-time" required>
             </div>
 
             <button type="submit" class="submit-btn">Create Carpool</button>
         </form>
     </div>
 
-    <!-- Map Picker Modal -->
-    <div id="mapModal" class="map-modal" aria-hidden="true">
-        <div class="map-card" role="dialog" aria-modal="true" aria-labelledby="mapTitle">
-            <div class="map-header">
-                <h3 id="mapTitle">Pick Location</h3>
-                <button type="button" class="btn secondary" id="closeMapPicker">Close</button>
-            </div>
-            <div class="map-body">
-                <div id="map"></div>
-            </div>
-            <div class="map-actions">
-                <button type="button" class="btn secondary" id="resetMarker">Reset</button>
-                <button type="button" class="btn primary" id="useLocation">Use This Location</button>
-            </div>
-        </div>
-    </div>
-
     <!-- FOOTER -->
     <footer class="site-footer">
         <div class="social-icons">
-            <a href="#"><img src="../images/facebook-app-symbol.png" alt="Facebook"></a>
-            <a href="#"><img src="../images/instagram.png" alt="Instagram"></a>
-            <a href="#"><img src="../images/twitter.png" alt="Twitter"></a>
-            <a href="#"><img src="../images/google.png" alt="Google"></a>
-            <a href="#"><img src="../images/youtube.png" alt="YouTube"></a>
+            <a href="#"><img src="../images/facebook-app-symbol.png"></a>
+            <a href="#"><img src="../images/instagram.png"></a>
+            <a href="#"><img src="../images/twitter.png"></a>
+            <a href="#"><img src="../images/google.png"></a>
+            <a href="#"><img src="../images/youtube.png"></a>
         </div>
 
         <ul class="footer-nav">
@@ -148,7 +143,6 @@
 
     <script src="js/driver-schedule-carpool.js"></script>
 
-    <!-- Dropdown Toggle Fix -->
     <script>
         function toggleMenu() {
             document.getElementById("subMenu").classList.toggle("open-menu");
