@@ -66,5 +66,27 @@
         }
       }
     } catch (_) { /* ignore */ }
+
+    // Ensure logout link in profile dropdown points to server-side handler
+    try {
+      const BASE = `${window.location.origin}/9467_it312-teamarc_midtermproject`;
+      const candidates = [];
+      document.querySelectorAll('.notifications-dropdown a, .notifications-dropdown button, a, button').forEach((el) => {
+        const txt = (el.textContent || '').trim().toLowerCase();
+        if (txt.includes('logout') || txt.includes('log out') || txt.includes('sign out')) {
+          candidates.push(el);
+        }
+      });
+      candidates.forEach((el) => {
+        if (el.tagName === 'A') {
+          el.setAttribute('href', `${BASE}/includes/logout.php`);
+        } else if (el.tagName === 'BUTTON') {
+          el.setAttribute('data-href', `${BASE}/includes/logout.php`);
+          el.addEventListener('click', () => {
+            window.location.href = `${BASE}/includes/logout.php`;
+          }, { once: true });
+        }
+      });
+    } catch (_) { /* ignore wiring issues */ }
   });
 })();

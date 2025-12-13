@@ -27,5 +27,5 @@ echo json_encode(['success' => true]);
 session_start();
 session_unset();
 session_destroy();
-header("Location: ../../login.html?message=Logged out successfully");
+header("Location: /9467_it312-teamarc_midtermproject/login.html?message=Logged%20out%20successfully");
 exit();
