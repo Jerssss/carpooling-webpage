@@ -1,51 +1,53 @@
-/* ===== FORM STYLES ===== */
 body {
-    background: #f5f5f5;
-    font-family: "Poppins", Arial, sans-serif;
+  padding-top: 100px;
 }
 
+/* ---------- FORM CONTAINER ---------- */
 .form-container {
     max-width: 600px;
-    margin: 60px auto;
+    margin: 20px auto; /* moved up */
     background: #ffffff;
-    padding: 50px 40px;
+    padding: 40px 35px;
     border-radius: 20px;
     box-shadow: 0 15px 40px rgba(0,0,0,0.12);
     transition: all 0.3s ease;
+    position: relative;
 }
 
 .form-container:hover {
     box-shadow: 0 20px 50px rgba(0,0,0,0.15);
 }
 
+/* Title */
 .form-container h1 {
     text-align: center;
-    margin-bottom: 40px;
+    margin-bottom: 25px; /* moved higher */
     color: #1a1a1a;
-    font-size: 28px;
+    font-size: 24px;
     letter-spacing: 1px;
 }
 
+/* ---------- FORM INPUTS ---------- */
 .form-group {
-    margin-bottom: 25px;
+    margin-bottom: 20px;
     display: flex;
     flex-direction: column;
 }
 
 .form-group label {
-    margin-bottom: 10px;
+    margin-bottom: 8px;
     font-weight: 600;
     color: #444;
-    font-size: 16px;
+    font-size: 15px;
 }
 
 .form-group input[type="text"],
 .form-group input[type="email"],
 .form-group input[type="password"] {
-    padding: 14px 16px;
+    padding: 12px 14px;
     border-radius: 10px;
     border: 1px solid #d0d0d0;
-    font-size: 16px;
+    font-size: 15px;
     transition: all 0.3s ease;
 }
 
@@ -57,7 +59,49 @@ body {
     outline: none;
 }
 
-/* ===== BIG FILE UPLOAD ===== */
+.custom-dropdown {
+    position: relative;
+}
+
+.custom-dropdown select {
+    appearance: none;           /* remove default arrow */
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    width: 100%;
+    padding: 13px;
+    border-radius: 10px;
+    border: 1px solid #d0d0d0;
+    background: #ffffffc7;
+    font-size: 15px;
+    cursor: pointer;
+    transition: border-color 0.25s, box-shadow 0.25s;
+}
+
+.custom-dropdown select:focus {
+    border-color: var(--input-focus);
+    box-shadow: 0 0 8px rgba(255, 217, 0, 0.45);
+    outline: none;
+}
+
+/* Arrow styling */
+.dropdown-arrow {
+    position: absolute;
+    top: 50%;
+    right: 15px;
+    transform: translateY(-50%);
+    pointer-events: none;
+    font-size: 14px;
+    color: #555;
+    transition: transform 0.3s;
+}
+
+/* rotate arrow on focus */
+.custom-dropdown select:focus + .dropdown-arrow {
+    transform: translateY(-50%) rotate(180deg);
+    color: var(--primary-yellow);
+}
+
+/* ---------- FILE UPLOAD ---------- */
 .file-upload-big {
     position: relative;
     display: flex;
@@ -66,13 +110,13 @@ body {
     text-align: center;
     gap: 10px;
     cursor: pointer;
-    padding: 30px 15px;
+    padding: 25px 15px;
     border: 2px dashed #d0d0d0;
     border-radius: 15px;
     background: #fafafa;
     font-size: 16px;
     color: #444;
-    margin-bottom: 15px;
+    margin-bottom: 12px;
     transition: all 0.3s ease;
 }
 
@@ -97,17 +141,45 @@ body {
 }
 
 .file-upload-big span img {
-    width: 30px;
-    height: 30px;
+    width: 28px;
+    height: 28px;
 }
 
-/* Submit Button */
+.file-selected {
+    font-weight: 600;
+    color: #ff9800;
+}
+
+/* validation error highlight */
+.input-error {
+    border-color: #e74c3c !important;
+    box-shadow: 0 0 0 4px rgba(231,76,60,0.06) !important;
+    animation: shake 0.18s ease-in-out 1;
+}
+
+/* small shake to draw attention (subtle) */
+@keyframes shake {
+  0% { transform: translateX(0); }
+  25% { transform: translateX(-3px); }
+  50% { transform: translateX(2px); }
+  75% { transform: translateX(-1px); }
+  100% { transform: translateX(0); }
+}
+
+/* file-label may be used when a file input has error - highlight wrapper */
+.file-upload-big.input-error {
+    border-color: #e74c3c;
+    box-shadow: 0 0 0 4px rgba(231,76,60,0.06);
+}
+
+
+/* ---------- SUBMIT BUTTON ---------- */
 .submit-btn {
     width: 100%;
-    padding: 16px;
+    padding: 15px;
     background: #ffb300;
     color: #fff;
-    font-size: 18px;
+    font-size: 17px;
     font-weight: 600;
     border: none;
     border-radius: 50px;
@@ -122,15 +194,158 @@ body {
     box-shadow: 0 10px 25px rgba(255,179,0,0.4);
 }
 
-/* ===== RESPONSIVE ===== */
+/* ---------- RESPONSIVE ---------- */
 @media screen and (max-width: 768px) {
     .form-container {
-        margin: 40px 20px;
-        padding: 40px 25px;
+        margin: 20px 15px;
+        padding: 35px 22px;
     }
-
     .file-upload-big {
-        padding: 25px 10px;
+        padding: 20px 10px;
         font-size: 14px;
     }
+}
+
+/* =========================== */
+/*        STEP WIZARD         */
+/* =========================== */
+
+/* Stepper container */
+.stepper {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;  /* adjust spacing here */
+    margin-bottom: 20px;
+}
+
+/* hide step label */
+.step-label {
+    display: none !important;
+}
+
+/* Step wrapper */
+.step {
+    display: flex;
+    flex-direction: column;
+    pointer-events: none;
+    align-items: center;
+}
+
+/* Step circles */
+.step-circle {
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    background: #e6e6e6;
+    transition: all 0.22s ease;
+}
+
+/* Active step */
+.step.active .step-circle {
+    width: 20px;
+    height: 20px;
+    background: linear-gradient(160deg, #ffb300, #ffd46a);
+    transform: translateY(-1px);
+    pointer-events: none;
+}
+
+/* Completed step */
+.step.completed .step-circle {
+    background: #fedf8f;
+}
+
+/* ---------- FORM STEP ANIMATION ---------- */
+.form-step {
+    animation: fadeInStep .25s ease;
+}
+
+@keyframes fadeInStep {
+    from { opacity: 0; transform: translateY(6px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* ---------- NAV BUTTONS ---------- */
+.form-navigation {
+    display: flex;
+    justify-content: space-between;
+    gap: 12px;
+    margin-top: 10px;
+}
+
+.prev-btn,
+.next-btn {
+    padding: 12px 18px;
+    border-radius: 10px;
+    font-weight: 700;
+    border: none;
+    cursor: pointer;
+    flex: 1;
+    transition: all 0.2s ease;
+}
+
+/* previous */
+.prev-btn {
+    background: #fff;
+    border: 1px solid #d0d0d0;
+    color: #333;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.04);
+}
+
+.prev-btn:hover {
+    transform: translateY(-2px);
+    border-color: #ffb300;
+}
+
+/* next */
+.next-btn {
+    background: linear-gradient(160deg, #ffb300, #ffd46a);
+    color: #1a1a1a;
+    box-shadow: 0 6px 18px rgba(255,179,0,0.18);
+}
+
+.next-btn:hover {
+    transform: translateY(-2px);
+}
+
+/* hide [hidden] elements */
+[hidden] {
+    display: none !important;
+}
+
+/* mobile adjustments */
+@media screen and (max-width: 560px) {
+    .stepper {
+        gap: 8px; /* slightly smaller gap on mobile */
+    }
+    .step-circle {
+        width: 14px;
+        height: 14px;
+    }
+    .step.active .step-circle {
+        width: 18px;
+        height: 18px;
+    }
+}
+
+/* Validation message (inline) */
+.field-error {
+  color: #e74c3c;
+  font-size: 13px;
+  margin-top: 6px;
+  line-height: 1.2;
+  display: block;
+}
+
+/* style for error on file upload wrapper (keeps consistent spacing) */
+.file-upload-big .field-error {
+  text-align: center;
+  margin-top: 10px;
+}
+
+/* keep input-error style (already present, but ensure precedence) */
+.input-error {
+  border-color: #e74c3c !important;
+  box-shadow: 0 0 0 4px rgba(231,76,60,0.06) !important;
+  animation: shake 0.18s ease-in-out 1;
 }
