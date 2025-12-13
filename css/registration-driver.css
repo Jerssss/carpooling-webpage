@@ -43,7 +43,8 @@ body {
 
 .form-group input[type="text"],
 .form-group input[type="email"],
-.form-group input[type="password"] {
+.form-group input[type="password"],
+.form-group input[type="tel"] {
     padding: 12px 14px;
     border-radius: 10px;
     border: 1px solid #d0d0d0;
@@ -53,7 +54,8 @@ body {
 
 .form-group input[type="text"]:focus,
 .form-group input[type="email"]:focus,
-.form-group input[type="password"]:focus {
+.form-group input[type="password"]:focus,
+.form-group input[type="tel"]:focus {
     border-color: #ffb300;
     box-shadow: 0 0 10px rgba(255,179,0,0.3);
     outline: none;
