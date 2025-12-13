@@ -1,28 +1,94 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
+  <head>
     <meta charset="UTF-8">
-    <title>Manage Carpools</title>
-    <link rel="stylesheet" href="css/driver.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CARMA | Manage Carpools</title>
+
+    <!-- Shared styles -->
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="../css/notifications.css">
+
+    <!-- Page-specific styles -->
     <link rel="stylesheet" href="css/driver-management.css">
-</head>
-<body>
 
-<nav class="navbar">
-    <a href="driver-landing.html">Home</a>
-    <a href="driver-history.html">History</a>
-    <a href="driver-management.html" class="active">Manage</a>
-</nav>
+    <!-- Shared scripts -->
+    <script src="js/driver-script.js" defer></script>
+    <script src="../js/notifications.js" defer></script>
+    <script src="../js/header-ui-loader.js" defer></script>
 
-<div class="container">
-    <h1>Manage Your Carpools</h1>
+    <!-- Page logic -->
+    <script src="js/driver-management.js" defer></script>
+  </head>
 
-    <div class="manage-list"></div>
-</div>
+  <body>
+    <!-- ===== NAVBAR (SAME AS DRIVER PROFILE) ===== -->
+    <nav>
+      <!-- Left -->
+      <div class="nav-left">
+        <img src="../images/carma-logo.png" class="logo" alt="CARMA Logo">
+        <span class="site-name">CARMA</span>
+      </div>
 
-<!-- Edit Modal -->
-<div id="editModal" class="modal hidden">
-    <div class="modal-content">
+      <!-- Center Links -->
+      <ul>
+        <li><a href="driver-landing.html">Home</a></li>
+        <li><a href="driver-history.html">History</a></li>
+        <li><a href="driver-management.html" class="active">Manage</a></li>
+      </ul>
+
+      <!-- Right -->
+      <div class="nav-right">
+        <div class="hamburger" id="hamburger" onclick="toggleMobileMenu()">
+          <div></div>
+          <div></div>
+          <div></div>
+        </div>
+
+        <div class="nav-bell">
+          <img src="../images/bell.png" class="bell-icon">
+          <div id="notificationsContainer"></div>
+        </div>
+
+        <img src="../images/speed.jpg" class="user-pic" onclick="toggleMenu()">
+      </div>
+
+      <!-- Dropdown -->
+      <div class="sub-menu-wrap" id="subMenu">
+        <div class="sub-menu">
+          <div class="user-info">
+            <img src="../images/speed.jpg" alt="User">
+            <h2 id="userName">Loading...</h2>
+          </div>
+          <hr>
+          <a href="driver-profile.html" class="sub-menu-link">
+            <img src="../images/user.png">
+            <p>Driver Profile</p>
+            <span>&gt;</span>
+          </a>
+          <a href="#" class="sub-menu-link">
+            <img src="../images/user-logout.png">
+            <p>Logout</p>
+            <span>&gt;</span>
+          </a>
+        </div>
+      </div>
+    </nav>
+
+    <!-- ===== MANAGE CARPOOLS SECTION ===== -->
+    <section class="manage-page">
+      <div class="container">
+        <h1>Manage Your Carpools</h1>
+
+        <div class="manage-list">
+          <!-- Cards injected by driver-management.js -->
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== EDIT MODAL ===== -->
+    <div id="editModal" class="modal hidden">
+      <div class="modal-content">
         <h2>Edit Carpool</h2>
 
         <input type="hidden" id="edit_rideId">
@@ -46,12 +112,31 @@
         <input type="number" id="edit_price">
 
         <div class="modal-actions">
-            <button id="saveEditBtn">Save</button>
-            <button id="cancelEditBtn">Cancel</button>
+          <button id="saveEditBtn">Save</button>
+          <button id="cancelEditBtn">Cancel</button>
         </div>
+      </div>
     </div>
-</div>
 
-<script src="js/driver-management.js"></script>
-</body>
+    <!-- ===== FOOTER (SAME AS DRIVER PROFILE) ===== -->
+    <footer class="site-footer">
+      <div class="social-icons">
+        <a href="#"><img src="../images/facebook-app-symbol.png" alt="Facebook"></a>
+        <a href="#"><img src="../images/instagram.png" alt="Instagram"></a>
+        <a href="#"><img src="../images/twitter.png" alt="Twitter"></a>
+        <a href="#"><img src="../images/google.png" alt="Google"></a>
+        <a href="#"><img src="../images/youtube.png" alt="YouTube"></a>
+      </div>
+
+      <ul class="footer-nav">
+        <li><a href="driver-landing.html">Home</a></li>
+        <li><a href="driver-schedule-carpool.html">Schedule</a></li>
+        <li><a href="driver-history.html">Feedbacks</a></li>
+      </ul>
+
+      <p class="footer-copy">
+        Copyright ©2025 | Designed by <span>Carma</span>
+      </p>
+    </footer>
+  </body>
 </html>

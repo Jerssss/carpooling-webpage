@@ -363,7 +363,7 @@ occupationSelect.addEventListener("change", toggleIdNumberField);
     formData.append("roleType", roleType);
 
     try {
-      const res = await fetch("/9467_it312-teamarc_midtermproject/register_user.php", {
+      const res = await fetch("/9467_it312-teamarc_midtermproject/includes/register_user.php", {
         method: "POST",
         body: formData
       });

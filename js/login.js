@@ -23,13 +23,13 @@ window.addEventListener('click', function(e){
 
 // Redirect to respective registration pages
 document.getElementById('driver-btn').addEventListener('click', function(){
-    window.location.href = 'registration-driver.html';
+    window.location.href = '/9467_it312-teamarc_midtermproject/registration-driver.html';
 });
 
 document.getElementById('passenger-btn').addEventListener('click', function(){
-    window.location.href = 'registration-passenger.html';
+    window.location.href = '/9467_it312-teamarc_midtermproject/registration-passenger.html';
 });
 
 document.getElementById('multirole-btn').addEventListener('click', function(){
-    window.location.href = 'registration-pd.html';
+    window.location.href = '/9467_it312-teamarc_midtermproject/registration-pd.html';
 });
