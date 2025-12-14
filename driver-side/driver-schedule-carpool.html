@@ -1,174 +1,171 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Schedule Carpool - Carma</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Schedule Carpool - Carma</title>
 
-    <link rel="stylesheet" href="css/driver-style.css">
-    <link rel="stylesheet" href="css/driver-schedule-carpool.css">
-    <link rel="stylesheet" href="../css/notifications.css">
+  <link rel="stylesheet" href="css/driver-style.css">
+  <link rel="stylesheet" href="css/driver-schedule-carpool.css">
+  <link rel="stylesheet" href="../css/notifications.css">
 
-    <script src="../js/notifications.js" defer></script>
-    <script src="../js/header-ui-loader.js" defer></script>
+  <script src="../js/notifications.js" defer></script>
+  <script src="../js/header-ui-loader.js" defer></script>
 </head>
 
 <body>
-    <!-- NAVBAR -->
-    <nav>
-        <div class="nav-left">
-            <img src="../images/carma-logo.png" class="logo" alt="CARMA Logo">
-            <span class="site-name">CARMA</span>
-        </div>
-
-        <ul>
-            <li><a href="driver-landing.html">Home</a></li>
-            <li><a href="driver-history.html">History</a></li>
-            <li><a href="driver-management.html">Manage</a></li>
-        </ul>
-
-        <div class="nav-right">
-            <div class="hamburger" id="hamburger" onclick="toggleMobileMenu()">
-                <div></div>
-                <div></div>
-                <div></div>
-            </div>
-
-            <div class="nav-bell">
-                <img src="../images/bell.png" class="bell-icon">
-                <div id="notificationsContainer"></div>
-            </div>
-
-            <img src="../images/profile_pics/default-pic.png" class="user-pic" onclick="toggleMenu()">
-        </div>
-
-        <div class="sub-menu-wrap" id="subMenu">
-            <div class="sub-menu">
-                <div class="user-info">
-                    <img src="../images/profile_pics/default-pic.png" class="user-pic" alt="User">
-                    <h2 id="userName">Loading...</h2>
-                </div>
-                <hr>
-                <a href="driver-profile.html" class="sub-menu-link">
-                    <img src="../images/user.png">
-                    <p>Driver Profile</p>
-                    <span>&gt;</span>
-                </a>
-                <a href="#" class="sub-menu-link">
-                    <img src="../images/user-logout.png">
-                    <p>Logout</p>
-                    <span>&gt;</span>
-                </a>
-            </div>
-        </div>
-    </nav>
-
-    <!-- FORM SECTION -->
-    <div class="form-container">
-        <h1>Schedule a Carpool</h1>
-
-        <form>
-            <div class="form-group">
-                <label for="start-location">Starting Location</label>
-                <div class="input-icon-wrap">
-                    <input type="text" id="start-location" name="start-location"
-                        placeholder="Enter your location" required autocomplete="off">
-                    <img id="openStartMapPicker" class="input-icon"
-                        src="../images/location.png" title="Pick start on map">
-                </div>
-                <input type="hidden" id="start-lat">
-                <input type="hidden" id="start-lng">
-            </div>
-
-            <div class="form-group">
-                <label for="destination">Destination</label>
-                <div class="input-icon-wrap">
-                    <input type="text" id="destination" name="destination"
-                        placeholder="Enter destination" required autocomplete="off">
-                    <img id="openDestMapPicker" class="input-icon"
-                        src="../images/location.png" title="Pick destination on map">
-                </div>
-                <input type="hidden" id="dest-lat">
-                <input type="hidden" id="dest-lng">
-            </div>
-
-            <div class="form-group">
-                <label for="seats">Available Seats</label>
-                <input type="number" id="seats" min="1"
-                    placeholder="Number of seats available" required>
-            </div>
-
-            <div class="form-group">
-                <label for="cost">Cost per Seat (₱)</label>
-                <input type="number" id="cost" min="0" step="0.01"
-                    placeholder="Price per seat" required>
-            </div>
-
-            <!-- NEW FIELD -->
-            <div class="form-group">
-                <label for="carpool-start-time">Carpool Start Time</label>
-                <input type="datetime-local" id="carpool-start-time"
-                    name="carpool-start-time" required>
-            </div>
-
-            <!-- NEW FIELD -->
-            <div class="form-group">
-                <label for="carpool-departure-time">Carpool Departure Time</label>
-                <input type="datetime-local" id="carpool-departure-time"
-                    name="carpool-departure-time" required>
-            </div>
-
-            <button type="submit" class="submit-btn">Create Carpool</button>
-        </form>
+  <!-- NAVBAR -->
+  <nav>
+    <div class="nav-left">
+      <img src="../images/carma-logo.png" class="logo" alt="CARMA Logo">
+      <span class="site-name">CARMA</span>
     </div>
 
-    <!-- FOOTER -->
-    <footer class="site-footer">
-        <div class="social-icons">
-            <a href="#"><img src="../images/facebook-app-symbol.png"></a>
-            <a href="#"><img src="../images/instagram.png"></a>
-            <a href="#"><img src="../images/twitter.png"></a>
-            <a href="#"><img src="../images/google.png"></a>
-            <a href="#"><img src="../images/youtube.png"></a>
-        </div>
+    <ul>
+      <li><a href="driver-landing.html">Home</a></li>
+      <li><a href="driver-history.html">History</a></li>
+      <li><a href="driver-management.html">Manage</a></li>
+    </ul>
 
-        <ul class="footer-nav">
-            <li><a href="driver-landing.html">Home</a></li>
-            <li><a href="driver-schedule-carpool.html">Schedule</a></li>
-            <li><a href="driver-history.html">Feedbacks</a></li>
-        </ul>
+    <div class="nav-right">
+      <div class="hamburger" id="hamburger" onclick="toggleMobileMenu()">
+        <div></div>
+        <div></div>
+        <div></div>
+      </div>
 
-        <p class="footer-copy">Copyright ©2025 | Designed by <span>Carma</span></p>
-    </footer>
+      <div class="nav-bell">
+        <img src="../images/bell.png" class="bell-icon">
+        <div id="notificationsContainer"></div>
+      </div>
 
-    <!-- Helpers and time utils loaded before the main script -->
-    <script src="js/ui-helpers.js"></script>
-    <script src="js/maps-helpers.js"></script>
-    <script src="js/driver-time-utils.js"></script>
-    <script src="js/driver-maps-modal.js"></script>
-    <script src="js/driver-carpool-submit.js"></script>
-    <script src="js/driver-schedule-carpool.js"></script>
-
-    <!-- MAP PICKER MODAL (required by driver-schedule-carpool.js) -->
-    <div id="mapModal" class="map-modal" aria-hidden="true">
-        <div class="map-modal-content" role="dialog" aria-modal="true" aria-label="Pick a location on map">
-            <div class="map-modal-header">
-                <h3>Select Location</h3>
-                <button id="closeMapPicker" class="modal-close" type="button" aria-label="Close">×</button>
-            </div>
-            <div id="map" class="map-canvas"></div>
-            <div class="map-modal-actions">
-                <button id="resetMarker" type="button" class="btn-secondary">Reset Pin</button>
-                <button id="useLocation" type="button" class="btn-primary">Use This Location</button>
-            </div>
-        </div>
+      <img src="../images/profile_pics/default-pic.png" class="user-pic" onclick="toggleMenu()">
     </div>
 
-    <script>
-        function toggleMenu() {
-            document.getElementById("subMenu").classList.toggle("open-menu");
-        }
-    </script>
+    <div class="sub-menu-wrap" id="subMenu">
+      <div class="sub-menu">
+        <div class="user-info">
+          <img src="../images/profile_pics/default-pic.png" class="user-pic" alt="User">
+          <h2 id="userName">Loading...</h2>
+        </div>
+        <hr>
+        <a href="driver-profile.html" class="sub-menu-link">
+          <img src="../images/user.png">
+          <p>Driver Profile</p>
+          <span>&gt;</span>
+        </a>
+        <a href="#" class="sub-menu-link">
+          <img src="../images/user-logout.png">
+          <p>Logout</p>
+          <span>&gt;</span>
+        </a>
+      </div>
+    </div>
+  </nav>
+
+  <!-- FORM SECTION -->
+  <div class="form-container">
+    <h1>Schedule a Carpool</h1>
+
+    <form>
+      <div class="form-group">
+        <label for="start-location">Starting Location</label>
+        <div class="input-icon-wrap">
+          <input type="text" id="start-location" name="start-location"
+              placeholder="Enter your location" required autocomplete="off">
+          <img id="openStartMapPicker" class="input-icon"
+              src="../images/location.png" title="Pick start on map">
+        </div>
+        <input type="hidden" id="start-lat">
+        <input type="hidden" id="start-lng">
+      </div>
+
+      <div class="form-group">
+        <label for="destination">Destination</label>
+        <div class="input-icon-wrap">
+          <input type="text" id="destination" name="destination"
+              placeholder="Enter destination" required autocomplete="off">
+          <img id="openDestMapPicker" class="input-icon"
+              src="../images/location.png" title="Pick destination on map">
+        </div>
+        <input type="hidden" id="dest-lat">
+        <input type="hidden" id="dest-lng">
+      </div>
+
+      <div class="form-group">
+        <label for="seats">Available Seats</label>
+        <input type="number" id="seats" min="1"
+          placeholder="Number of seats available" required>
+      </div>
+
+      <div class="form-group">
+        <label for="cost">Cost per Seat (₱)</label>
+        <input type="number" id="cost" min="0" step="0.01"
+          placeholder="Price per seat" required>
+      </div>
+
+      <div class="form-group">
+        <label for="carpool-start-time">Carpool Start Time</label>
+        <input type="datetime-local" id="carpool-start-time"
+          name="carpool-start-time" required>
+      </div>
+
+      <div class="form-group">
+        <label for="carpool-departure-time">Carpool Departure Time</label>
+        <input type="datetime-local" id="carpool-departure-time"
+          name="carpool-departure-time" required>
+      </div>
+
+      <button type="submit" class="submit-btn">Create Carpool</button>
+    </form>
+  </div>
+
+  <!-- FOOTER -->
+  <footer class="site-footer">
+    <div class="social-icons">
+      <a href="#"><img src="../images/facebook-app-symbol.png"></a>
+      <a href="#"><img src="../images/instagram.png"></a>
+      <a href="#"><img src="../images/twitter.png"></a>
+      <a href="#"><img src="../images/google.png"></a>
+      <a href="#"><img src="../images/youtube.png"></a>
+    </div>
+
+    <ul class="footer-nav">
+      <li><a href="driver-landing.html">Home</a></li>
+      <li><a href="driver-schedule-carpool.html">Schedule</a></li>
+      <li><a href="driver-history.html">Feedbacks</a></li>
+    </ul>
+
+    <p class="footer-copy">Copyright ©2025 | Designed by <span>Carma</span></p>
+  </footer>
+
+  <!-- Helpers and time utils loaded before the main script -->
+  <script src="js/ui-helpers.js"></script>
+  <script src="js/maps-helpers.js"></script>
+  <script src="js/driver-time-utils.js"></script>
+  <script src="js/driver-maps-modal.js"></script>
+  <script src="js/driver-carpool-submit.js"></script>
+  <script src="js/driver-schedule-carpool.js"></script>
+
+  <!-- MAP PICKER MODAL (required by driver-schedule-carpool.js) -->
+  <div id="mapModal" class="map-modal" aria-hidden="true">
+    <div class="map-modal-content" role="dialog" aria-modal="true" aria-label="Pick a location on map">
+      <div class="map-modal-header">
+        <h3>Select Location</h3>
+        <button id="closeMapPicker" class="modal-close" type="button" aria-label="Close">×</button>
+      </div>
+      <div id="map" class="map-canvas"></div>
+      <div class="map-modal-actions">
+        <button id="resetMarker" type="button" class="btn-secondary">Reset Pin</button>
+        <button id="useLocation" type="button" class="btn-primary">Use This Location</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    function toggleMenu() {
+      document.getElementById("subMenu").classList.toggle("open-menu");
+    }
+  </script>
 </body>
 </html>

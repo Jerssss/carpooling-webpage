@@ -144,7 +144,6 @@ try {
         'bookedSeats'    => 0,
         'status'         => 'available',
         'passengers'     => [],
-        'for'            => 'pickup',
         'price'          => $cost
     ];
 
