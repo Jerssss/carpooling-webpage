@@ -243,3 +243,26 @@ button:hover {
     transform: translateY(-50%) rotate(180deg);
     color: var(--primary-yellow);
 }
+
+.form-feedback {
+    margin-bottom: 15px;
+    padding: 10px;
+    border-radius: 6px;
+    font-size: 14px;
+}
+
+.form-feedback.error {
+    background-color: #fdecea;
+    color: #b71c1c;
+    border: 1px solid #f5c6cb;
+}
+
+.form-feedback.success {
+    background-color: #e6f4ea;
+    color: #1b5e20;
+    border: 1px solid #c3e6cb;
+}
+
+.hidden {
+    display: none;
+}

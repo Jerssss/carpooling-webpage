@@ -9,7 +9,6 @@
     <link rel="stylesheet" href="css/login.css">
 </head>
 <body>
-
     <!-- NAVBAR -->
     <nav>
         <div class="nav-left">
@@ -26,11 +25,13 @@
         <!-- LOGIN FORM -->
         <div class="login-container">
             <h2>Login</h2>
+            
             <form id="loginForm" method="POST" class="login-form">
               <div class="form-group">
                   <label for="role">Log in as</label>
                   <div class="custom-dropdown">
                       <select name="role" id="role" required>
+                          <option value="">Select role</option>
                           <option value="passenger">Passenger</option>
                           <option value="driver">Driver</option>
                           <option value="admin">Admin</option>
@@ -48,6 +49,8 @@
                   <label for="password">Password</label>
                   <input type="password" id="password" name="password" placeholder="Enter password" required>
               </div>
+
+              <div id="login-feedback" class="form-feedback hidden"></div>
 
               <p class="signup-text">
                   Don't have an account? <a href="#" id="register-link">Register</a>

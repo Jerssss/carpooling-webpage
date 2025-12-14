@@ -6,7 +6,21 @@ require("dotenv").config({ path: ".env" });
 
 const app = express();
 app.use(express.json());
-app.use(cors({ origin: "http://localhost:8888", credentials: true }));
+const allowedOrigins = ['http://localhost', 'http://localhost:8888'];
+
+app.use(cors({
+  origin: function(origin, callback) {
+    // allow requests with no origin (like curl or Postman)
+    if (!origin) return callback(null, true);
+    if (allowedOrigins.indexOf(origin) !== -1) {
+      // callback(null, true) tells cors to echo back the requesting origin
+      return callback(null, true);
+    } else {
+      return callback(new Error('Not allowed by CORS'));
+    }
+  },
+  credentials: true
+}));
 
 // Session
 app.use(session({

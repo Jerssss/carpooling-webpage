@@ -21,8 +21,8 @@ try {
         ]);
 
         if (!$user) {
-            echo "No user found.";
-            exit;
+          header("Location: ../login.html?error=user_not_found");
+          exit;
         }
         var_dump($user);
         echo "Password hash from DB: " . $user->password . "\n";
@@ -30,7 +30,7 @@ try {
 
 
         if (!password_verify($password, $user->password)) {
-            echo "Incorrect password.";
+            header("Location: ../login.html?error=incorrect_password");
             exit;
         }
 
@@ -63,5 +63,6 @@ try {
         exit;
     }
 } catch (Exception $e) {
-    echo "Error: " . $e->getMessage();
+    header("Location: ../login.html?error=server_error");
+    exit;
 }
