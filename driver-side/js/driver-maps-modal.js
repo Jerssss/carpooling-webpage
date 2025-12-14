@@ -1,6 +1,36 @@
 // Driver Maps Modal Helpers
 // Autocomplete and map setup
 (function(){
+  function openModal(loadGoogleMaps, setupMap, bindControls, initialCenter) {
+    const modalEl = document.getElementById('mapModal');
+    if (!modalEl) { alert('Map modal not found. Ensure #mapModal exists.'); return; }
+    const openAndFocus = () => {
+      modalEl.classList.add('open');
+      modalEl.setAttribute('aria-hidden', 'false');
+      bindControls && bindControls();
+      const focusTarget = document.getElementById('useLocation') || modalEl;
+      focusTarget && focusTarget.focus && focusTarget.focus();
+      ensureMapReadyAfterOpen(initialCenter);
+    };
+    loadGoogleMaps(() => { setupMap(); openAndFocus(); });
+  }
+
+  function closeModal() {
+    const modalEl = document.getElementById('mapModal');
+    if (modalEl) { modalEl.classList.remove('open'); modalEl.setAttribute('aria-hidden', 'true'); }
+  }
+
+  function ensureMapReadyAfterOpen(initialCenter) {
+    try {
+      const mapEl = document.getElementById('map');
+      if (!mapEl) return;
+      if (window.CarmaMapsHelpers && CarmaMapsHelpers.ensureMapContainer) { CarmaMapsHelpers.ensureMapContainer(mapEl); }
+      if (window.CarmaMapsHelpers && CarmaMapsHelpers.triggerResizeAndCenter) {
+        // Use globals map/marker from driver-schedule-carpool.js
+        CarmaMapsHelpers.triggerResizeAndCenter(window.__CarmaMapInstance, window.__CarmaMarkerInstance, initialCenter);
+      }
+    } catch (e) {}
+  }
   function initAutocomplete(destinationInput, startInput, destLatEl, destLngEl, startLatEl, startLngEl) {
     if (!window.google || !google.maps || !google.maps.places) return { autocompleteDest: null, autocompleteStart: null };
     const autocompleteDest = new google.maps.places.Autocomplete(destinationInput, {
@@ -104,5 +134,5 @@
     return { map, marker, geocoder };
   }
 
-  window.CarmaMapsModal = { initAutocomplete, setupMap };
+  window.CarmaMapsModal = { initAutocomplete, setupMap, openModal, closeModal, ensureMapReadyAfterOpen };
 })();

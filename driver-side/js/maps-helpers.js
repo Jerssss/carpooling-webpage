@@ -10,31 +10,9 @@
     );
   }
 
-  function showMapsError(message) {
-    try {
-      const container = document.body;
-      const div = document.createElement('div');
-      div.className = 'toast-warning';
-      div.textContent = message;
-      container.appendChild(div);
-      setTimeout(() => { div.remove(); }, 8000);
-    } catch (e) {
-      console.warn(message);
-    }
-  }
-
-  function showToast(message) {
-    try {
-      const container = document.body;
-      const div = document.createElement('div');
-      div.className = 'toast';
-      div.textContent = message;
-      container.appendChild(div);
-      setTimeout(() => { div.remove(); }, 2500);
-    } catch (e) {
-      // fallback
-    }
-  }
+  // Toasts delegated to shared UI helpers
+  function showMapsError(message) { if (window.CarmaUI && CarmaUI.showMapsError) { CarmaUI.showMapsError(message); } else { console.warn(message); } }
+  function showToast(message) { if (window.CarmaUI && CarmaUI.showToast) { CarmaUI.showToast(message); } }
 
   // Ensure map container is visible height; return final element
   function ensureMapContainer(mapEl) {
@@ -90,6 +68,32 @@
     map.setCenter(pos);
   }
 
+  // Keyboard ESC close binder
+  function bindEscToClose(modalId, onClose) {
+    document.addEventListener('keydown', function onKey(e) {
+      const modalEl = document.getElementById(modalId);
+      if (!modalEl || !modalEl.classList.contains('open')) return;
+      if (e.key === 'Escape') { e.preventDefault(); onClose && onClose(); }
+    }, { once: true });
+  }
+
+  // Bind modal controls generically
+  function bindModalControls(closeBtnId, useBtnId, resetBtnId, getPosition, applyPosition, onClose) {
+    const closeBtn = document.getElementById(closeBtnId);
+    const useBtn = document.getElementById(useBtnId);
+    const resetBtn = document.getElementById(resetBtnId);
+    if (closeBtn) closeBtn.onclick = (ev) => { ev.preventDefault(); onClose && onClose(); };
+    if (useBtn) {
+      useBtn.onclick = (ev) => {
+        ev.preventDefault();
+        const p = getPosition && getPosition();
+        if (p) { applyPosition && applyPosition(p); showToast('Location selected.'); onClose && onClose(); }
+        else { showMapsError('Please move the pin to choose a location.'); }
+      };
+    }
+    if (resetBtn) resetBtn.onclick = (ev) => { ev.preventDefault(); applyPosition && applyPosition(null, true); };
+  }
+
   // Load Google Maps dynamically
   function loadGoogleMaps(apiKey, cb) {
     if (window.__CarmaMapsLoaded) return cb();
@@ -113,7 +117,9 @@
     triggerResizeAndCenter,
     reverseGeocode,
     setMarkerPosition,
-    loadGoogleMaps
+    loadGoogleMaps,
+    bindEscToClose,
+    bindModalControls
   };
   // Back-compat: attach direct functions if code references them
   window.getBaguioBenguetBounds = window.getBaguioBenguetBounds || getBaguioBenguetBounds;
