@@ -1,35 +1,125 @@
-// Get elements
-const registerLink = document.getElementById('register-link');
-const modal = document.getElementById('register-modal');
-const closeModal = document.getElementById('close-modal');
+function showFeedback(message, type = "error") {
+    const feedback = document.getElementById("login-feedback");
+    feedback.textContent = message;
+    feedback.className = `form-feedback ${type}`;
+    feedback.classList.remove("hidden");
+}
 
-// Open modal when register link is clicked
-registerLink.addEventListener('click', function(e){
-    e.preventDefault();
-    modal.style.display = 'flex';
-});
+function clearFeedback() {
+    const feedback = document.getElementById("login-feedback");
+    feedback.classList.add("hidden");
+    feedback.textContent = "";
+}
 
-// Close modal when X button is clicked
-closeModal.addEventListener('click', function(){
-    modal.style.display = 'none';
-});
+document.addEventListener("DOMContentLoaded", () => {
+    console.log("login.js loaded");
 
-// Close modal when clicking outside the modal content
-window.addEventListener('click', function(e){
-    if(e.target === modal){
-        modal.style.display = 'none';
+    //  LOGIN ERROR FEEDBACK (PHP)
+    const params = new URLSearchParams(window.location.search);
+    const error = params.get("error");
+
+    if (error) {
+        if (error === "user_not_found") {
+            showFeedback("No account found with that email.");
+        } else if (error === "incorrect_password") {
+            showFeedback("Incorrect password.");
+        } else if (error === "server_error") {
+            showFeedback("Server error. Please try again later.");
+        } else {
+            showFeedback("Login failed. Please try again.");
+        }
     }
-});
 
-// Redirect to respective registration pages
-document.getElementById('driver-btn').addEventListener('click', function(){
-    window.location.href = '/9467_it312-teamarc_midtermproject/registration-driver.html';
-});
+    //  LOGIN SUBMISSION HANDLER
+    const loginForm = document.getElementById("loginForm");
 
-document.getElementById('passenger-btn').addEventListener('click', function(){
-    window.location.href = '/9467_it312-teamarc_midtermproject/registration-passenger.html';
-});
+    if (loginForm) {
+        loginForm.addEventListener("submit", async (e) => {
+            e.preventDefault();
+            clearFeedback();
 
-document.getElementById('multirole-btn').addEventListener('click', function(){
-    window.location.href = '/9467_it312-teamarc_midtermproject/registration-pd.html';
+            const email = document.getElementById("username").value;
+            const password = document.getElementById("password").value;
+            const role = document.getElementById("role").value;
+
+            if (!role) {
+                showFeedback("Please select a role.");
+                return;
+            }
+
+            if (role === "admin") {
+                try {
+                    const res = await fetch("http://localhost:4000/api/admin/login", {
+                        method: "POST",
+                        headers: { "Content-Type": "application/json" },
+                        credentials: "include",
+                        body: JSON.stringify({ email, password })
+                    });
+
+                    const data = await res.json();
+
+                    if (!res.ok) {
+                        showFeedback(data.message || "Admin login failed.");
+                        return;
+                    }
+
+                    window.location.href = "admin-side/admin-landing.html";
+
+                } catch (err) {
+                    showFeedback("Server error. Please try again later.");
+                }
+
+            } else {
+                loginForm.action = "includes/login.php";
+                loginForm.submit();
+            }
+        });
+    }
+
+    //  REGISTER MODAL HANDLING
+    const registerLink = document.getElementById('register-link');
+    const modal = document.getElementById('register-modal');
+    const closeModal = document.getElementById('close-modal');
+
+    if (registerLink && modal && closeModal) {
+        registerLink.addEventListener('click', (e) => {
+            e.preventDefault();
+            modal.style.display = 'flex';
+        });
+
+        closeModal.addEventListener('click', () => {
+            modal.style.display = 'none';
+        });
+
+        window.addEventListener('click', (e) => {
+            if (e.target === modal) {
+                modal.style.display = 'none';
+            }
+        });
+    }
+
+    /* ============================
+       REGISTER REDIRECT BUTTONS
+    ============================ */
+    const driverBtn = document.getElementById('driver-btn');
+    const passengerBtn = document.getElementById('passenger-btn');
+    const multiroleBtn = document.getElementById('multirole-btn');
+
+    if (driverBtn) {
+        driverBtn.addEventListener('click', () => {
+            window.location.href = '/9467_it312-teamarc_midtermproject/registration-driver.html';
+        });
+    }
+
+    if (passengerBtn) {
+        passengerBtn.addEventListener('click', () => {
+            window.location.href = '/9467_it312-teamarc_midtermproject/registration-passenger.html';
+        });
+    }
+
+    if (multiroleBtn) {
+        multiroleBtn.addEventListener('click', () => {
+            window.location.href = '/9467_it312-teamarc_midtermproject/registration-pd.html';
+        });
+    }
 });
