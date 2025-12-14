@@ -61,7 +61,7 @@ document.addEventListener("DOMContentLoaded", () => {
         const reportIcon = "../images/report.png"; 
 
         // Get driver ID from ride data
-        const driverId = ride.userId || 'UNKNOWN';
+        const driverId = ride.driverId || 'UNKNOWN';
         const rideId = ride.rideId || '';
         const driverName = ride.name || 'Unknown Driver';
 
