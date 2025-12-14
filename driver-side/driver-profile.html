@@ -102,15 +102,6 @@
             <input id="contactNumber" type="text" placeholder="Enter contact number">
           </div>
 
-          <div class="form-group">
-            <label>Gender</label>
-            <input id="gender" type="text" placeholder="Enter gender">
-          </div>
-
-          <div class="form-group">
-            <label>Driver License No.</label>
-            <input id="licenseNumber" type="text" placeholder="Enter license number">
-          </div>
 
           <!-- Car Information -->
           <div class="form-group">
@@ -149,9 +140,11 @@
             <input id="licenseUpload" type="file" accept="image/*">
           </div>
 
-          <div class="form-group">
+          <div class="form-group car-photo">
             <label>Car Photo</label>
-            <img id="carPhoto" alt="Car Photo" src="../images/car_pics/default_car.png" style="max-width: 100%; height: auto; border-radius: 8px;" />
+            <div class="car-photo-wrapper">
+              <img id="carPhoto" alt="Car Photo" src="../images/car_pics/default_car.png" />
+            </div>
           </div>
 
         </form>
