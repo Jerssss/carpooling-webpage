@@ -138,28 +138,39 @@
   // Opens the map modal and initializes/centers the map + marker for current field context.
   // Keeps focus management simple to avoid aria warnings.
   function openModal() {
+    const modalEl = document.getElementById('mapModal');
+    if (!modalEl) {
+      showMapsError('Map modal not found. Ensure #mapModal exists in the page.');
+      return;
+    }
+    const openAndFocus = () => {
+      modalEl.classList.add('open');
+      modalEl.setAttribute('aria-hidden', 'false');
+      // Bind controls every time modal opens in case DOM was injected late
+      bindModalControls();
+      const focusTarget = document.getElementById('useLocation') || modalEl;
+      focusTarget && focusTarget.focus && focusTarget.focus();
+      // If the map was initialized while hidden, force a resize and recenter
+      ensureMapReadyAfterOpen();
+    };
     if (!mapsLoaded) {
       loadGoogleMaps(() => {
         setupMap();
-        mapModal.classList.add('open');
-        mapModal.setAttribute('aria-hidden', 'false');
-        // Move focus into modal to avoid aria-hidden focus warnings
-        const focusTarget = document.getElementById('useLocation') || mapModal;
-        focusTarget && focusTarget.focus && focusTarget.focus();
+        openAndFocus();
       });
     } else {
       setupMap();
-      mapModal.classList.add('open');
-      mapModal.setAttribute('aria-hidden', 'false');
-      const focusTarget = document.getElementById('useLocation') || mapModal;
-      focusTarget && focusTarget.focus && focusTarget.focus();
+      openAndFocus();
     }
   }
 
   // Closes the modal and restores focus to the triggering pin.
   function closeModal() {
-    mapModal.classList.remove('open');
-    mapModal.setAttribute('aria-hidden', 'true');
+    const modalEl = document.getElementById('mapModal');
+    if (modalEl) {
+      modalEl.classList.remove('open');
+      modalEl.setAttribute('aria-hidden', 'true');
+    }
     // Return focus to the triggering button
     const returnTarget = pickerContext === 'destination' ? openDestBtn : openStartBtn;
     returnTarget && returnTarget.focus && returnTarget.focus();
@@ -176,7 +187,16 @@
     }
     geocoder = geocoder || new google.maps.Geocoder();
     const mapEl = document.getElementById('map');
-    if (mapEl) { mapEl.innerHTML = ''; }
+    if (!mapEl) {
+      showMapsError('Map container not found. Ensure an element with id="map" exists in the modal.');
+      return;
+    }
+    mapEl.innerHTML = '';
+    // Ensure the map container has a visible height
+    if (!mapEl.style.height) {
+      // Fallback height if CSS didn't set it
+      mapEl.style.height = '60vh';
+    }
     // If destination has existing coords, use them as center
     const existingLat = pickerContext === 'destination' ? parseFloat(destLatEl.value) : parseFloat(startLatEl.value);
     const existingLng = pickerContext === 'destination' ? parseFloat(destLngEl.value) : parseFloat(startLngEl.value);
@@ -249,6 +269,73 @@
       // Ensure marker snaps to saved coordinates
       setMarkerPosition(existingLat, existingLng);
     }
+  }
+
+  // Ensure map is properly rendered after modal becomes visible
+  function ensureMapReadyAfterOpen() {
+    try {
+      const mapEl = document.getElementById('map');
+      if (!mapEl) return;
+      // If element has zero height/width, apply a fallback height
+      const rect = mapEl.getBoundingClientRect();
+      if (rect.height < 20) {
+        mapEl.style.height = mapEl.style.height || '60vh';
+      }
+      if (window.google && google.maps && map) {
+        if (google.maps.event && google.maps.event.trigger) {
+          google.maps.event.trigger(map, 'resize');
+        }
+        // Recenter after resize to maintain expected view
+        const p = getMarkerLatLng() || initialCenter;
+        map.setCenter(p);
+      }
+    } catch (e) {
+      // no-op
+    }
+  }
+
+  // Safely (re)bind modal control buttons to handlers each time it opens
+  function bindModalControls() {
+    const closeBtn = document.getElementById('closeMapPicker');
+    const useBtn = document.getElementById('useLocation');
+    const resetBtn = document.getElementById('resetMarker');
+    if (closeBtn) {
+      closeBtn.onclick = (ev) => { ev.preventDefault(); closeModal(); };
+    }
+    if (useBtn) {
+      useBtn.onclick = (ev) => {
+        ev.preventDefault();
+        const p = getMarkerLatLng();
+        if (p) {
+          if (pickerContext === 'destination') {
+            destLatEl.value = p.lat;
+            destLngEl.value = p.lng;
+            reverseGeocode(p.lat, p.lng, 'destination');
+          } else {
+            startLatEl.value = p.lat;
+            startLngEl.value = p.lng;
+            reverseGeocode(p.lat, p.lng, 'start');
+          }
+          showToast('Location selected.');
+          closeModal();
+        } else {
+          showMapsError('Please move the pin to choose a location.');
+        }
+      };
+    }
+    if (resetBtn) {
+      resetBtn.onclick = (ev) => { ev.preventDefault(); resetMarker(); };
+    }
+
+    // Keyboard: ESC to close when modal is open
+    document.addEventListener('keydown', function onKey(e) {
+      const modalEl = document.getElementById('mapModal');
+      if (!modalEl || !modalEl.classList.contains('open')) return;
+      if (e.key === 'Escape') {
+        e.preventDefault();
+        closeModal();
+      }
+    }, { once: true });
   }
 
   // Reverse-geocode a coordinate to a formatted address and write to the proper input.

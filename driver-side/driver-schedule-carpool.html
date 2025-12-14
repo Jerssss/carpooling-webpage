@@ -144,6 +144,21 @@
 
     <script src="js/driver-schedule-carpool.js"></script>
 
+    <!-- MAP PICKER MODAL (required by driver-schedule-carpool.js) -->
+    <div id="mapModal" class="map-modal" aria-hidden="true">
+        <div class="map-modal-content" role="dialog" aria-modal="true" aria-label="Pick a location on map">
+            <div class="map-modal-header">
+                <h3>Select Location</h3>
+                <button id="closeMapPicker" class="modal-close" type="button" aria-label="Close">×</button>
+            </div>
+            <div id="map" class="map-canvas"></div>
+            <div class="map-modal-actions">
+                <button id="resetMarker" type="button" class="btn-secondary">Reset Pin</button>
+                <button id="useLocation" type="button" class="btn-primary">Use This Location</button>
+            </div>
+        </div>
+    </div>
+
     <script>
         function toggleMenu() {
             document.getElementById("subMenu").classList.toggle("open-menu");
