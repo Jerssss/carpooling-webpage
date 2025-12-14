@@ -27,7 +27,7 @@ try {
         'name' => (string)($user['name'] ?? ''),
         'email' => (string)($user['email'] ?? ''),
         'phoneNo' => (string)($user['phoneNo'] ?? ''),
-        'picture' => (string)($user['picture'] ?? '../images/speed.jpg'),
+        'picture' => (string)($user['picture'] ?? 'storage/uploads/profile/default-user.png'),
         'gender' => isset($user['gender']) ? (string)$user['gender'] : '',
         // Optional extras if present
         'role' => (string)($user['role'] ?? ''),

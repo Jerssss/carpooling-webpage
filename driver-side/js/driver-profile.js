@@ -36,12 +36,19 @@ function setupLicenseUpload() {
 
 
 function resolvePath(path) {
-  if (!path) return '../images/speed.jpg';
-  // If already absolute or starts with '../', return as is
-  if (/^https?:\/\//.test(path) || path.startsWith('../')) return path;
-  // Paths from DB like 'images/...'
+  if (!path) return '../images/speed.jpg'; // fallback
+
+  // If already absolute (http://...) return as is
+  if (/^https?:\/\//.test(path)) return path;
+
+  // Paths stored in DB like 'storage/uploads/profile/...'
+  if (path.startsWith('storage/')) return '../' + path;
+
+  // If legacy images/... path
   if (path.startsWith('images/')) return '../' + path;
-  return path;
+
+  // Otherwise fallback
+  return '../images/speed.jpg';
 }
 
 async function loadDriverProfile() {
