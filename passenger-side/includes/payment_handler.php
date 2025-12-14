@@ -249,6 +249,9 @@ try {
         $destination = $rideDoc['destination'] ?? '';
         $departureTime = $rideDoc['departureTime'] ?? '';
         $passengerName = $userDoc['name'] ?? 'A passenger';
+
+        // Current timestamp
+        $now = new UTCDateTime();
         
         // Passenger notification
         $passengerNotification = [
@@ -279,35 +282,44 @@ try {
             'timestamp' => new UTCDateTime(),
             'isRead' => false
         ];
+
+        // Calculate 2 minutes ago for deduplication
+        $nowTimestamp = $now->toDateTime()->getTimestamp();
+        $twoMinAgoTimestamp = ($nowTimestamp - 120) * 1000; // Convert to milliseconds
+        $twoMinAgo = new UTCDateTime($twoMinAgoTimestamp);
         
         // Insert notifications (with deduplication)
         $now = new UTCDateTime();
         $twoMinAgo = new UTCDateTime(($now->toDateTime()->getTimestamp() - 120) * 1000);
         
         $existsP = $notificationsCollection->findOne([
-            'rideId' => $rideId,
-            'passengerId' => $userId,
-            'type' => 'booking',
-            'timestamp' => ['$gt' => $twoMinAgo]
+            'bookingId' => $bookingId, // Check by bookingId instead
+            'audience' => 'passenger'
         ]);
         
         if (!$existsP) {
-            $notificationsCollection->insertOne($passengerNotification);
+            $resultP = $notificationsCollection->insertOne($passengerNotification);
+            error_log("Passenger notification inserted: " . ($resultP->getInsertedCount() > 0 ? "SUCCESS" : "FAILED"));
+        } else {
+            error_log("Passenger notification already exists, skipped");
         }
         
+        // Insert driver notification (with deduplication)
         $existsD = $notificationsCollection->findOne([
-            'rideId' => $rideId,
-            'driverId' => $driverId,
-            'passengerId' => $userId,
-            'type' => 'booking',
-            'timestamp' => ['$gt' => $twoMinAgo]
+            'bookingId' => $bookingId, // Check by bookingId instead
+            'audience' => 'driver'
         ]);
         
         if (!$existsD) {
-            $notificationsCollection->insertOne($driverNotification);
+            $resultD = $notificationsCollection->insertOne($driverNotification);
+            error_log("Driver notification inserted: " . ($resultD->getInsertedCount() > 0 ? "SUCCESS" : "FAILED"));
+        } else {
+            error_log("Driver notification already exists, skipped");
         }
+        
     } catch (Exception $e) {
         error_log('Notification insert failed: ' . $e->getMessage());
+        error_log('Stack trace: ' . $e->getTraceAsString());
     }
     
     // SEVENTH, SUCCESS RESPONSE
