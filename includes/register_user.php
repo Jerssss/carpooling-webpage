@@ -16,7 +16,6 @@ if (!$email || !$password || !$roleType || !$name || !$phone || !$occupation) {
     exit;
 }
 
-
 // DETERMINE ROLES
 if ($roleType === 'both') {
     $roles = ['passenger', 'driver'];
@@ -51,58 +50,89 @@ if (in_array('driver', $roles)) {
     }
 }
 
-// DRIVER DOCUMENT UPLOADS
+/* ==============================
+   PROFILE PHOTO (DEFAULT FALLBACK)
+============================== */
+$profilePhotoPath = 'storage/uploads/profile/default-user.png';
+
+$profileAbsDir = __DIR__ . '/../storage/uploads/profile/';
+$profilePublicDir = 'storage/uploads/profile/';
+
+if (!is_dir($profileAbsDir)) {
+    mkdir($profileAbsDir, 0777, true);
+}
+
+if (!empty($_FILES['profile-photo']) && $_FILES['profile-photo']['error'] === UPLOAD_ERR_OK) {
+    $ext = pathinfo($_FILES['profile-photo']['name'], PATHINFO_EXTENSION);
+    $filename = uniqid('profile_') . '.' . $ext;
+    move_uploaded_file($_FILES['profile-photo']['tmp_name'], $profileAbsDir . $filename);
+    $profilePhotoPath = $profilePublicDir . $filename;
+}
+
+/* ==============================
+   DRIVER DOCUMENT UPLOADS
+============================== */
 $licensePath = null;
 $vehicleRegPath = null;
 
 if (in_array('driver', $roles)) {
 
-    $driverSideRoot = realpath(__DIR__ . '/driver-side');
-    $docAbsDir = $driverSideRoot . '/images/driver_documents/';
-    $docPublicDir = 'driver-side/images/driver_documents/';
+    // LICENSE
+    $licenseAbsDir = __DIR__ . '/../storage/uploads/license/';
+    $licensePublicDir = 'storage/uploads/license/';
 
-    if (!is_dir($docAbsDir)) {
-        mkdir($docAbsDir, 0777, true);
+    if (!is_dir($licenseAbsDir)) {
+        mkdir($licenseAbsDir, 0777, true);
     }
 
-    // License
     if (!empty($_FILES['license']) && $_FILES['license']['error'] === UPLOAD_ERR_OK) {
         $ext = pathinfo($_FILES['license']['name'], PATHINFO_EXTENSION);
         $filename = uniqid('license_') . '.' . $ext;
-        move_uploaded_file($_FILES['license']['tmp_name'], $docAbsDir . $filename);
-        $licensePath = $docPublicDir . $filename;
+        move_uploaded_file($_FILES['license']['tmp_name'], $licenseAbsDir . $filename);
+        $licensePath = $licensePublicDir . $filename;
     }
 
-    // Vehicle Registration
+    // VEHICLE REGISTRATION
+    $vehRegAbsDir = __DIR__ . '/../storage/uploads/veh_reg/';
+    $vehRegPublicDir = 'storage/uploads/veh_reg/';
+
+    if (!is_dir($vehRegAbsDir)) {
+        mkdir($vehRegAbsDir, 0777, true);
+    }
+
     if (!empty($_FILES['vehicle-reg']) && $_FILES['vehicle-reg']['error'] === UPLOAD_ERR_OK) {
         $ext = pathinfo($_FILES['vehicle-reg']['name'], PATHINFO_EXTENSION);
         $filename = uniqid('vehreg_') . '.' . $ext;
-        move_uploaded_file($_FILES['vehicle-reg']['tmp_name'], $docAbsDir . $filename);
-        $vehicleRegPath = $docPublicDir . $filename;
+        move_uploaded_file($_FILES['vehicle-reg']['tmp_name'], $vehRegAbsDir . $filename);
+        $vehicleRegPath = $vehRegPublicDir . $filename;
     }
 }
 
-// CAR PHOTO UPLOAD
+/* ==============================
+   CAR PHOTO UPLOAD
+============================== */
 $carPhotoPath = null;
 
 if (in_array('driver', $roles)) {
 
-    $carPhotoAbsDir = realpath(__DIR__ . '/driver-side') . '/images/car_pics/';
-    $carPhotoPublicDir = 'driver-side/images/car_pics/';
+    $carAbsDir = __DIR__ . '/../storage/uploads/car/';
+    $carPublicDir = 'storage/uploads/car/';
 
-    if (!is_dir($carPhotoAbsDir)) {
-        mkdir($carPhotoAbsDir, 0777, true);
+    if (!is_dir($carAbsDir)) {
+        mkdir($carAbsDir, 0777, true);
     }
 
     if (!empty($_FILES['car-photo']) && $_FILES['car-photo']['error'] === UPLOAD_ERR_OK) {
         $ext = pathinfo($_FILES['car-photo']['name'], PATHINFO_EXTENSION);
         $filename = uniqid('car_') . '.' . $ext;
-        move_uploaded_file($_FILES['car-photo']['tmp_name'], $carPhotoAbsDir . $filename);
-        $carPhotoPath = $carPhotoPublicDir . $filename;
+        move_uploaded_file($_FILES['car-photo']['tmp_name'], $carAbsDir . $filename);
+        $carPhotoPath = $carPublicDir . $filename;
     }
 }
 
-// CREATE USER
+/* ==============================
+   CREATE USER
+============================== */
 $userID = uniqid('U');
 
 $newUser = [
@@ -112,6 +142,7 @@ $newUser = [
     'phoneNo' => $phone,
     'occupation' => $occupation,
     'roles' => $roles,
+    'picture' => $profilePhotoPath,
     'password' => password_hash($password, PASSWORD_BCRYPT),
     'isVerified' => false,
     'createdAt' => new MongoDB\BSON\UTCDateTime()
@@ -126,7 +157,9 @@ if (in_array('driver', $roles)) {
 
 $users->insertOne($newUser);
 
-// CREATE VEHICLE RECORD
+/* ==============================
+   CREATE VEHICLE RECORD
+============================== */
 if (in_array('driver', $roles)) {
 
     $newVehicle = [
@@ -150,3 +183,4 @@ echo json_encode([
     'success' => true,
     'message' => 'Registration successful'
 ]);
+?>
