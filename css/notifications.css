@@ -35,6 +35,7 @@ nav img.bell-icon {
     z-index: 1000;
     background: transparent;
     box-shadow: none;
+    pointer-events: none; /* prevent overlay from blocking nearby clicks */
 }
 
 .notifications-dropdown {
@@ -58,7 +59,7 @@ nav img.bell-icon {
     opacity: 1;
     transform: translateY(0);
     visibility: visible;
-    pointer-events: auto;
+    pointer-events: auto; /* enable interactions only when open */
 }
 
 /* ==== Tabs ==== */

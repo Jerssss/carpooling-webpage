@@ -40,13 +40,13 @@
                 <div id="notificationsContainer"></div>
             </div>
 
-            <img src="../images/speed.jpg" class="user-pic" onclick="toggleMenu()">
+            <img src="../images/profile_pics/default-pic.png" class="user-pic" onclick="toggleMenu()">
         </div>
 
         <div class="sub-menu-wrap" id="subMenu">
             <div class="sub-menu">
                 <div class="user-info">
-                    <img src="../images/speed.jpg" alt="User">
+                    <img src="../images/profile_pics/default-pic.png" class="user-pic" alt="User">
                     <h2 id="userName">Loading...</h2>
                 </div>
                 <hr>
@@ -142,6 +142,12 @@
         <p class="footer-copy">Copyright ©2025 | Designed by <span>Carma</span></p>
     </footer>
 
+    <!-- Helpers and time utils loaded before the main script -->
+    <script src="js/ui-helpers.js"></script>
+    <script src="js/maps-helpers.js"></script>
+    <script src="js/driver-time-utils.js"></script>
+    <script src="js/driver-maps-modal.js"></script>
+    <script src="js/driver-carpool-submit.js"></script>
     <script src="js/driver-schedule-carpool.js"></script>
 
     <!-- MAP PICKER MODAL (required by driver-schedule-carpool.js) -->

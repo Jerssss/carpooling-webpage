@@ -22,17 +22,6 @@
     filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.25));
 }
 
-/* Notifications dropdown: constrain so it doesn't overlay form inputs */
-.nav-bell {
-    position: relative;
-}
-
-.nav-bell #notificationsContainer {
-    position: absolute;
-    right: 10%;
-    top: 100%;
-}
-
 /* Map modal fallback styles (if global styles are missing) */
 #mapModal {
     position: fixed;
@@ -292,7 +281,7 @@ body {
     background: #e9e9e9;
 }
 
-/* ===== Toasts (moved from JS inline styles) ===== */
+/* ===== Toasts ===== */
 .toast,
 .toast-warning {
     position: fixed;

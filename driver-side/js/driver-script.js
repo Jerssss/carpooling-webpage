@@ -107,6 +107,54 @@ document.addEventListener('click', function (e) {
     }
 });
 
+// Helper: resolve DB paths to page-relative URLs
+function resolvePath(path) {
+  const DEFAULT = '../images/profile_pics/default-pic.png';
+  if (!path) return DEFAULT;
+  if (/^https?:\/\//.test(path)) return path;
+  if (path.startsWith('storage/')) return '../' + path;
+  if (path.startsWith('images/')) return '../' + path;
+  return DEFAULT;
+}
+
+// Apply profile image to elements
+let PROFILE_IMG_PATH = null;
+function applyProfileImage(path) {
+  if (!path) return;
+  PROFILE_IMG_PATH = path;
+
+  // General selectors used across pages
+  const els = document.querySelectorAll('.user-pic, .profile-photo');
+  els.forEach(img => { if (img) img.src = path; });
+
+  // Ensure dropdown user-image is always updated (some pages treat it differently)
+  const dropdownImg = document.querySelector('.sub-menu .user-info img');
+  if (dropdownImg) dropdownImg.src = path;
+}
+
+// Also reapply on window load in case of timing/order differences
+window.addEventListener('load', () => {
+  if (PROFILE_IMG_PATH) applyProfileImage(PROFILE_IMG_PATH);
+});
+
+// Observe for late-added profile image elements
+const observer = new MutationObserver(mutations => {
+  if (!PROFILE_IMG_PATH) return;
+  for (const m of mutations) {
+    if (m.addedNodes && m.addedNodes.length) {
+      m.addedNodes.forEach(node => {
+        if (!(node instanceof HTMLElement)) return;
+        if (node.matches && (node.matches('.user-pic') || node.matches('.profile-photo'))) {
+          node.src = PROFILE_IMG_PATH;
+        }
+        const imgs = node.querySelectorAll && node.querySelectorAll('.user-pic, .profile-photo');
+        if (imgs && imgs.length) imgs.forEach(i => i.src = PROFILE_IMG_PATH);
+      });
+    }
+  }
+});
+observer.observe(document.documentElement || document.body, { childList: true, subtree: true });
+
 // Load user name on driver profile
 document.addEventListener("DOMContentLoaded", async () => {
   try {
@@ -116,8 +164,8 @@ document.addEventListener("DOMContentLoaded", async () => {
       const p = data.profile || {};
       const nameEl = document.getElementById("userName");
       if (nameEl) nameEl.textContent = p.name || 'Driver';
-      const pics = document.querySelectorAll('.user-pic');
-      pics.forEach(img => { img.src = p.photoUrl || '../images/speed.jpg'; });
+      const imgPath = resolvePath(p.picture);
+      applyProfileImage(imgPath);
     }
   } catch (err) {
     console.error("Failed to load user profile:", err);

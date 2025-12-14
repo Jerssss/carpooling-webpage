@@ -36,7 +36,8 @@ function setupLicenseUpload() {
 
 
 function resolvePath(path) {
-  if (!path) return '../images/speed.jpg'; // fallback
+  const DEFAULT = '../images/profile_pics/default-pic.png';
+  if (!path) return DEFAULT; // fallback
 
   // If already absolute (http://...) return as is
   if (/^https?:\/\//.test(path)) return path;
@@ -48,7 +49,7 @@ function resolvePath(path) {
   if (path.startsWith('images/')) return '../' + path;
 
   // Otherwise fallback
-  return '../images/speed.jpg';
+  return DEFAULT;
 }
 
 async function loadDriverProfile() {
@@ -62,7 +63,7 @@ async function loadDriverProfile() {
     const userNameEl = document.getElementById('userName');
     if (userNameEl) userNameEl.textContent = p.name || 'Driver';
     const userPicEls = document.querySelectorAll('.user-pic');
-    userPicEls.forEach(img => { img.src = resolvePath(p.picture) || '../images/speed.jpg'; });
+    userPicEls.forEach(img => { img.src = resolvePath(p.picture); });
 
     // Header
     const headerName = document.querySelector('.profile-header .user-basic h2');
@@ -70,7 +71,7 @@ async function loadDriverProfile() {
     const headerPhoto = document.querySelector('.profile-header .profile-photo');
     if (headerName) headerName.textContent = p.name || '';
     if (headerEmail) headerEmail.textContent = p.email || '';
-    if (headerPhoto) headerPhoto.src = resolvePath(p.picture) || '../images/speed.jpg';
+    if (headerPhoto) headerPhoto.src = resolvePath(p.picture);
 
     // Form fields
     setValue('fullName', p.name);
