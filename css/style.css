@@ -10,6 +10,30 @@
     --light-color: #fff;
 }
 
+/* Make page take full viewport and keep footer at bottom */
+html {
+  height: 100%;
+}
+
+body {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Top-level content areas should grow to push footer down when needed */
+main,
+.hero,
+.carpool-section,
+.profile-page,
+.payment-container,
+.receipt-container,
+.about,
+.team-section,
+.booked-rides {
+  flex: 1;
+}
+
 /* ===== NAVIGATION BAR ===== */
 nav {
   background: #2C2C2C;
