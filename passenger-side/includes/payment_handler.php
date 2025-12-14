@@ -15,94 +15,16 @@ use MongoDB\BSON\UTCDateTime;
 header('Content-Type: application/json');
 
 $paymentsCollection = $db->payments;
+$bookingsCollection = $db->bookings;
 $ridesCollection = $db->rides;
+$usersCollection = $db->users;
+$historyCollection = $db->history;
 $notificationsCollection = $db->notifications;
 
 // Ensure upload directory exists
 $uploadDir = __DIR__ . '/../../images/payments/';
 if (!file_exists($uploadDir)) {
     mkdir($uploadDir, 0777, true);
-}
-
-$method = $_POST['method'] ?? 'GCash';
-$screenshotPath = '';
-
-// Allowed image MIME types
-$allowedMimeTypes = [
-    'image/jpeg',
-    'image/png',
-    'image/gif',
-    'image/webp'
-];
-
-// Allowed file extensions (secondary validation)
-$allowedExtensions = ['jpg', 'jpeg', 'png', 'gif', 'webp'];
-
-// Only require a screenshot for GCash payments
-if (strcasecmp($method, 'GCash') === 0) {
-    if (isset($_FILES['proofScreenshot'])) {
-        if ($_FILES['proofScreenshot']['error'] !== UPLOAD_ERR_OK) {
-            $err = (int)$_FILES['proofScreenshot']['error'];
-            $map = [
-                UPLOAD_ERR_INI_SIZE   => 'The uploaded file exceeds the server upload_max_filesize.',
-                UPLOAD_ERR_FORM_SIZE  => 'The uploaded file exceeds the MAX_FILE_SIZE directive that was specified in the HTML form.',
-                UPLOAD_ERR_PARTIAL    => 'The uploaded file was only partially uploaded.',
-                UPLOAD_ERR_NO_FILE    => 'No file was uploaded.',
-                UPLOAD_ERR_NO_TMP_DIR => 'Missing a temporary folder on server.',
-                UPLOAD_ERR_CANT_WRITE => 'Failed to write file to disk.',
-                UPLOAD_ERR_EXTENSION  => 'A PHP extension stopped the file upload.'
-            ];
-            $hint = sprintf(
-                ' (upload_max_filesize=%s, post_max_size=%s)',
-                ini_get('upload_max_filesize') ?: 'unknown',
-                ini_get('post_max_size') ?: 'unknown'
-            );
-            echo json_encode(['success' => false, 'message' => ($map[$err] ?? 'Upload error code ' . $err) . $hint]);
-            exit;
-        }
-
-        $fileTmp  = $_FILES['proofScreenshot']['tmp_name'];
-        $fileName = $_FILES['proofScreenshot']['name'];
-        $fileSize = $_FILES['proofScreenshot']['size'];
-        $fileExt  = strtolower(pathinfo($fileName, PATHINFO_EXTENSION));
-
-        // Check extension
-        if (!in_array($fileExt, $allowedExtensions)) {
-            echo json_encode(['success' => false, 'message' => 'Invalid file type. Only images are allowed.']);
-            exit;
-        }
-
-        // Check MIME type using PHP's finfo
-        $finfo = finfo_open(FILEINFO_MIME_TYPE);
-        $mimeType = finfo_file($finfo, $fileTmp);
-        finfo_close($finfo);
-
-        if (!in_array($mimeType, $allowedMimeTypes)) {
-            echo json_encode(['success' => false, 'message' => 'Invalid image format detected.']);
-            exit;
-        }
-
-        // Limit max file size to 5MB
-        if ($fileSize > 5 * 1024 * 1024) {
-            echo json_encode(['success' => false, 'message' => 'File too large. Maximum size is 5MB.']);
-            exit;
-        }
-
-        // If valid, generate new filename
-        $newFileName = uniqid('gcash_', true) . '.' . $fileExt;
-        $targetPath = $uploadDir . $newFileName;
-
-        if (move_uploaded_file($fileTmp, $targetPath)) {
-            // Public path used by frontend (relative to passenger-side pages)
-            $screenshotPath = '../images/payments/' . $newFileName;
-        } else {
-            echo json_encode(['success' => false, 'message' => 'Failed to save uploaded file.']);
-            exit;
-        }
-    } else {
-        echo json_encode(['success' => false, 'message' => 'No file uploaded. Please attach a GCash screenshot.']);
-        exit;
-    }
 }
 
 // Prevent rapid multiple submissions using a cookie lock
@@ -115,176 +37,295 @@ if (isset($_COOKIE['payment_lock'])) {
 }
 
 // Lock payments for 30 seconds
-set_app_cookie('payment_lock', '1', 0.01); // ~15-30 seconds
+set_app_cookie('payment_lock', '1', 0.01);
 
-// Build payment data
-// Build base payment data
-$paymentData = [
-    'paymentId' => uniqid('P'),
-    'rideId' => $_POST['rideId'] ?? '',
-    'userId' => $_SESSION['user_id'],
-    // Always trust server-side user profile over client-provided values
-    'name'   => '',
-    'idNumber' => '',
-    'email'  => '',
-    'pickupType' => $_POST['pickupType'] ?? '',
-    'pickupTime' => $_POST['pickupTime'] ?? '',
-    'pickupLocation' => $_POST['pickupLocation'] ?? '',
-    'gcashRefNumber' => $_POST['referenceNumber'] ?? '',
-    'screenshot' => $screenshotPath,
-    'amount' => (float)($_POST['amount'] ?? 0),
-    'method' => $method,
-    'status' => 'Pending',
-    'timestamp' => new UTCDateTime()
-];
-
-// Optional pickup coordinates from map picker
-if (isset($_POST['pickupLat']) && isset($_POST['pickupLng']) && $_POST['pickupLat'] !== '' && $_POST['pickupLng'] !== '') {
-    $paymentData['pickupLocationCoords'] = [
-        'lat' => (float)$_POST['pickupLat'],
-        'lng' => (float)$_POST['pickupLng']
-    ];
-}
-
-// Try to insert in DB
+// BOOKING AND PAYMENT LOGIC
 try {
-    // Populate user fields from DB to ensure booking uses logged-in user
+    // FIRST, GET USER AND RIDE INFORMATION
+    $userId = $_SESSION['user_id'];
+    $rideId = $_POST['rideId'] ?? '';
+    $method = $_POST['method'] ?? 'Cash';
+    
+    if (empty($rideId)) {
+        throw new Exception('Ride ID is required');
+    }
+    
+    // Get user info
+    $userDoc = $usersCollection->findOne(['userID' => $userId]);
+    if (!$userDoc) {
+        throw new Exception('User not found');
+    }
+    
+    // Get ride info
+    $rideDoc = $ridesCollection->findOne(['rideId' => $rideId]);
+    if (!$rideDoc) {
+        throw new Exception('Ride not found');
+    }
+    
+    // Get driver info for notifications
+    $driverId = $rideDoc['driverId'] ?? '';
+    $driverDoc = null;
+    $driverName = 'Unknown Driver';
+    if ($driverId) {
+        $driverDoc = $usersCollection->findOne(['userID' => $driverId]);
+        if ($driverDoc && isset($driverDoc['name'])) {
+            $driverName = $driverDoc['name'];
+        }
+    }
+    
+    // SECOND, HANDLE FILE UPLOAD (GCASH ONLY)
+    $screenshotPath = '';
+    $gcashRefNumber = '';
+    
+    if (strcasecmp($method, 'GCash') === 0) {
+        // Validate GCash reference number
+        $gcashRefNumber = $_POST['referenceNumber'] ?? '';
+        if (empty($gcashRefNumber)) {
+            throw new Exception('GCash reference number is required');
+        }
+        
+        // Handle file upload
+        if (!isset($_FILES['proofScreenshot']) || $_FILES['proofScreenshot']['error'] === UPLOAD_ERR_NO_FILE) {
+            throw new Exception('GCash screenshot is required');
+        }
+        
+        if ($_FILES['proofScreenshot']['error'] !== UPLOAD_ERR_OK) {
+            throw new Exception('File upload error occurred');
+        }
+        
+        $allowedMimeTypes = ['image/jpeg', 'image/png', 'image/gif', 'image/webp'];
+        $allowedExtensions = ['jpg', 'jpeg', 'png', 'gif', 'webp'];
+        
+        $fileTmp = $_FILES['proofScreenshot']['tmp_name'];
+        $fileName = $_FILES['proofScreenshot']['name'];
+        $fileSize = $_FILES['proofScreenshot']['size'];
+        $fileExt = strtolower(pathinfo($fileName, PATHINFO_EXTENSION));
+        
+        // Validate extension
+        if (!in_array($fileExt, $allowedExtensions)) {
+            throw new Exception('Invalid file type. Only images are allowed');
+        }
+        
+        // Validate MIME type
+        $finfo = finfo_open(FILEINFO_MIME_TYPE);
+        $mimeType = finfo_file($finfo, $fileTmp);
+        finfo_close($finfo);
+        
+        if (!in_array($mimeType, $allowedMimeTypes)) {
+            throw new Exception('Invalid image format detected');
+        }
+        
+        // Validate file size (5MB max)
+        if ($fileSize > 5 * 1024 * 1024) {
+            throw new Exception('File too large. Maximum size is 5MB');
+        }
+        
+        // Save file
+        $newFileName = uniqid('gcash_', true) . '.' . $fileExt;
+        $targetPath = $uploadDir . $newFileName;
+        
+        if (!move_uploaded_file($fileTmp, $targetPath)) {
+            throw new Exception('Failed to save uploaded file');
+        }
+        
+        $screenshotPath = '../images/payments/' . $newFileName;
+    }
+    
+    // THIRD, CREATE THE ACTUAL BOOKING
+    // Generate booking ID
+    $lastBooking = $bookingsCollection->findOne(
+        [],
+        ['sort' => ['bookingId' => -1], 'projection' => ['bookingId' => 1]]
+    );
+    
+    // Ensure no duplicate booking ID
+    if ($lastBooking && isset($lastBooking['bookingId'])) {
+        $lastNum = (int) preg_replace('/\D/', '', $lastBooking['bookingId']);
+        $newNum = $lastNum + 1;
+    } else {
+        $newNum = 1;
+    }
+    
+    // Generate booking ID
+    $bookingId = 'B' . str_pad($newNum, 4, '0', STR_PAD_LEFT);
+    
+    // Get pickup location and coordinates
+    $pickupLocation = $_POST['pickupLocation'] ?? '';
+    $pickupType = $_POST['pickupType'] ?? 'pickup';
+    $pickupCoords = null;
+    
+    if (isset($_POST['pickupLat']) && isset($_POST['pickupLng']) && 
+        $_POST['pickupLat'] !== '' && $_POST['pickupLng'] !== '') {
+        $pickupCoords = [
+            'lat' => (float)$_POST['pickupLat'],
+            'lng' => (float)$_POST['pickupLng']
+        ];
+    }
+    
+    // Determine initial booking status
+    // Cash = pending (needs driver confirmation). TODO: Implement a driver confirmation logic on the driver's side
+    // GCash = pending (needs payment verification first)
+    $bookingStatus = 'pending';
+    $paymentStatus = ($method === 'Cash') ? 'pending' : 'pending';
+    
+    // Create booking document for the bookings collection
+    $bookingData = [
+        'bookingId' => $bookingId,
+        'passengerId' => $userId,
+        'driverId' => $driverId,
+        'rideId' => $rideId,
+        'status' => $bookingStatus,
+        'paymentStatus' => $paymentStatus,
+        'pickupLocation' => $pickupLocation,
+        'pickupType' => $pickupType,
+        'timestamp' => new UTCDateTime()
+    ];
+    
+    if ($pickupCoords) {
+        $bookingData['pickupLocationCoords'] = $pickupCoords;
+    }
+    
+    // Insert booking
+    $bookingsCollection->insertOne($bookingData);
+    
+    // FOURTH, CREATE PAYMENT
+    // Generate payment ID
+    $paymentId = uniqid('P');
+    
+    // Create payment document for the payments collection
+    $paymentData = [
+        'paymentId' => $paymentId,
+        'bookingId' => $bookingId,
+        'rideId' => $rideId,
+        'userId' => $userId,
+        'method' => $method,
+        'amount' => (float)($_POST['amount'] ?? 0),
+        'status' => 'pending', // pending/verified/failed
+        'timestamp' => new UTCDateTime()
+    ];
+    
+    // Add GCash-specific fields
+    if ($method === 'GCash') {
+        $paymentData['gcashRefNumber'] = $gcashRefNumber;
+        $paymentData['screenshot'] = $screenshotPath;
+    }
+    
+    // Insert payment
+    $paymentsCollection->insertOne($paymentData);
+    
+    // FIFTH, CREATE HISTORY ENTRY
     try {
-        $userDoc = ($db->users)->findOne(['userID' => $_SESSION['user_id']]);
-        if ($userDoc) {
-            $paymentData['name'] = $userDoc['name'] ?? '';
-            $paymentData['email'] = $userDoc['email'] ?? '';
-            // support passenger id number field variants
-            $paymentData['idNumber'] = $userDoc['idNo'] ?? ($userDoc['idNumber'] ?? '');
+        $historyDoc = [
+            'historyId' => uniqid('H'),
+            'bookingId' => $bookingId,
+            'rideId' => $rideId,
+            'carId' => $rideDoc['carId'] ?? null,
+            'driverId' => $driverId,
+            'driverName' => $driverName,
+            'passengerId' => $userId,
+            'pickupLocation' => $pickupLocation,
+            'dropoffLocation' => $rideDoc['destination'] ?? '',
+            'date' => $rideDoc['date'] ?? '',
+            'time' => $rideDoc['departureTime'] ?? '',
+            'fare' => $paymentData['amount'],
+            'status' => 'pending',
+            'createdAt' => new UTCDateTime()
+        ];
+        
+        // Check for duplicates
+        $existsH = $historyCollection->findOne([
+            'bookingId' => $bookingId
+        ]);
+        
+        if (!$existsH) {
+            $historyCollection->insertOne($historyDoc);
         }
     } catch (Exception $e) {
-        // leave as empty if lookup fails
+        error_log('History insert failed: ' . $e->getMessage());
     }
-    $paymentsCollection->insertOne($paymentData);
-
-    // Build and insert a success booking notification
-    $rideDoc = null;
-    if (!empty($paymentData['rideId'])) {
-        $rideDoc = $ridesCollection->findOne(['rideId' => $paymentData['rideId']]);
-    }
-
-    $notifMessage = 'Successful booking';
-    if ($rideDoc) {
-        $dest = $rideDoc['destination'] ?? '';
-        $time = $rideDoc['departureTime'] ?? '';
-        // Try to get driver name for message formatting
-        $driverName = null;
-        try {
-            $usersCol = $db->users ?? null;
-            if ($usersCol && !empty($rideDoc['driverId'])) {
-                $uDoc = $usersCol->findOne(['userID' => $rideDoc['driverId']]);
-                if ($uDoc && isset($uDoc['name'])) $driverName = $uDoc['name'];
-            }
-        } catch (Exception $e) {
-            // ignore driver lookup failures silently
-        }
-        if ($driverName) {
-            $notifMessage = "Successful booking for Driver {$driverName} bound to {$dest} at {$time}";
-        } else {
-            $notifMessage = "Successful booking for {$dest} ({$time})";
-        }
-    }
-
-    // Build passenger-facing notification (for the booking passenger)
-    $passengerNotification = [
-        'rideId' => $paymentData['rideId'],
-        'driverId' => $rideDoc['driverId'] ?? null,
-        'passengerId' => $paymentData['userId'],
-        'carId' => $rideDoc['carId'] ?? null,
-        'paymentId' => $paymentData['paymentId'],
-        'type' => 'booking',
-        'audience' => 'passenger',
-        'message' => $notifMessage,
-        'timestamp' => new UTCDateTime(),
-        'isRead' => false
-    ];
-
-    // Build driver-facing notification (inform the driver who booked)
-    $passengerName = $paymentData['name'] ?? 'A passenger';
-    $driverMsg = isset($rideDoc) ? ("New booking by {$passengerName} bound to " . ($rideDoc['destination'] ?? '') . " at " . ($rideDoc['departureTime'] ?? '')) : ("New booking by {$passengerName}");
-    $driverNotification = [
-        'rideId' => $paymentData['rideId'],
-        'driverId' => $rideDoc['driverId'] ?? null,
-        'passengerId' => $paymentData['userId'],
-        'carId' => $rideDoc['carId'] ?? null,
-        'paymentId' => $paymentData['paymentId'],
-        'type' => 'booking',
-        'audience' => 'driver',
-        'message' => $driverMsg,
-        'timestamp' => new UTCDateTime(),
-        'isRead' => false
-    ];
-
+    
+    // SIXTH, CREATE NOTIFICATIONS
     try {
-        // De-duplicate passenger notification within the last 2 minutes to prevent accidental double-submits
+        $destination = $rideDoc['destination'] ?? '';
+        $departureTime = $rideDoc['departureTime'] ?? '';
+        $passengerName = $userDoc['name'] ?? 'A passenger';
+        
+        // Passenger notification
+        $passengerNotification = [
+            'bookingId' => $bookingId,
+            'rideId' => $rideId,
+            'driverId' => $driverId,
+            'passengerId' => $userId,
+            'carId' => $rideDoc['carId'] ?? null,
+            'paymentId' => $paymentId,
+            'type' => 'booking',
+            'audience' => 'passenger',
+            'message' => "Booking successful for {$driverName} to {$destination} at {$departureTime}",
+            'timestamp' => new UTCDateTime(),
+            'isRead' => false
+        ];
+        
+        // Driver notification
+        $driverNotification = [
+            'bookingId' => $bookingId,
+            'rideId' => $rideId,
+            'driverId' => $driverId,
+            'passengerId' => $userId,
+            'carId' => $rideDoc['carId'] ?? null,
+            'paymentId' => $paymentId,
+            'type' => 'booking',
+            'audience' => 'driver',
+            'message' => "New booking from {$passengerName} to {$destination} at {$departureTime}",
+            'timestamp' => new UTCDateTime(),
+            'isRead' => false
+        ];
+        
+        // Insert notifications (with deduplication)
         $now = new UTCDateTime();
         $twoMinAgo = new UTCDateTime(($now->toDateTime()->getTimestamp() - 120) * 1000);
+        
         $existsP = $notificationsCollection->findOne([
-            'rideId' => $passengerNotification['rideId'],
-            'passengerId' => $passengerNotification['passengerId'],
-            'message' => $passengerNotification['message'],
+            'rideId' => $rideId,
+            'passengerId' => $userId,
+            'type' => 'booking',
             'timestamp' => ['$gt' => $twoMinAgo]
         ]);
+        
         if (!$existsP) {
             $notificationsCollection->insertOne($passengerNotification);
         }
-
-        // De-duplicate driver notification within the last 2 minutes
+        
         $existsD = $notificationsCollection->findOne([
-            'rideId' => $driverNotification['rideId'],
-            'driverId' => $driverNotification['driverId'],
-            'passengerId' => $driverNotification['passengerId'],
-            'message' => $driverNotification['message'],
+            'rideId' => $rideId,
+            'driverId' => $driverId,
+            'passengerId' => $userId,
+            'type' => 'booking',
             'timestamp' => ['$gt' => $twoMinAgo]
         ]);
+        
         if (!$existsD) {
             $notificationsCollection->insertOne($driverNotification);
         }
     } catch (Exception $e) {
-        // If notification insert fails, do not block payment success
         error_log('Notification insert failed: ' . $e->getMessage());
     }
-
-    // Append to history collection for reporting/archives
-    try {
-        $historyCol = $db->history;
-        $historyDoc = [
-            'historyId' => uniqid('H'),
-            'carId' => $rideDoc['carId'] ?? null,
-            'driverId' => $rideDoc['driverId'] ?? null,
-            'name' => $driverName ?? null,
-            'passengerId' => $paymentData['userId'],
-            'pickupLocation' => $paymentData['pickupLocation'] ?? ($rideDoc['stationedAt'] ?? ''),
-            'dropoffLocation' => $rideDoc['destination'] ?? '',
-            'date' => $rideDoc['date'] ?? '',
-            'time' => $rideDoc['departureTime'] ?? '',
-            'fare' => $paymentData['amount'] ?? 0,
-            'status' => strtolower($paymentData['status'] ?? 'pending'),
-            'createdAt' => new UTCDateTime()
-        ];
-        // Deduplicate per (rideId, passengerId)
-        $existsH = $historyCol->findOne([
-            'passengerId' => $historyDoc['passengerId'],
-            'date' => $historyDoc['date'],
-            'time' => $historyDoc['time'],
-            'dropoffLocation' => $historyDoc['dropoffLocation']
-        ]);
-        if (!$existsH) {
-            $historyCol->insertOne($historyDoc);
-        }
-    } catch (Exception $e) {
-        // Don't block on history failures
-        error_log('History append failed: ' . $e->getMessage());
-    }
-
+    
+    // SEVENTH, SUCCESS RESPONSE
     delete_app_cookie('payment_lock');
-
-    echo json_encode(['success' => true, 'message' => 'Payment saved successfully']);
+    
+    echo json_encode([
+        'success' => true,
+        'message' => 'Booking and payment created successfully',
+        'bookingId' => $bookingId,
+        'paymentId' => $paymentId
+    ]);
+    
 } catch (Exception $e) {
-    echo json_encode(['success' => false, 'message' => 'Error saving payment: ' . $e->getMessage()]);
+    delete_app_cookie('payment_lock');
+    error_log('Payment handler error: ' . $e->getMessage());
+    echo json_encode([
+        'success' => false,
+        'message' => $e->getMessage()
+    ]);
 }
+?>
