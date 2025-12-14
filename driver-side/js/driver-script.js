@@ -109,12 +109,42 @@ document.addEventListener('click', function (e) {
 
 // Helper: resolve DB paths to page-relative URLs
 function resolvePath(path) {
-  if (!path) return '../images/speed.jpg';
+  const DEFAULT = '../images/profile_pics/default-pic.png';
+  if (!path) return DEFAULT;
   if (/^https?:\/\//.test(path)) return path;
   if (path.startsWith('storage/')) return '../' + path;
   if (path.startsWith('images/')) return '../' + path;
-  return '../images/speed.jpg';
+  return DEFAULT;
 }
+
+// Apply profile image to elements
+let PROFILE_IMG_PATH = null;
+function applyProfileImage(path) {
+  if (!path) return;
+  PROFILE_IMG_PATH = path;
+  const els = document.querySelectorAll('.user-pic, .profile-photo');
+  els.forEach(img => {
+    if (img && img.src.indexOf(path) === -1) img.src = path;
+  });
+}
+
+// Observe for late-added profile image elements
+const observer = new MutationObserver(mutations => {
+  if (!PROFILE_IMG_PATH) return;
+  for (const m of mutations) {
+    if (m.addedNodes && m.addedNodes.length) {
+      m.addedNodes.forEach(node => {
+        if (!(node instanceof HTMLElement)) return;
+        if (node.matches && (node.matches('.user-pic') || node.matches('.profile-photo'))) {
+          node.src = PROFILE_IMG_PATH;
+        }
+        const imgs = node.querySelectorAll && node.querySelectorAll('.user-pic, .profile-photo');
+        if (imgs && imgs.length) imgs.forEach(i => i.src = PROFILE_IMG_PATH);
+      });
+    }
+  }
+});
+observer.observe(document.documentElement || document.body, { childList: true, subtree: true });
 
 // Load user name on driver profile
 document.addEventListener("DOMContentLoaded", async () => {
@@ -125,9 +155,8 @@ document.addEventListener("DOMContentLoaded", async () => {
       const p = data.profile || {};
       const nameEl = document.getElementById("userName");
       if (nameEl) nameEl.textContent = p.name || 'Driver';
-      const pics = document.querySelectorAll('.user-pic');
       const imgPath = resolvePath(p.picture);
-      pics.forEach(img => { if (imgPath) img.src = imgPath; });
+      applyProfileImage(imgPath);
     }
   } catch (err) {
     console.error("Failed to load user profile:", err);
