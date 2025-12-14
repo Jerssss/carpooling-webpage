@@ -83,14 +83,30 @@ document.addEventListener('DOMContentLoaded', () => {
         dropdown.addEventListener('click', (e) => e.stopPropagation());
     }
     initializeNotificationTabs();
-    // Populate navbar user name from session-backed endpoint
+    // Populate navbar user name + picture from session-backed endpoint
     try {
       const BASE = `${window.location.origin}/9467_it312-teamarc_midtermproject`;
+
+      function resolvePath(path) {
+        const DEFAULT = '../images/profile_pics/default-pic.png';
+        if (!path) return DEFAULT;
+        if (/^https?:\/\//.test(path)) return path;
+        let p = path.replace(/^\.\//, '').replace(/^\/+/, '');
+        if (p.startsWith('storage/')) return '../' + p;
+        if (p.startsWith('images/')) return '../' + p;
+        return DEFAULT;
+      }
+
       fetch(`${BASE}/includes/get_user_info.php`, { credentials: 'include', cache: 'no-cache' })
         .then(r => r.json()).then(data => {
           const nameEl = document.getElementById('userName');
           if (nameEl && data && data.success && data.user) {
             nameEl.textContent = data.user.name || 'Unknown User';
+            const imgPath = resolvePath(data.user.picture);
+            const pics = document.querySelectorAll('.user-pic');
+            pics.forEach(img => { if (img) img.src = imgPath; });
+            const dropdownImg = document.querySelector('.sub-menu .user-info img');
+            if (dropdownImg) dropdownImg.src = imgPath;
           }
         }).catch(() => {});
 
