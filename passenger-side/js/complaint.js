@@ -35,7 +35,7 @@ function openComplaintModal(rideId, driverId, driverName) {
         return;
     }
     
-    if (!driverId || driverId === '' || driverId === 'undefined') {
+    if (!driverId || driverId === '' || driverId === 'undefined' || driverId == 'UNKNOWN') {
         alert('Error: Driver ID is missing. Please try again or contact support.');
         console.error('Missing driverId:', driverId);
         return;
