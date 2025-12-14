@@ -50,9 +50,7 @@ if (in_array('driver', $roles)) {
     }
 }
 
-/* ==============================
-   PROFILE PHOTO (DEFAULT FALLBACK)
-============================== */
+// PROFILE PHOTO
 $profilePhotoPath = 'storage/uploads/profile/default-user.png';
 
 $profileAbsDir = __DIR__ . '/../storage/uploads/profile/';
@@ -69,9 +67,7 @@ if (!empty($_FILES['profile-photo']) && $_FILES['profile-photo']['error'] === UP
     $profilePhotoPath = $profilePublicDir . $filename;
 }
 
-/* ==============================
-   DRIVER DOCUMENT UPLOADS
-============================== */
+//  DRIVER DOCUMENT UPLOADS
 $licensePath = null;
 $vehicleRegPath = null;
 
@@ -108,9 +104,7 @@ if (in_array('driver', $roles)) {
     }
 }
 
-/* ==============================
-   CAR PHOTO UPLOAD
-============================== */
+//  CAR PHOTO UPLOAD
 $carPhotoPath = null;
 
 if (in_array('driver', $roles)) {
@@ -130,9 +124,7 @@ if (in_array('driver', $roles)) {
     }
 }
 
-/* ==============================
-   CREATE USER
-============================== */
+//  CREATE USER
 $userID = uniqid('U');
 
 $newUser = [
@@ -157,9 +149,7 @@ if (in_array('driver', $roles)) {
 
 $users->insertOne($newUser);
 
-/* ==============================
-   CREATE VEHICLE RECORD
-============================== */
+//  CREATE VEHICLE RECORD
 if (in_array('driver', $roles)) {
 
     $newVehicle = [

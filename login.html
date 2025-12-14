@@ -1,78 +1,77 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login | Carpool</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Login | Carpool</title>
 
-    <link rel="stylesheet" href="css/style-start.css">
-    <link rel="stylesheet" href="css/login.css">
+  <link rel="stylesheet" href="css/style-start.css">
+  <link rel="stylesheet" href="css/login.css">
 </head>
 <body>
-    <!-- NAVBAR -->
-    <nav>
-        <div class="nav-left">
-            <img src="images/carma-logo.png" class="logo" alt="Carma Logo">
-            <span class="site-name">CARMA</span>
-        </div>
-        <div class="nav-right"></div>
-    </nav>
-
-    <!-- PAGE WRAPPER -->
-    <div class="page-wrapper">
-        <div class="background-shape"></div>
-
-        <!-- LOGIN FORM -->
-        <div class="login-container">
-            <h2>Login</h2>
-            
-            <form id="loginForm" method="POST" class="login-form">
-              <div class="form-group">
-                  <label for="role">Log in as</label>
-                  <div class="custom-dropdown">
-                      <select name="role" id="role" required>
-                          <option value="">Select role</option>
-                          <option value="passenger">Passenger</option>
-                          <option value="driver">Driver</option>
-                          <option value="admin">Admin</option>
-                      </select>
-                      <span class="dropdown-arrow">&#9662;</span>
-                  </div>
-              </div>
-
-              <div class="form-group">
-                  <label for="username">Email</label>
-                  <input type="email" id="username" name="email" placeholder="Enter email" required>
-              </div>
-
-              <div class="form-group">
-                  <label for="password">Password</label>
-                  <input type="password" id="password" name="password" placeholder="Enter password" required>
-              </div>
-
-              <div id="login-feedback" class="form-feedback hidden"></div>
-
-              <p class="signup-text">
-                  Don't have an account? <a href="#" id="register-link">Register</a>
-              </p>
-              <button type="submit">Login</button>
-          </form>
-        </div>
-
+  <!-- NAVBAR -->
+  <nav>
+    <div class="nav-left">
+      <img src="images/carma-logo.png" class="logo" alt="Carma Logo">
+      <span class="site-name">CARMA</span>
     </div>
+    <div class="nav-right"></div>
+  </nav>
 
-    <!-- MODAL -->
-    <div class="modal" id="register-modal">
-        <div class="modal-content">
-            <span class="close-button" id="close-modal">&times;</span>
-            <h3>Register as</h3>
-            <div class="modal-buttons">
-                <button class="modal-option" id="driver-btn">Driver</button>
-                <button class="modal-option" id="passenger-btn">Passenger</button>
-                <button class="modal-option" id="multirole-btn">Multi Role</button>
-            </div>
+  <!-- PAGE WRAPPER -->
+  <div class="page-wrapper">
+    <div class="background-shape"></div>
+
+    <!-- LOGIN FORM -->
+    <div class="login-container">
+      <h2>Login</h2>
+      
+      <form id="loginForm" method="POST" class="login-form">
+        <div class="form-group">
+          <label for="role">Log in as</label>
+          <div class="custom-dropdown">
+            <select name="role" id="role" required>
+              <option value="">Select role</option>
+              <option value="passenger">Passenger</option>
+              <option value="driver">Driver</option>
+              <option value="admin">Admin</option>
+            </select>
+            <span class="dropdown-arrow">&#9662;</span>
+          </div>
         </div>
+
+        <div class="form-group">
+          <label for="username">Email</label>
+          <input type="email" id="username" name="email" placeholder="Enter email" required>
+        </div>
+
+        <div class="form-group">
+          <label for="password">Password</label>
+          <input type="password" id="password" name="password" placeholder="Enter password" required>
+        </div>
+
+        <div id="login-feedback" class="form-feedback hidden"></div>
+
+        <p class="signup-text">
+          Don't have an account? <a href="#" id="register-link">Register</a>
+        </p>
+        <button type="submit">Login</button>
+      </form>
     </div>
+  </div>
+
+  <!-- MODAL -->
+  <div class="modal" id="register-modal">
+    <div class="modal-content">
+      <span class="close-button" id="close-modal">&times;</span>
+      <h3>Register as</h3>
+      <div class="modal-buttons">
+        <button class="modal-option" id="driver-btn">Driver</button>
+        <button class="modal-option" id="passenger-btn">Passenger</button>
+        <button class="modal-option" id="multirole-btn">Multi Role</button>
+      </div>
+    </div>
+  </div>
 
   <!-- Add the login JS -->
   <script src="admin-side/nodejs/login.js"></script>

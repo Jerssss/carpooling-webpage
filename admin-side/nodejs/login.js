@@ -68,7 +68,7 @@ document.addEventListener("DOMContentLoaded", () => {
             }
 
         } else {
-            // PHP login → normal submit
+            // PHP login → normal submit (for driver and passenger login)
             loginForm.action = "includes/login.php";
             loginForm.submit();
         }
