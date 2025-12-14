@@ -17,22 +17,8 @@ try {
     $currentUserId = $_SESSION['user_id'];
 
     try {
-        // Fetch the user's document to verify they're a driver
-        $userDoc = $db->selectCollection('users')->findOne(
-            ['userID' => $currentUserId],
-            ['projection' => ['roles' => 1, 'role' => 1]]
-        );
-
-        $roles = isset($userDoc['roles']) && is_array($userDoc['roles'])
-            ? array_map('strtolower', $userDoc['roles'])
-            : [];
-
-        $roleStr = isset($userDoc['role'])
-            ? strtolower((string)$userDoc['role'])
-            : '';
-
-        // If the user isn't a driver, block the request
-        if (!(in_array('driver', $roles, true) || $roleStr === 'driver')) {
+        // If the user role isn't a driver, block the request
+        if (!isset($_SESSION['role']) || $_SESSION['role'] !== 'driver') {
             http_response_code(403);
             echo json_encode(['error' => 'Forbidden: driver role required']);
             exit;
