@@ -122,11 +122,20 @@ let PROFILE_IMG_PATH = null;
 function applyProfileImage(path) {
   if (!path) return;
   PROFILE_IMG_PATH = path;
+
+  // General selectors used across pages
   const els = document.querySelectorAll('.user-pic, .profile-photo');
-  els.forEach(img => {
-    if (img && img.src.indexOf(path) === -1) img.src = path;
-  });
+  els.forEach(img => { if (img) img.src = path; });
+
+  // Ensure dropdown user-image is always updated (some pages treat it differently)
+  const dropdownImg = document.querySelector('.sub-menu .user-info img');
+  if (dropdownImg) dropdownImg.src = path;
 }
+
+// Also reapply on window load in case of timing/order differences
+window.addEventListener('load', () => {
+  if (PROFILE_IMG_PATH) applyProfileImage(PROFILE_IMG_PATH);
+});
 
 // Observe for late-added profile image elements
 const observer = new MutationObserver(mutations => {
