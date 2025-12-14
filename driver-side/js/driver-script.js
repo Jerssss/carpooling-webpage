@@ -107,6 +107,15 @@ document.addEventListener('click', function (e) {
     }
 });
 
+// Helper: resolve DB paths to page-relative URLs
+function resolvePath(path) {
+  if (!path) return '../images/speed.jpg';
+  if (/^https?:\/\//.test(path)) return path;
+  if (path.startsWith('storage/')) return '../' + path;
+  if (path.startsWith('images/')) return '../' + path;
+  return '../images/speed.jpg';
+}
+
 // Load user name on driver profile
 document.addEventListener("DOMContentLoaded", async () => {
   try {
@@ -117,7 +126,8 @@ document.addEventListener("DOMContentLoaded", async () => {
       const nameEl = document.getElementById("userName");
       if (nameEl) nameEl.textContent = p.name || 'Driver';
       const pics = document.querySelectorAll('.user-pic');
-      pics.forEach(img => { img.src = p.photoUrl || '../images/speed.jpg'; });
+      const imgPath = resolvePath(p.picture);
+      pics.forEach(img => { if (imgPath) img.src = imgPath; });
     }
   } catch (err) {
     console.error("Failed to load user profile:", err);
