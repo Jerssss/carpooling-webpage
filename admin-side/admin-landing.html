@@ -98,7 +98,7 @@
                         <!-- Modal Header -->
                          <div class="user-modal-header">
                             <h2 id="modalUserName">User Name</h2>
-                            <button class="modal-close-btn" onclick="closeUserModal()">×</button>
+                            <button class="modal-close-btn" id="closeUserModalBtn">×</button>
                         </div>
                         
                         <!-- Modal Body -->
@@ -144,7 +144,7 @@
                                 <button class="modal-action-btn btn-revoke" id="revokeBtn">
                                     Revoke Verification
                                 </button>
-                                <button class="modal-action-btn btn-cancel" onclick="closeUserModal()">
+                                <button class="modal-action-btn btn-cancel" id="closeUserModalBtn">
                                     Cancel
                                 </button>
                             </div>
@@ -166,7 +166,7 @@
                 <div class="vehicle-modal-content">
                     <div class="vehicle-modal-header">
                         <h2>Vehicle Registration Details</h2>
-                        <span class="vehicle-close" onclick="closeVehicleModal()">&times;</span>
+                        <span class="vehicle-close" id="closeVehiclesModalBtn">&times;</span>
                     </div>
                     <div class="vehicle-modal-body" id="vehicleModalBody">
                         <!-- Content will be loaded dynamically -->
@@ -178,7 +178,7 @@
                             <button class="btn btn-reject" id="rejectVehicleBtn" onclick="updateVehicle(false)">
                                 Reject
                             </button>
-                            <button class="btn btn-cancel" onclick="closeVehicleModal()">
+                            <button class="btn btn-cancel" id="closeVehiclesModalBtn">
                                 Cancel
                             </button>
                         </div>
@@ -196,7 +196,7 @@
                 <div class="modal-content">
                     <div class="modal-header">
                         <h2>Report Details</h2>
-                        <span class="close" onclick="closeReportModal()">&times;</span>
+                        <span class="close" id="closeReportsModalBtn">&times;</span>
                     </div>
                     <div class="modal-body" id="modalBody">
                         <!-- Content will be loaded dynamically -->
@@ -205,7 +205,7 @@
                             <button class="btn btn-resolve" id="resolveBtn" onclick="markAsResolved()">
                                 Mark as Resolved
                             </button>
-                            <button class="btn btn-close-modal" onclick="closeReportModal()">Close</button>
+                            <button class="btn btn-close-modal" id="closeReportsModalBtn">Close</button>
                         </div>
                     </div>
                 </div>
@@ -229,7 +229,7 @@
                      <div class="ride-modal-header">
                         <h2 class="ride-modal-title" id="modalRideTitle">Ride Details</h2>
                         <p class="ride-modal-subtitle" id="modalRideSubtitle">Complete ride information</p>
-                        <button class="ride-modal-close" onclick="closeRideModal()">×</button>
+                        <button class="ride-modal-close" id="closeRidesModalBtn">×</button>
                     </div>
                     
                     <!-- Modal Body -->
@@ -279,7 +279,7 @@
                         </div>
                         <!-- Modal Footer -->
                          <div class="ride-modal-footer">
-                            <button class="close-modal-btn" onclick="closeRideModal()">Close</button>
+                            <button class="close-modal-btn" id="closeRidesModalBtn">Close</button>
                         </div>
                     </div>
                 </div>
@@ -290,7 +290,7 @@
     <div id="modalOverlay" class="modal-overlay hidden">
         <div class="modal-box">
 
-            <button class="close-btn" onclick="closeModal()">✖</button>
+            <button class="close-btn" id="closeUserModalBtn">✖</button>
 
             <div class="modal-header" id="modalName"></div>
             <div class="modal-info">

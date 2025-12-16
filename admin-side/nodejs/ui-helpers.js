@@ -18,6 +18,13 @@ function closeUserModal() {
     document.body.style.overflow = "auto";
 }
 
+document.addEventListener("DOMContentLoaded", () => {
+    const btn = document.getElementById("closeUserModalBtn");
+    if (btn) {
+        btn.addEventListener("click", closeUserModal);
+    }
+});
+
 /**
  * Open vehicle modal
  */
@@ -34,6 +41,13 @@ function closeVehicleModal() {
     if (modal) modal.style.display = "none";
 }
 
+document.addEventListener("DOMContentLoaded", () => {
+    const btn = document.getElementById("closeVehiclesModalBtn");
+    if (btn) {
+        btn.addEventListener("click", closeVehicleModal);
+    }
+});
+
 /**
  * Open report modal
  */
@@ -49,6 +63,13 @@ function closeReportModal() {
     const modal = document.getElementById("reportModal");
     if (modal) modal.style.display = "none";
 }
+
+document.addEventListener("DOMContentLoaded", () => {
+    const btn = document.getElementById("closeReportsModalBtn");
+    if (btn) {
+        btn.addEventListener("click", closeReportModal);
+    }
+});
 
 /**
  * Open ride modal
@@ -67,6 +88,13 @@ function closeRideModal() {
     if (modal) modal.classList.add("hidden");
     document.body.style.overflow = "auto";
 }
+
+document.addEventListener("DOMContentLoaded", () => {
+    const btn = document.getElementById("closeRidesModalBtn");
+    if (btn) {
+        btn.addEventListener("click", closeRideModal);
+    }
+});
 
 /**
  * Truncate text to specified length
