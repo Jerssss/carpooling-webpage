@@ -146,8 +146,8 @@ try {
         $newNum = 1;
     }
     
-    // Generate booking ID
-    $bookingId = 'B' . str_pad($newNum, 4, '0', STR_PAD_LEFT);
+    // Generate a unique booking ID
+    $bookingId = 'B' . str_pad($newNum, 7, '0', STR_PAD_LEFT);
     
     // Get pickup location and coordinates
     $pickupLocation = $_POST['pickupLocation'] ?? '';
@@ -160,6 +160,19 @@ try {
             'lat' => (float)$_POST['pickupLat'],
             'lng' => (float)$_POST['pickupLng']
         ];
+    }
+
+    // Determine seat number
+    $currentPassengers = $rideDoc['passengers'] ?? [];
+    $seatNumber = count($currentPassengers) + 1;
+
+    // Check if ride has available seats
+    $availableSeats = $rideDoc['availableSeats'] ?? 0;
+    $bookedSeats = $rideDoc['bookedSeats'] ?? 0;
+
+    // Avoid overbooking 
+    if ($bookedSeats >= $availableSeats) {
+        throw new Exception('No available seats for this ride');
     }
     
     // Determine initial booking status
@@ -187,6 +200,28 @@ try {
     
     // Insert booking
     $bookingsCollection->insertOne($bookingData);
+
+    // Update the rides collection with the booked passenger info. Add a passenger in the "passengers" object
+    $passengerEntry = [
+        'userId' => $userId,
+        'bookingTime' => new UTCDateTime(),
+        'seatNumber' => $seatNumber
+    ];
+
+    // Update ride. Add passenger to array and increment bookedSeats
+    $updateResult = $ridesCollection->updateOne(
+        ['rideId' => $rideId],
+        [
+            '$push' => ['passengers' => $passengerEntry],
+            '$inc' => ['bookedSeats' => 1]
+        ]
+    );
+
+    if ($updateResult->getModifiedCount() === 0) {
+        error_log("Warning: Failed to update ride {$rideId} with passenger {$userId}");
+    } else {
+        error_log("Successfully added passenger {$userId} to ride {$rideId}, seat {$seatNumber}");
+    }
     
     // FOURTH, CREATE PAYMENT
     // Generate payment ID

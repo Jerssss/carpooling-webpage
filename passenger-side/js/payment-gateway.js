@@ -6,6 +6,9 @@ function getCookie(name) {
 
 // Main functionality
 document.addEventListener("DOMContentLoaded", () => {
+  // Delete payment lock cookie on reload
+    document.cookie = "payment_lock=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+
   // Prevent multiple submissions
   if (getCookie("payment_lock")) {
       alert("Payment already being processed. Please wait.");
