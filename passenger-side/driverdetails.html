@@ -11,7 +11,6 @@
     <script src="../js/notifications.js" defer></script>
     <script src="../js/header-ui-loader.js" defer></script>
     <script type="module" src="js/view_carpool.js" defer></script>
-    <script src="js/driverprofile.js" defer></script>
   </head>
   <body>
     <nav>
@@ -73,7 +72,7 @@
       <div class="driver-container">
         <!-- Left card -->
         <div class="driver-card">
-          <img src="..." alt="Driver" class="driver-photo">
+          <img src="../storage/uploads/profile/default-user.png" alt="Driver" class="driver-photo">
           <p class="label">Your Driver</p>
           <h2 class="driver-name">....</h2>
           <button id="viewDriverBtn" class="view-btn" type="button">View Driver Profile</button>
@@ -97,7 +96,7 @@
 
         <!-- Right details -->
         <div class="driver-details">
-          <img src="..." alt="Driver Car" class="car-photo">
+          <img src="../storage/uploads/car/default_car.png" alt="Driver Car" class="car-photo">
           <div class="ride-details">
             <p>Loading details...</p>
           </div>
@@ -153,63 +152,7 @@
   <script src="js/script.js"></script>
 
 
- <script>
- document.addEventListener("DOMContentLoaded", () => {
-  const viewBtn = document.getElementById("viewDriverBtn");
-
-
-  // Read rideId from URL (passed from carpool list)
-  const urlParams = new URLSearchParams(window.location.search);
-  const rideId = urlParams.get("rideId");
-
-
-  if (!rideId) {
-    console.error("No ride ID in URL");
-    return;
-  }
-
-
-  const BASE = '/9467_it312-teamarc_midtermproject';
-
-  // Fetch all rides
-  fetch(`${BASE}/passenger-side/includes/fetch_carpool.php`, { credentials: 'include' })
-    .then(response => response.json())
-    .then(data => {
-      console.log("Fetched ride data:", data);
-
-
-      // Find the ride that matches the rideId from URL
-      const ride = data.find(r => r.rideId === rideId);
-
-
-      if (!ride) {
-        console.error("Ride not found in data");
-        return;
-      }
-
-
-      const driverId = ride.driverId || ride.driverInfo?.userID;
-
-
-      // Update UI with correct driver
-      document.querySelector(".driver-name").textContent = ride.name;
-      document.querySelector(".driver-photo").src = ride.photo || "../images/default-driver.png";
-
-
-      // Set the button click to the correct driver
-      viewBtn.addEventListener("click", () => {
-        if (driverId) {
-          window.location.href = `viewprofile.html?driverId=${driverId}`;
-        } else {
-          alert("Driver ID not found for this ride.");
-        }
-      });
-    })
-    .catch(err => {
-      console.error("Error fetching ride details:", err);
-    });
-});
-</script>
+ 
 
 
   </body>
