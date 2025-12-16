@@ -20,17 +20,14 @@ if (!isset($_SESSION['user_id']) && isset($_COOKIE['user_id'])) {
 }
 
 // Optional timeout (30 minutes) — applies only after restoration
-$timeout = 30 * 60;
+$timeout = 60 * 60 * 1000;
 if (isset($_SESSION['login_time']) && (time() - $_SESSION['login_time'] > $timeout)) {
     session_unset();
     session_destroy();
     http_response_code(401);
     echo json_encode(['error' => 'Session expired']);
     exit;
-} else {
-    // refresh login_time on each valid request
-    $_SESSION['login_time'] = time();
-}
+} 
 
 // Check if user is logged in
 if (!isset($_SESSION['user_id'])) {

@@ -82,6 +82,7 @@ $rideDetails = [
     'rideId' => $ride['rideId'],
     
     // Driver info
+    'driverId' => $ride['driverInfo']['userID'],
     'driverName' => $ride['driverInfo']['name'],
     'driverEmail' => $ride['driverInfo']['email'],
     'driverPhone' => $ride['driverInfo']['phoneNo'],

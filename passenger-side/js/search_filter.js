@@ -100,7 +100,6 @@ document.addEventListener("DOMContentLoaded", () => {
           <p class="occupation"><strong>${carpool.occupation || 'N/A'}</strong></p>
           <p><img src="${BASE}/images/calendar-icon.png"> ${carpool.date || 'N/A'}</p>
           <p><img src="${BASE}/images/clock-icon.png"> ${carpool.leavingTime || 'N/A'}</p>
-          <p><img src="${BASE}/images/location.png"> ${destLabel}</p>
           <p><img src="${BASE}/images/stationed.png"> ${carpool.stationedAt || 'N/A'}</p>
           <p><img src="${BASE}/images/destination.png"> ${carpool.destination || 'N/A'}</p>
           <p><img src="${BASE}/images/car-seat.png"> ${carpool.availableSeats || 'N/A'} seats</p>

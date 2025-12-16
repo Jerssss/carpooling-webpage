@@ -39,11 +39,10 @@ document.addEventListener("DOMContentLoaded", () => {
             console.log('Ride details:', ride);
 
             // DRIVER PHOTO
-            const driverPhoto = resolveImagePath(
+            document.querySelector('.driver-photo').src = resolveImagePath(
                 ride.driverPhoto,
                 'storage/uploads/profile/default-user.png'
             );
-            document.querySelector('.driver-photo').src = driverPhoto;
 
             // DRIVER NAME
             document.querySelector('.driver-name').textContent = ride.driverName;
@@ -59,11 +58,10 @@ document.addEventListener("DOMContentLoaded", () => {
                 `<strong>Departure time:</strong> ${ride.departureTime}`;
 
             // CAR PHOTO
-            const carPhoto = resolveImagePath(
+            document.querySelector('.car-photo').src = resolveImagePath(
                 ride.carPhoto,
                 'storage/uploads/car/default-car.png'
             );
-            document.querySelector('.car-photo').src = carPhoto;
 
             // RIDE DETAILS
             document.querySelector('.ride-details').innerHTML = `
@@ -79,9 +77,15 @@ document.addEventListener("DOMContentLoaded", () => {
             `;
 
             // Store rideId for booking
-            document
-                .getElementById('bookBtn')
+            document.getElementById('bookBtn')
                 .setAttribute('data-rideid', ride.rideId);
+
+            // VIEW DRIVER PROFILE BUTTON
+            document.getElementById('viewDriverBtn')
+                .addEventListener('click', () => {
+                    window.location.href =
+                        `viewprofile.html?driverId=${encodeURIComponent(ride.driverId)}`;
+                });
         })
         .catch(error => {
             console.error('Error loading ride details:', error);
@@ -89,21 +93,19 @@ document.addEventListener("DOMContentLoaded", () => {
             window.location.href = 'list-of-carpools.html';
         });
 
-    // Book button handler (TO BE DONE LATER)
+    // Book button handler (future)
     document.getElementById('bookBtn').addEventListener('click', () => {
-        const rideId = document
-            .getElementById('bookBtn')
-            .getAttribute('data-rideid');
+        const rideId = document.getElementById('bookBtn').dataset.rideid;
         console.log('Booking ride:', rideId);
     });
 
-    // Cancel button handler
+    // Cancel button
     document.getElementById('cancelBtn').addEventListener('click', () => {
         window.location.href = 'list-of-carpools.html';
     });
 });
 
-// Gets ride ID and passes it to payment (future use)
+// Future use
 function getRideIdFromURL() {
     const urlParams = new URLSearchParams(window.location.search);
     return urlParams.get('rideId');
