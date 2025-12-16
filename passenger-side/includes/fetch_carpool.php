@@ -10,14 +10,19 @@ if (!isset($_SESSION['user_id'])) {
     exit;
 }
 
-// Allow access if the user has passenger role in DB even if session role is different
+// Allow access if the user has passenger role
 if (($_SESSION['role'] ?? '') !== 'passenger') {
     try {
-        $u = $db->users->findOne(['userID' => $_SESSION['user_id']], ['projection' => ['roles' => 1, 'role' => 1]]);
+        $u = $db->users->findOne(
+            ['userID' => $_SESSION['user_id']], 
+            ['projection' => ['roles' => 1, 'role' => 1]]
+        );
         $hasPassenger = false;
         if ($u) {
             if (isset($u['roles']) && is_array($u['roles'])) {
-                foreach ($u['roles'] as $r) { if (strtolower((string)$r) === 'passenger') { $hasPassenger = true; break; } }
+                foreach ($u['roles'] as $r) {
+                    if (strtolower((string)$r) === 'passenger') { $hasPassenger = true; break; }
+                }
             }
             if (!$hasPassenger && isset($u['role']) && strtolower((string)$u['role']) === 'passenger') {
                 $hasPassenger = true;
@@ -35,7 +40,6 @@ if (($_SESSION['role'] ?? '') !== 'passenger') {
     }
 }
 
-
 function normalize_asset_path($path, $default) {
     if (!is_string($path) || $path === '') return $default;
     if (strpos($path, 'http://') === 0 || strpos($path, 'https://') === 0) return $path;
@@ -44,46 +48,31 @@ function normalize_asset_path($path, $default) {
     return $path;
 }
 
-// Reuse existing DB handle
+// Collections
 $ridesCollection = $db->rides;
 $usersCollection = $db->users;
 
-
-// Use aggregation to "join" rides db with users db. SQL equivalent of pipline: left join on
+// Aggregation pipeline to join rides with users
 $pipeline = [
     [
-        // Lookup is equivalent to JOIN in SQL
         '$lookup' => [
-            'from' => 'users', // Target collection name
-            'localField' => 'driverId', // Field from rides
-            'foreignField' => 'userID', // Field from users
-            'as' => 'driverInfo' // driverInfo contains all the aggregated data
+            'from' => 'users',
+            'localField' => 'driverId',
+            'foreignField' => 'userID',
+            'as' => 'driverInfo'
         ]
     ],
-    [
-        '$unwind' => '$driverInfo' // Flatten array (each ride has one driver)
-    ]
+    ['$unwind' => '$driverInfo']
 ];
-
 
 $match = [];
 
-// Save search filters as cookies - store last filters used
-if (isset($_GET['search'])) {
-    set_app_cookie('last_search', $_GET['search']);
-}
+// --- Exclude rides created by current user ---
+$match['driverId'] = ['$ne' => $_SESSION['user_id']];
 
-if (isset($_GET['seat'])) {
-    set_app_cookie('last_seat', $_GET['seat']);
-}
-
-if (isset($_GET['for'])) {
-    set_app_cookie('last_for', $_GET['for']);
-}
-
-
-
+// Search filters
 if (!empty($_GET['search'])) {
+    set_app_cookie('last_search', $_GET['search']);
     $search = $_GET['search'];
     $match['$or'] = [
         ['driverInfo.name' => ['$regex' => $search, '$options' => 'i']],
@@ -92,19 +81,10 @@ if (!empty($_GET['search'])) {
     ];
 }
 
-
-if (!empty($_GET['for'])) {
-    $match['for'] = $_GET['for'];
-}
-
-
 if (!empty($_GET['seat'])) {
+    set_app_cookie('last_seat', $_GET['seat']);
     $seat = (int) $_GET['seat'];
-    if ($seat >= 3) {
-        $match['availableSeats'] = ['$gte' => 3];
-    } else {
-        $match['availableSeats'] = $seat;
-    }
+    $match['availableSeats'] = $seat >= 3 ? ['$gte' => 3] : $seat;
 }
 
 if (!empty($_GET['role'])) { 
@@ -112,22 +92,27 @@ if (!empty($_GET['role'])) {
     $match['driverInfo.occupation'] = $role; 
 }
 
-
 if (!empty($match)) {
     $pipeline[] = ['$match' => $match];
 }
-// Execute aggregation pipeline
+
+// Execute aggregation
 $results = $ridesCollection->aggregate($pipeline);
 
-
-// Store the fetched data here
 $carpools = [];
 
+// Compute dest_type based on addresses
+function computeDestType($stationedAt, $destination) {
+    $stationedAtLower = strtolower($stationedAt ?? '');
+    $destinationLower = strtolower($destination ?? '');
+    if (strpos($destinationLower, 'maryheights campus') !== false) return 'to_maryheights';
+    if (strpos($stationedAtLower, 'maryheights campus') !== false) return 'from_maryheights';
+    return 'other';
+}
 
-// Fetch the required data to generate dynamic content
+// Build carpools array
 foreach ($results as $ride) {
-    $photo = $ride['driverInfo']['picture'] ?? null;
-    $photo = normalize_asset_path($photo, '../images/profile_pics/default-pic.png');
+    $photo = normalize_asset_path($ride['driverInfo']['picture'] ?? null, '../images/profile_pics/default-pic.png');
 
     $carpools[] = [
         // Extract driver info from users collection
@@ -136,30 +121,20 @@ foreach ($results as $ride) {
         'name' => $ride['driverInfo']['name'],
         'email' => $ride['driverInfo']['email'],
         'occupation' => ucfirst($ride['driverInfo']['occupation']),
-
-
         // Extract ride info from rides collection
-        'stationedAt' => isset($ride['stationedAt']) ? $ride['stationedAt'] : 'Unknown Location',
+        'stationedAt' => $ride['stationedAt'] ?? 'Unknown Location',
         'availableSeats' => $ride['availableSeats'],
         'destination' => $ride['destination'],
         'status' => ucfirst($ride['status']),
-        'for' => $ride['for'],
-
-
+        'dest_type' => computeDestType($ride['stationedAt'], $ride['destination']),
+        
         // Since ung format ng date and time sa db cannot be parsed, saka nalang muna ung date formatting
         // 'leavingTime' => date("g:i A", strtotime($ride['departureTime'])),
-        'leavingTime' => $ride['departureTime'], // No date parsing
-
-
-        // Get photopath from mongoDB
+        'leavingTime' => $ride['departureTime'],
         'photo' => $photo
     ];
 }
 
-
-
-
-// Return JSON to frontend (Javascript will then give it to the html file as dynamic content)
 header('Content-Type: application/json');
-echo json_encode($carpools); // Converts PHP array to JSON String
+echo json_encode($carpools);
 ?>

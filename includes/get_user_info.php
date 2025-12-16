@@ -32,6 +32,7 @@ $response = [
         'name' => $user['name'] ?? '',
         'idNo' => $user['idNo'] ?? ($user['idNumber'] ?? ''),
         'email' => $user['email'] ?? '',
+        'picture' => (string)($user['picture'] ?? 'storage/uploads/profile/default-user.png'),
     ],
 ];
 

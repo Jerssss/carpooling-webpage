@@ -13,6 +13,7 @@ try {
         $email    = $_POST['email'] ?? '';
         $password = $_POST['password'] ?? '';
         $role     = $_POST['role'] ?? 'passenger';
+        $selectedRole = $_POST['role']; // driver or passenger
 
         // Find user by email AND check if selected role exists in roles array
         $user = $usersCollection->findOne([
@@ -38,14 +39,14 @@ try {
         $_SESSION['user_id'] = $user->userID;
         $_SESSION['name']    = $user->name;
         $_SESSION['email']   = $user->email;
-        $_SESSION['role']    = $role;
+        $_SESSION['role']    = $selectedRole;
 
         // optional grouping
         $_SESSION['user'] = [
             'userID' => $user->userID,
             'name'   => $user->name,
             'email'  => $user->email,
-            'role'   => $role
+            'role'   => $selectedRole
         ];
 
         // NON-SENSITIVE cookies

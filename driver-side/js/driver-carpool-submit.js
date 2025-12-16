@@ -8,7 +8,9 @@
     const destinationText = data.get('destination');
     const lat = data.get('dest-lat');
     const lng = data.get('dest-lng');
-    if (!destinationText) { alert('Please provide a destination.'); return null; }
+    if (!destinationText) { 
+      alert('Please provide a destination.'); return null; 
+    }
 
     const startVal = startSlotInput && startSlotInput.value;
     const endVal = endSlotInput && endSlotInput.value;
@@ -16,7 +18,9 @@
       alert('Please select a valid first time slot: future non-Sunday between 7:30 AM and 8:00 PM.');
       return null;
     }
-    if (!endVal) { alert('Please select the second time slot.'); return null; }
+    if (!endVal) { 
+      alert('Please select the second time slot.'); return null; 
+    }
     if (!(window.CarmaTime && CarmaTime.validateSecondSlot(startVal, endVal, 10))) {
       alert('Second slot must be later, same day, and at least 10 minutes after the first.');
       return null;
