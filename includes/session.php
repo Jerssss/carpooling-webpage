@@ -27,6 +27,9 @@ if (isset($_SESSION['login_time']) && (time() - $_SESSION['login_time'] > $timeo
     http_response_code(401);
     echo json_encode(['error' => 'Session expired']);
     exit;
+} else {
+    // refresh login_time on each valid request
+    $_SESSION['login_time'] = time();
 }
 
 // Check if user is logged in

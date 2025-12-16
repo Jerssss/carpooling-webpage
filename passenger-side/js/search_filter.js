@@ -1,126 +1,204 @@
-// Local cookie helper to avoid ESM import issues when script isn't loaded as a module
 function getCookie(name) {
-  const match = document.cookie.match(new RegExp('(?:^|; )' + name.replace(/([.$?*|{}()\[\]\\\/\+^])/g, '\\$1') + '=([^;]*)'));
+  const match = document.cookie.match(
+    new RegExp('(?:^|; )' + name.replace(/([.$?*|{}()\[\]\\\/\+^])/g, '\\$1') + '=([^;]*)')
+  );
   return match ? decodeURIComponent(match[1]) : '';
 }
 
-// Restore last search filters
-document.addEventListener("DOMContentLoaded", () => {
-    const search = getCookie("last_search");
-    const seat   = getCookie("last_seat");
-    const type   = getCookie("last_for");
-
-    if (search) document.getElementById("searchInput").value = decodeURIComponent(search);
-    if (seat)   document.getElementById("seatSelect").value = seat;
-    if (type)   document.getElementById("forSelect").value = type;
-
-    fetchCarpools(); // normal AJAX fetch
-});
-
-// Main functionality
 document.addEventListener("DOMContentLoaded", () => {
   const container = document.querySelector(".carpool-container");
+  const filterSummary = document.getElementById("filterSummary");
   const BASE = '/9467_it312-teamarc_midtermproject';
-    const searchInput = document.getElementById("searchInput");
-    const forFilter = document.getElementById("forFilter");
-    const seatFilter = document.getElementById("seatsFilter");
-    const roleFilter = document.getElementById("roleFilter");
 
-    console.log('Fetching carpools with:', {
-      search: searchInput.value,
-      for: forFilter.value,
+  // Inputs
+  const searchInput = document.getElementById("searchInput");
+  const destFilter  = document.getElementById("forFilter");
+  const seatFilter  = document.getElementById("seatsFilter");
+  const roleFilter  = document.getElementById("roleFilter");
+  const dateFilter  = document.getElementById("dateFilter");
+
+  // Restore last search/filters from cookies
+  const lastSearch = getCookie("last_search");
+  const lastSeat   = getCookie("last_seat");
+  const lastType   = getCookie("last_for");
+  if (lastSearch) searchInput.value = lastSearch;
+  if (lastSeat) seatFilter.value = lastSeat;
+  if (lastType) destFilter.value = lastType;
+
+  async function fetchCarpools() {
+    const params = new URLSearchParams({
+      search: searchInput.value.trim(),
+      dest_type: destFilter.value,
       seat: seatFilter.value,
-      role: roleFilter.value
+      role: roleFilter.value,
+      date: dateFilter?.value || ''
     });
 
-  
-    async function fetchCarpools() {
-      const params = new URLSearchParams({
-        search: searchInput.value.trim(),
-        for: forFilter.value,
-        seat: seatFilter.value,
-        role: roleFilter.value
-      });
-  
-      try {
-        const response = await fetch(`${BASE}/passenger-side/includes/fetch_carpool.php?${params.toString()}`, {
-          credentials: 'include'
-        });
-        const data = await response.json();
-        renderCarpools(data);
-      } catch (error) {
-        console.error("Error fetching carpools:", error);
-      }
+    try {
+      const res = await fetch(`${BASE}/passenger-side/includes/fetch_carpool.php?${params}`, { credentials: 'include' });
+      const data = await res.json();
+
+      const carpools = data.carpools || [];
+      const seatOptions = data.seatOptions || [];
+
+      updateSeatsDropdown(seatOptions);
+      renderCarpools(carpools);
+      updateFilterSummary();
+    } catch (err) {
+      console.error("Error fetching carpools:", err);
+      container.innerHTML = "<p>Failed to load carpools.</p>";
     }
-  
-    function renderCarpools(carpools) {
-      container.innerHTML = "";
-      if (!Array.isArray(carpools) || carpools.length === 0) {
-        container.innerHTML = "<p>No matching carpools found.</p>";
-        return;
-      }
+  }
 
-      carpools.forEach((carpool) => {
-        const card = document.createElement("div");
-        card.classList.add("carpool-card");
-        const photoUrl = (carpool.photo || '../images/profile_pics/default-pic.png').replace(/^\.^\.^\//, `${BASE}/`);
-        const statusClass = (carpool.status || '').toLowerCase() === 'available' ? 'green' : 'red';
-        card.innerHTML = `
-          <img src="${photoUrl}" alt="${carpool.name || 'Driver Photo'}">
-          <div class="carpool-info">
-            <h3>${carpool.name || 'Unnamed Driver'}</h3>
-            <p class="occupation"><strong>${carpool.occupation || 'N/A'}</strong></p>
-            <p>
-              <button class="loc-icon-btn" title="View on map" aria-label="View stationed location on map" data-address="${(carpool.stationedAt || '').replace(/"/g,'&quot;')}" data-label="Stationed at">
-                <img src="${BASE}/images/stationed.png" alt="Stationed At">
-              </button>
-              ${carpool.stationedAt || 'N/A'}
-            </p>
-            <p>
-              <button class="loc-icon-btn" title="View on map" aria-label="View destination on map" data-address="${(carpool.destination || '').replace(/"/g,'&quot;')}" data-label="Destination">
-                <img src="${BASE}/images/destination.png" alt="Destination">
-              </button>
-              ${carpool.destination || 'N/A'}
-            </p>
-            <p><img src="${BASE}/images/car-seat.png" alt="Seats"> ${carpool.availableSeats ?? 'N/A'} seats</p>
-            <p><img src="${BASE}/images/clock-icon.png" alt="Time"> ${carpool.leavingTime || 'N/A'}</p>
-            <p><img src="${BASE}/images/pickup.png" alt="For"> ${carpool.for || 'N/A'}</p>
-          </div>
-          <div class="card-footer">
-            <span class="status-dot ${statusClass}"></span>
-            <button class="view-btn" data-rideid="${carpool.rideId || ''}">View</button>
-          </div>
-        `;
-        container.appendChild(card);
-      });
+  function updateSeatsDropdown(seatOptions) {
+    const currentValue = seatFilter.value;
+    seatFilter.innerHTML = '<option value="">All Seats</option>';
 
-      // Attach click handlers for the newly rendered View buttons
-      container.querySelectorAll('.view-btn').forEach((btn) => {
-        btn.addEventListener('click', (e) => {
-          const rideId = e.currentTarget.getAttribute('data-rideid');
-          if (!rideId) return;
-          // Keep the same navigation as the previous renderer
-          window.location.href = `driverdetails.html?rideId=${rideId}`;
-        });
-      });
-
-      // Attach click handlers for map icon buttons
-      container.querySelectorAll('.loc-icon-btn').forEach((btn) => {
-        btn.addEventListener('click', (e) => {
-          e.preventDefault();
-          const address = e.currentTarget.getAttribute('data-address');
-          const label = e.currentTarget.getAttribute('data-label') || 'Location';
-          if (address && typeof window.showLocationOnMap === 'function') {
-            window.showLocationOnMap(address, label);
-          }
-        });
-      });
-    }
-  
-    [searchInput, forFilter, seatFilter, roleFilter].forEach((el) => {
-      el.addEventListener("input", fetchCarpools);
-      el.addEventListener("change", fetchCarpools);
+    seatOptions.sort((a,b) => a-b).forEach(seat => {
+      seatFilter.appendChild(new Option(
+        `${seat} seat${seat > 1 ? 's' : ''} available`,
+        seat
+      ));
     });
-  
+
+    if (currentValue && seatOptions.includes(parseInt(currentValue))) {
+      seatFilter.value = currentValue;
+    } else {
+      seatFilter.value = "";
+    }
+  }
+
+  function renderCarpools(carpools) {
+    container.innerHTML = "";
+    if (!Array.isArray(carpools) || carpools.length === 0) {
+      container.innerHTML = "<p>No matching carpools found.</p>";
+      return;
+    }
+
+    carpools.forEach(carpool => {
+      const card = document.createElement("div");
+      card.classList.add("carpool-card");
+
+      const photoUrl = carpool.photo
+        ? `${BASE}/${carpool.photo}`
+        : `${BASE}/storage/uploads/profile/default-user.png`;
+
+      const statusClass = (carpool.status || '').toLowerCase() === 'available' ? 'green' : 'red';
+      const destLabel = carpool.dest_type === 'to_maryheights'
+        ? 'To Maryheights Campus'
+        : carpool.dest_type === 'from_maryheights'
+        ? 'From Maryheights Campus'
+        : 'Other Route';
+
+      // Determine the address for the location button
+      const locationAddress = carpool.dest_type === 'to_maryheights' ? carpool.stationedAt : carpool.destination;
+
+      card.innerHTML = `
+        <img src="${photoUrl}" alt="${carpool.name || 'Driver Photo'}">
+        <div class="carpool-info">
+          <h3>${carpool.name || 'Unnamed Driver'}</h3>
+          <p class="occupation"><strong>${carpool.occupation || 'N/A'}</strong></p>
+          <p><img src="${BASE}/images/calendar-icon.png"> ${carpool.date || 'N/A'}</p>
+          <p><img src="${BASE}/images/clock-icon.png"> ${carpool.leavingTime || 'N/A'}</p>
+          <p><img src="${BASE}/images/location.png"> ${destLabel}</p>
+          <p><img src="${BASE}/images/stationed.png"> ${carpool.stationedAt || 'N/A'}</p>
+          <p><img src="${BASE}/images/destination.png"> ${carpool.destination || 'N/A'}</p>
+          <p><img src="${BASE}/images/car-seat.png"> ${carpool.availableSeats || 'N/A'} seats</p>
+        </div>
+        <div class="card-footer">
+          ${locationAddress ? `
+            <button class="loc-btn" 
+                    data-address="${locationAddress.replace(/"/g,'&quot;')}" 
+                    data-label="Pickup/Drop-off Location" 
+                    title="View Location on Map" 
+                    aria-label="View Location">
+              <img src="${BASE}/images/location.png" alt="View Location"> Location
+            </button>` : ''}
+            <button class="view-btn" data-rideid="${carpool.rideId}">View</button>
+         </div>
+      `;
+
+      container.appendChild(card);
+    });
+
+    // Add event listeners for view buttons
+    container.querySelectorAll('.view-btn').forEach(btn => {
+      btn.addEventListener('click', e => {
+        const rideId = e.currentTarget.dataset.rideid;
+        window.location.href = `driverdetails.html?rideId=${rideId}`;
+      });
+    });
+
+    // Add event listeners for location buttons
+    container.querySelectorAll('.loc-btn').forEach(btn => {
+      btn.addEventListener('click', e => {
+        const address = e.currentTarget.dataset.address;
+        const label = e.currentTarget.dataset.label;
+        if (address) {
+          window.showLocationOnMap(address, label);
+        } else {
+          alert('No location available.');
+        }
+      });
+    });
+  }
+
+  function updateFilterSummary() {
+    const filters = [];
+    if (searchInput.value.trim()) filters.push(`Search: "${searchInput.value.trim()}"`);
+    if (destFilter.value) filters.push(`${destFilter.options[destFilter.selectedIndex].text}`);
+    if (seatFilter.value) filters.push(`Seats: ${seatFilter.value}`);
+    if (roleFilter.value) filters.push(`Role: ${roleFilter.options[roleFilter.selectedIndex].text}`);
+    if (dateFilter.value) filters.push(`Date: ${dateFilter.value}`);
+
+    filterSummary.textContent = filters.length ? `Active filters: ${filters.join(' | ')}` : '';
+  }
+
+  // Event listeners
+  searchInput.addEventListener("input", fetchCarpools);
+
+  const resetBtn = document.getElementById("resetFilterBtn");
+  resetBtn.addEventListener("click", () => {
+    destFilter.value = "";
+    dateFilter.value = "";
+    seatFilter.value = "";
+    roleFilter.value = "";
+  });
+
+  // --- Filter Modal ---
+  const openBtn   = document.getElementById("openFilterBtn");
+  const modal     = document.getElementById("filterModal");
+  const applyBtn  = document.getElementById("applyFilterBtn");
+  const cancelBtn = document.getElementById("cancelFilterBtn");
+
+  openBtn.addEventListener("click", () => {
+    modal.style.display = "flex";
+    modal.setAttribute("aria-hidden", "false");
+  });
+
+  cancelBtn.addEventListener("click", () => {
+    modal.style.display = "none";
+    modal.setAttribute("aria-hidden", "true");
+  });
+
+  applyBtn.addEventListener("click", () => {
+    // Save current search/filter to cookies
+    document.cookie = `last_search=${encodeURIComponent(searchInput.value)}; path=/`;
+    document.cookie = `last_seat=${seatFilter.value}; path=/`;
+    document.cookie = `last_for=${destFilter.value}; path=/`;
+
+    modal.style.display = "none";
+    modal.setAttribute("aria-hidden", "true");
     fetchCarpools();
   });
+
+  modal.addEventListener("click", (e) => {
+    if (e.target === modal) {
+      modal.style.display = "none";
+      modal.setAttribute("aria-hidden", "true");
+    }
+  });
+
+  // Initial load
+  fetchCarpools();
+});

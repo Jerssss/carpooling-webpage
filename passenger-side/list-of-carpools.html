@@ -70,32 +70,73 @@
   </nav>
 
   <section class="carpool-section">
-    <h1>List of Carpools in Your Area</h1>
+    <h1>List of Carpools</h1>
 
     <div class="search-filter">
       <input type="text" id="searchInput" placeholder="Destination or Driver">
 
-      <div class="filter-group">
-        <select id="forFilter">
-          <option value="">All Types</option>
-          <option value="pickup">Pickup</option>
-          <option value="meetup">Meetup</option>
-        </select>
+      <button id="openFilterBtn" class="filter-icon-btn">
+          <img src="../images/filter-icon.png" alt="Filter">
+      </button>
 
-        <select id="seatsFilter">
-          <option value="">All Seats</option>
-          <option value="1">1 seat available</option>
-          <option value="2">2 seats available</option>
-          <option value="3">3 seats available</option>
-        </select>
+    </div>
 
-        <select id="roleFilter">
-          <option value="">All Roles</option>
-          <option value="student">Student</option>
-          <option value="faculty">Faculty</option>
-        </select>
+    <!-- Filter Modal -->
+    <div id="filterModal" class="filter-modal" aria-hidden="true">
+      <div class="filter-dialog">
+        <h3>Filter Carpools</h3>
+        <button id="resetFilterBtn" class="reset-btn" title="Reset filters">Reset</button>
+
+        <div class="filter-group">
+          <label for="forFilter">Destination Type</label>
+          <select id="forFilter">
+            <option value="">All Types</option>
+            <option value="to_maryheights">To Maryheights Campus</option>
+            <option value="from_maryheights">From Maryheights Campus</option>
+          </select>
+        </div>
+
+        <div class="filter-group">
+          <label for="dateFilter">Ride Date</label>
+          <input type="date" id="dateFilter">
+        </div>
+
+        <div class="filter-group">
+          <label for="seatsFilter">Number of Seats</label>
+          <select id="seatsFilter">
+            <option value="">All Seats</option>
+            <option value="1">1 seat available</option>
+            <option value="2">2 seats available</option>
+            <option value="3">3 seats available</option>
+          </select>
+        </div>
+
+        <div class="filter-group">
+          <label for="roleFilter">Role</label>
+          <select id="roleFilter">
+            <option value="">All Roles</option>
+            <option value="student">Student</option>
+            <option value="faculty">Faculty</option>
+            <option value="staff">Staff</option>
+          </select>
+        </div>
+
+        <div class="filter-buttons">
+          <button id="applyFilterBtn">Apply</button>
+          <button id="cancelFilterBtn">Cancel</button>
+        </div>
       </div>
     </div>
+
+    <div class="cards-container">
+      <!-- Filter summary text -->
+      <div id="filterSummary" class="filter-summary"></div>
+
+      <div class="carpool-container">
+        <!-- Dynamic cards injected here -->
+      </div>
+    </div>
+
 
     <div class="cards-container">
       <div class="carpool-container">
