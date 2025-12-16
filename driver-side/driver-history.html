@@ -16,55 +16,49 @@
 
 <!-- NAVBAR -->
 <nav>
-      <!-- Left -->
-      <div class="nav-left">
+    <div class="nav-left">
         <img src="../images/carma-logo.png" class="logo" alt="CARMA Logo">
         <span class="site-name">CARMA</span>
-      </div>
+    </div>
 
-      <!-- Center Links -->
-      <ul>
+    <ul>
         <li><a href="driver-landing.html">Home</a></li>
         <li><a href="driver-history.html" class="active">History</a></li>
         <li><a href="driver-management.html">Manage</a></li>
-      </ul>
+    </ul>
 
-      <!-- Right -->
-      <div class="nav-right">
+    <div class="nav-right">
         <div class="hamburger" id="hamburger" onclick="toggleMobileMenu()">
-          <div></div>
-          <div></div>
-          <div></div>
+            <div></div><div></div><div></div>
         </div>
 
         <div class="nav-bell">
-          <img src="../images/bell.png" class="bell-icon" alt="Notifications">
-          <div id="notificationsContainer"></div>
+            <img src="../images/bell.png" class="bell-icon" alt="Notifications">
+            <div id="notificationsContainer"></div>
         </div>
 
         <img src="../images/profile_pics/default-pic.png" class="user-pic" onclick="toggleMenu()">
-      </div>
+    </div>
 
-      <!-- Dropdown -->
-      <div class="sub-menu-wrap" id="subMenu">
+    <div class="sub-menu-wrap" id="subMenu">
         <div class="sub-menu">
-          <div class="user-info">
-            <img src="../images/profile_pics/default-pic.png" class="user-pic" alt="User">
-            <h2 id="userName">Loading...</h2>
-          </div>
-          <hr>
-          <a href="driver-profile.html" class="sub-menu-link">
-            <img src="../images/user.png">
-            <p>Driver Profile</p>
-            <span>&gt;</span>
-          </a>
-          <a href="#" class="sub-menu-link">
-            <img src="../images/user-logout.png">
-            <p>Logout</p>
-            <span>&gt;</span>
-          </a>
+            <div class="user-info">
+                <img src="../images/profile_pics/default-pic.png" class="user-pic" alt="User">
+                <h2 id="userName">Loading...</h2>
+            </div>
+            <hr>
+            <a href="driver-profile.html" class="sub-menu-link">
+                <img src="../images/user.png">
+                <p>Driver Profile</p>
+                <span>&gt;</span>
+            </a>
+            <a href="#" class="sub-menu-link">
+                <img src="../images/user-logout.png">
+                <p>Logout</p>
+                <span>&gt;</span>
+            </a>
         </div>
-      </div>
+    </div>
 </nav>
 
 <div class="driver-container">
@@ -72,59 +66,8 @@
     <!-- LEFT PANEL -->
     <div class="left-panel">
         <h2>Completed Rides</h2>
-
         <div class="history-list">
-
-            <!-- COMPLETED RIDE CARD 1 -->
-            <div class="history-card"
-                onclick="showRide(this)"
-                data-date="Nov 20, 2025"
-                data-route="Maryheights → Camp 7"
-                data-car="Toyota Vios"
-                data-time="6:00 AM"
-                data-seats="4 Seats"
-                data-price="₱120">
-
-                <div class="card-top">
-                    <h3 class="card-date">Nov 20, 2025</h3>
-                    <span class="status complete">Completed</span>
-                </div>
-
-                <div class="card-route">Maryheights → Camp 7</div>
-
-                <div class="card-meta">
-                    <span>🚗 Toyota Vios</span>
-                    <span>🕒 6:00 AM</span>
-                    <span>💺 4 Seats</span>
-                    <span>💰 ₱120</span>
-                </div>
-            </div>
-
-            <!-- COMPLETED RIDE CARD 2 -->
-            <div class="history-card"
-                onclick="showRide(this)"
-                data-date="Nov 18, 2025"
-                data-route="Session Road → Bakakeng"
-                data-car="Honda Brio"
-                data-time="7:30 AM"
-                data-seats="3 Seats"
-                data-price="₱100">
-
-                <div class="card-top">
-                    <h3 class="card-date">Nov 18, 2025</h3>
-                    <span class="status complete">Completed</span>
-                </div>
-
-                <div class="card-route">Session Road → Bakakeng</div>
-
-                <div class="card-meta">
-                    <span>🚗 Honda Brio</span>
-                    <span>🕒 7:30 AM</span>
-                    <span>💺 3 Seats</span>
-                    <span>💰 ₱100</span>
-                </div>
-            </div>
-
+            <!-- dynamically populated by JS -->
         </div>
     </div>
 
@@ -136,68 +79,10 @@
 </div>
 
 <script src="../passenger-side/js/notifications.js"></script>
-
 <script>
 function toggleDriverNotifications() {
     const dd = document.getElementById('notificationsDropdown');
     if (dd) dd.classList.toggle('show');
-}
-
-function showRide(card) {
-    const date = card.dataset.date;
-    const route = card.dataset.route;
-    const car = card.dataset.car;
-    const time = card.dataset.time;
-    const seats = card.dataset.seats;
-    const price = card.dataset.price;
-
-    // Highlight selected card
-    document.querySelectorAll('.history-card').forEach(c => c.classList.remove('selected'));
-    card.classList.add('selected');
-
-    // Right panel content
-    const panel = document.getElementById('rideDetails');
-    panel.innerHTML = `
-        <div class="ride-card">
-
-            <div class="ride-header">
-                <h1>${date}</h1>
-                <span class="status complete">Completed</span>
-            </div>
-
-            <h3 class="route-title">${route}</h3>
-
-            <div class="ride-meta">
-                <div>🚗 <strong>Car:</strong> ${car}</div>
-                <div>🕒 <strong>Time:</strong> ${time}</div>
-                <div>💺 <strong>Seats:</strong> ${seats}</div>
-                <div>💰 <strong>Fare:</strong> ${price}</div>
-            </div>
-
-            <h3 class="feedback-title">Passenger Feedback</h3>
-
-            <div class="feedback-list">
-                <div class="feedback-card">
-                    <div class="avatar"></div>
-                    <div class="info">
-                        <div class="name">Juan D.</div>
-                        <div class="comment">Very safe and smooth ride 👍</div>
-                    </div>
-                    <div class="rating">★★★★★</div>
-                </div>
-
-                <div class="feedback-card">
-                    <div class="avatar"></div>
-                    <div class="info">
-                        <div class="name">Maria S.</div>
-                        <div class="comment">Comfortable and friendly driver</div>
-                    </div>
-                    <div class="rating">★★★★☆</div>
-                </div>
-            </div>
-
-        </div>
-    `;
 }
 </script>
 

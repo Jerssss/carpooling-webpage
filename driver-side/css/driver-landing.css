@@ -46,19 +46,15 @@ driver-container, .driver-container {
 .schedule-list {
     flex: 1 1 auto;
     overflow-y: auto;
-    padding-bottom: 80px; /* space so cards never touch button */
     margin-bottom: 0;
 }
 
 /* keep button pinned inside left panel bottom */
 .fixed-bottom-btn {
-    position: sticky;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    margin-top: 10px;
-    background: #F3EBE9;
-    padding-top: 10px;
+    position: absolute;
+    bottom: 20px;
+    left: 20px;
+    right: 20px;
 }
 
 .schedule-btn {
@@ -296,6 +292,26 @@ driver-container, .driver-container {
 .btn.secondary {
     background: #e9e9e9;
 }
+
+.complete-ride-wrap {
+    margin-top: 30px;
+    text-align: center;
+}
+
+.complete-ride-btn {
+    padding: 12px 24px;
+    background: #28a745;
+    color: #fff;
+    border: none;
+    border-radius: 6px;
+    font-size: 16px;
+    cursor: pointer;
+}
+
+.complete-ride-btn:hover {
+    background: #218838;
+}
+
 
 /* ===== RESPONSIVE ===== */
 @media (max-width: 1050px) {
