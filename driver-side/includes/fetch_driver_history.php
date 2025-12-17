@@ -3,7 +3,6 @@ require_once __DIR__ . '/../../includes/session.php';
 require_once __DIR__ . '/../../includes/db_connect.php';
 
 header('Content-Type: application/json; charset=utf-8');
-// error_reporting(E_ALL & ~E_NOTICE & ~E_WARNING);
 
 // Ensure user is logged in and has 'driver' role
 if (!isset($_SESSION['user_id'])) {
@@ -16,7 +15,7 @@ if (!isset($_SESSION['user_id'])) {
     exit;
 }
 
-// Check if user has driver role (support both 'role' string and 'roles' array)
+// Check if user has driver role
 $isDriver = false;
 
 // Check 'role' string
@@ -41,30 +40,27 @@ if (!$isDriver) {
     exit;
 }
 
-
-$historyCol = $db->history;
-$usersCol   = $db->users;
-$reviewsCol = $db->reviews;
-$vehiclesCol = $db->vehicles; // vehicles collection (for resolving car make/model/photo)
-
+$historyCol  = $db->history;
+$usersCol    = $db->users;
+$reviewsCol  = $db->reviews;
+$vehiclesCol = $db->vehicles;
+$ridesCol    = $db->rides; 
 
 try {
-    $driverId = trim($_SESSION['user_id']); // Remove any extra whitespace using trim
+    $driverId = trim($_SESSION['user_id']);
 
-    // Debug: Check user ID
+    // Debug logs
     error_log("Searching for driverId: " . $driverId);
 
-    // Debug: Check all documents in history collection
     $allDocs = $historyCol->find()->toArray();
     error_log("Total history documents: " . count($allDocs));
 
-    // Log the first document to see structure
     if (count($allDocs) > 0) {
         error_log("Sample document driverId: " . ($allDocs[0]['driverId'] ?? 'NOT SET'));
         error_log("Sample document status: " . ($allDocs[0]['status'] ?? 'NOT SET'));
     }
 
-    // Fetch all completed history rides for this driver
+    // Fetch completed rides for driver
     $historyDocs = $historyCol->find([
         'driverId' => $driverId,
         'status'   => 'completed'
@@ -75,6 +71,7 @@ try {
     $history = [];
 
     foreach ($historyDocs as $h) {
+
         // Fetch passenger info
         $user = $usersCol->findOne(['userID' => $h['passengerId']]);
         $passengerName = $user['name'] ?? 'Unknown';
@@ -82,8 +79,8 @@ try {
 
         // Fetch review if exists
         $rideId = $h['rideId'] ?? null;
-
         $review = null;
+
         if ($rideId) {
             $review = $reviewsCol->findOne([
                 'rideId' => $rideId,
@@ -92,54 +89,56 @@ try {
             ]);
         }
 
+        $ridePrice = 0;
+        if (!empty($h['rideId'])) {
+            $rideDoc = $ridesCol->findOne(['rideId' => $h['rideId']]);
+            if ($rideDoc && isset($rideDoc['price'])) {
+                $ridePrice = $rideDoc['price'];
+            }
+        }
 
         $history[] = [
-            'historyId'       => $h['historyId'] ?? '',
-            'rideId'          => $h['rideId'] ?? '',
-            'date'            => $h['date'] ?? '',
-            'time'            => $h['time'] ?? '',
-            'from'            => $h['pickupLocation'] ?? '',
-            'to'              => $h['dropoffLocation'] ?? '',
-            'fare'            => $h['fare'] ?? 0,
-            'passengerName'   => $passengerName,
-            'passengerPicture'=> $passengerPicture,
-            'rating'          => $review['rating'] ?? 'No rating',
-            'comment'         => $review['comment'] ?? 'No comment',
-            // Resolve vehicle details when possible so UI can show make/model/plate and a photo
-            'carId'           => $h['carId'] ?? '',
-            'carMake'         => '',
-            'carModel'        => '',
-            'plateNo'         => '',
-            'car'             => ($h['carId'] ?? 'Unknown'),
-            // Attempt to include a car photo if available in the ride document or vehicles collection
-            'carPhoto'        => $h['carPhoto'] ?? ($h['vehicleInfo']['carPhoto'] ?? ($h['vehiclePhoto'] ?? ''))
+            'historyId'        => $h['historyId'] ?? '',
+            'rideId'           => $h['rideId'] ?? '',
+            'date'             => $h['date'] ?? '',
+            'time'             => $h['time'] ?? '',
+            'from'             => $h['pickupLocation'] ?? '',
+            'to'               => $h['dropoffLocation'] ?? '',
+            'fare'             => $ridePrice ?: ($h['fare'] ?? 0), 
+            'passengerName'    => $passengerName,
+            'passengerPicture' => $passengerPicture,
+            'rating'           => $review['rating'] ?? 'No rating',
+            'comment'          => $review['comment'] ?? 'No comment',
+            'carId'            => $h['carId'] ?? '',
+            'carMake'          => '',
+            'carModel'         => '',
+            'plateNo'          => '',
+            'car'              => ($h['carId'] ?? 'Unknown'),
+            'carPhoto'         => $h['carPhoto'] ?? ($h['vehicleInfo']['carPhoto'] ?? ($h['vehiclePhoto'] ?? ''))
         ];
 
-        // Try to enrich with vehicle collection data (separate lookup to avoid breaking existing structure)
-        if (!empty($h['carId']) && isset($vehiclesCol)) {
+        if (!empty($h['carId'])) {
             try {
                 $veh = $vehiclesCol->findOne(['carId' => $h['carId']]);
                 if ($veh) {
-                    // Prefer vehicle collection fields when available
-                    $history[count($history)-1]['carMake'] = $veh['carMake'] ?? $history[count($history)-1]['carMake'];
-                    $history[count($history)-1]['carModel'] = $veh['carModel'] ?? $history[count($history)-1]['carModel'];
-                    $history[count($history)-1]['plateNo']  = $veh['plateNo'] ?? $history[count($history)-1]['plateNo'];
+                    $idx = count($history) - 1;
 
-                    // Build a friendly car description
-                    $friendly = trim(($history[count($history)-1]['carMake'] . ' ' . $history[count($history)-1]['carModel']));
-                    if (!empty($history[count($history)-1]['plateNo'])) {
-                        $friendly .= ($friendly ? ' — ' : '') . $history[count($history)-1]['plateNo'];
+                    $history[$idx]['carMake'] = $veh['carMake'] ?? '';
+                    $history[$idx]['carModel'] = $veh['carModel'] ?? '';
+                    $history[$idx]['plateNo']  = $veh['plateNo'] ?? '';
+
+                    $friendly = trim($history[$idx]['carMake'] . ' ' . $history[$idx]['carModel']);
+                    if (!empty($history[$idx]['plateNo'])) {
+                        $friendly .= ' — ' . $history[$idx]['plateNo'];
                     }
-                    $history[count($history)-1]['car'] = $friendly ?: ($h['carId'] ?? 'Unknown');
+                    $history[$idx]['car'] = $friendly ?: ($h['carId'] ?? 'Unknown');
 
-                    // Prefer vehicle photo if no carPhoto was set on the ride
-                    if (empty($history[count($history)-1]['carPhoto'])) {
-                        $history[count($history)-1]['carPhoto'] = $veh['carPhoto'] ?? '';
+                    if (empty($history[$idx]['carPhoto'])) {
+                        $history[$idx]['carPhoto'] = $veh['carPhoto'] ?? '';
                     }
                 }
             } catch (Throwable $e) {
-                // Non-fatal: keep original values and continue
-                error_log('Vehicle lookup failed for carId: ' . ($h['carId'] ?? '')); 
+                error_log("Vehicle lookup failed for carId: " . ($h['carId'] ?? ''));
             }
         }
     }
@@ -150,10 +149,7 @@ try {
         'debug' => [
             'searchedDriverId' => $driverId,
             'totalHistoryDocs' => count($allDocs),
-            'matchedDocs' => count($historyDocs),
-            'sampleDriverIds' => array_slice(array_map(function($doc) {
-                return $doc['driverId'] ?? 'NOT SET';
-            }, $allDocs), 0, 5)
+            'matchedDocs' => count($historyDocs)
         ]
     ]);
 
