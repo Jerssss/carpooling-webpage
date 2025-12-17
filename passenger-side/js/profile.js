@@ -1,18 +1,19 @@
 // Editable fields based on users collection
 const EDITABLE_FIELDS = ["name", "phoneNo", "occupation", "picture"];
 
+let isEditing = false;
+
 document.addEventListener("DOMContentLoaded", () => {
   loadProfile();
 
-  document.getElementById("editBtn").onclick = enableEdit;
-  document.getElementById("profileForm").onsubmit = saveProfile;
+  document.getElementById("editBtn").addEventListener("click", toggleEditSave);
+  document.getElementById("profileForm").addEventListener("submit", saveProfile);
 });
 
 function loadProfile() {
   fetch("includes/profile.php?action=get")
     .then(res => res.json())
     .then(user => {
-      // Map MongoDB document to inputs
       Object.keys(user).forEach(key => {
         const input = document.getElementById(key);
         if (input) {
@@ -22,7 +23,6 @@ function loadProfile() {
         }
       });
 
-      // Display-only header
       document.getElementById("displayName").textContent = user.name;
       document.getElementById("displayEmail").textContent = user.email;
 
@@ -30,19 +30,27 @@ function loadProfile() {
         document.getElementById("profilePic").src = "../" + user.picture;
       }
 
-      // Lock ALL inputs by default
-      document.querySelectorAll("#profileForm input").forEach(i => i.disabled = true);
+      document.querySelectorAll("#profileForm input")
+        .forEach(i => i.disabled = true);
     });
 }
 
-function enableEdit() {
-  // Enable ONLY allowed fields
-  EDITABLE_FIELDS.forEach(id => {
-    const input = document.getElementById(id);
-    if (input) input.disabled = false;
-  });
+function toggleEditSave() {
+  const btn = document.getElementById("editBtn");
 
-  document.getElementById("saveBtn").hidden = false;
+  if (!isEditing) {
+    // Enable edit mode
+    EDITABLE_FIELDS.forEach(id => {
+      const input = document.getElementById(id);
+      if (input) input.disabled = false;
+    });
+
+    btn.textContent = "Save";
+    isEditing = true;
+  } else {
+    // Submit form when saving
+    document.getElementById("profileForm").requestSubmit();
+  }
 }
 
 function saveProfile(e) {
@@ -60,11 +68,11 @@ function saveProfile(e) {
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(payload)
   })
-  .then(res => res.json())
-  .then(resp => {
-    if (resp.success) {
-      alert("Profile updated successfully");
-      location.reload();
-    }
-  });
+    .then(res => res.json())
+    .then(resp => {
+      if (resp.success) {
+        alert("Profile updated successfully");
+        location.reload();
+      }
+    });
 }

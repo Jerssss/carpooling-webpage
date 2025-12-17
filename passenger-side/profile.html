@@ -10,7 +10,7 @@
     <script src="js/script.js" defer></script>
     <script src="../js/notifications.js" defer></script>
     <script src="../js/header-ui-loader.js" defer></script>
-     <script src="js/profile.js" defer></script>
+    <script src="js/profile.js" defer></script>
   </head>
   <body>
     <nav>
@@ -38,7 +38,7 @@
       </div>
 
       <div class="nav-bell">
-        <img src="../images/bell.png" class="bell-icon" alt="Notifications">
+        <img src="../images/bell.png" class="bell-icon" alt="Notifications" onclick="toggleNotifications()">
         <div id="notificationsContainer"></div>
       </div>
 
@@ -67,15 +67,13 @@
     </div>
   </nav>
 
-  <section class="profile-page">
+    <section class="profile-page">
   <div class="profile-container">
 
-    <!-- Header -->
     <div class="profile-header">
       <div class="user-basic">
         <img id="profilePic"
              src="../images/profile_pics/default-pic.png"
-             alt="Profile Picture"
              class="profile-photo">
         <div>
           <h2 id="displayName">Loading...</h2>
@@ -83,15 +81,12 @@
         </div>
       </div>
 
-      <button id="editBtn" class="edit-btn" type="button">
-        Edit
-      </button>
+      <!-- SINGLE BUTTON -->
+      <button id="editBtn" class="edit-btn" type="button">Edit</button>
     </div>
 
-    <!-- Form -->
     <form id="profileForm" class="profile-form">
 
-      <!-- NON-EDITABLE (SCHEMA-DRIVEN) -->
       <div class="form-group">
         <label>User ID</label>
         <input type="text" id="userID">
@@ -112,7 +107,6 @@
         <input type="text" id="isVerified">
       </div>
 
-      <!-- EDITABLE (CONTROLLED BY JS) -->
       <div class="form-group">
         <label>Full Name</label>
         <input type="text" id="name">
@@ -128,9 +122,6 @@
         <input type="text" id="occupation">
       </div>
 
-      <button id="saveBtn" type="submit" hidden>
-        Save Changes
-      </button>
     </form>
 
   </div>
