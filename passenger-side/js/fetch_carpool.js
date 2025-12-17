@@ -97,14 +97,12 @@ document.addEventListener("DOMContentLoaded", () => {
       // Add booked class if already booked
       if (carpool.isBooked) {
         card.classList.add("already-booked");
-        console.log(`✓ Added 'already-booked' class to ${carpool.rideId}`);
+        console.log(`Added 'already-booked' class to ${carpool.rideId}`);
       }
 
       const photoUrl = carpool.photo
         ? `${BASE}/${carpool.photo}`
         : `${BASE}/storage/uploads/profile/default-user.png`;
-
-      const statusClass = (carpool.status || '').toLowerCase() === 'available' ? 'green' : 'red';
       
       const destLabel = carpool.dest_type === 'to_maryheights'
         ? 'To Maryheights Campus'
@@ -137,8 +135,10 @@ document.addEventListener("DOMContentLoaded", () => {
                     aria-label="View Location">
               <img src="${BASE}/images/location.png" alt="View Location"> Location
             </button>` : ''}
-            <button class="view-btn" data-rideid="${carpool.rideId}" ${carpool.isBooked ? 'disabled' : ''}>
-              ${carpool.isBooked ? 'View Booking' : 'View'}
+            <button class="view-btn"
+                    data-rideid="${carpool.rideId}"
+                    data-booked="${carpool.isBooked}">
+                        ${carpool.isBooked ? 'Booked. See History' : 'View'}
             </button>
          </div>
       `;
@@ -150,9 +150,17 @@ document.addEventListener("DOMContentLoaded", () => {
     container.querySelectorAll('.view-btn').forEach(btn => {
       btn.addEventListener('click', e => {
         const rideId = e.currentTarget.dataset.rideid;
-        window.location.href = `driverdetails.html?rideId=${rideId}`;
+        const isBooked = e.currentTarget.dataset.booked === "true";
+        
+        if (isBooked) {
+          // Redirect to booking history
+          window.location.href = `history.html?rideId=${rideId}`;
+          } else {
+            // Normal view
+            window.location.href = `driverdetails.html?rideId=${rideId}`;
+          }
+        });
       });
-    });
 
     // Add event listeners for location buttons
     container.querySelectorAll('.loc-btn').forEach(btn => {

@@ -65,6 +65,8 @@ document.addEventListener("DOMContentLoaded", () => {
         const rideId = ride.rideId || '';
         const driverName = ride.name || 'Unknown Driver';
 
+        const bookingId = ride.bookingId || '';
+
         card.innerHTML = `
             <div class="ride-header">
                 <div class="ride-left">
@@ -93,13 +95,60 @@ document.addEventListener("DOMContentLoaded", () => {
                 </div>
             </div>
             
-            ${showReportButton ? `
-                <button class="report-btn" onclick="openComplaintModal('${rideId}', '${driverId}', '${driverName}')" title="Report this driver">
+            ${!showReportButton ? `
+                <button class="cancel-btn"
+                data-bookingid="${bookingId}"
+                data-rideid="${rideId}">
+                Cancel Booking
+                </button>
+                ` : ''}
+                
+                ${showReportButton ? `
+                    <button class="report-btn"
+                    onclick="openComplaintModal('${rideId}', '${driverId}', '${driverName}')">
                     <img src="${reportIcon}" alt="Report" />
                     <span>Report</span>
-                </button>
-            ` : ''}
-        `;
+                    </button>
+                    ` : ''}
+                `;
         return card;
     }
+});
+
+document.addEventListener('click', async (e) => {
+  const btn = e.target.closest('.cancel-btn');
+  if (!btn) return;
+
+  const bookingId = btn.dataset.bookingid;
+  const rideId = btn.dataset.rideid;
+
+  if (!bookingId || !rideId) {
+    alert('Invalid booking data.');
+    return;
+  }
+
+  if (!confirm('Are you sure you want to cancel this booking?')) return;
+
+  try {
+    const res = await fetch(`${BASE}/passenger-side/includes/cancel_booking.php`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      credentials: 'include',
+      body: JSON.stringify({ bookingId, rideId })
+    });
+
+    const data = await res.json();
+
+    if (!res.ok) {
+      alert(data.error || 'Failed to cancel booking');
+      return;
+    }
+
+    alert('Booking cancelled successfully');
+    location.reload();
+
+  } catch (err) {
+    console.error(err);
+    alert('Server error');
+  }
 });
