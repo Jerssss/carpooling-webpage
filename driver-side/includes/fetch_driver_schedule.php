@@ -28,7 +28,18 @@ try {
 
     foreach ($rideDocs as $ride) {
 
-        // Fetch pending passenger bookings for this ride
+        // 🚫 SKIP RIDES ALREADY COMPLETED (BASED ON HISTORY)
+        $completedRide = $historyCol->findOne([
+            'rideId'    => $ride['rideId'],
+            'driverId'  => $driverId,
+            'status'    => 'completed'
+        ]);
+
+        if ($completedRide) {
+            continue;
+        }
+
+        // Fetch pending passenger bookings
         $historyDocs = $historyCol->find([
             'rideId'   => $ride['rideId'],
             'driverId' => $driverId,
@@ -38,7 +49,6 @@ try {
         $passengers = [];
 
         foreach ($historyDocs as $history) {
-            // Exclude driver if booked as passenger
             if ($history['passengerId'] === $driverId) continue;
 
             $user = $usersCol->findOne(['userID' => $history['passengerId']]);
@@ -55,6 +65,7 @@ try {
             ];
         }
 
+        // ✅ Always include ride (even with 0 passengers)
         $schedule[] = [
             'rideId'     => $ride['rideId'],
             'date'       => $ride['date'],
