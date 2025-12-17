@@ -79,11 +79,17 @@ try {
         $passengerPicture = $user['picture'] ?? '../images/profile_pics/default.png';
 
         // Fetch review if exists
-        $review = $reviewsCol->findOne([
-            'rideId' => $h['rideId'],
-            'passengerId' => $h['passengerId'],
-            'driverId' => $driverId
-        ]);
+        $rideId = $h['rideId'] ?? null;
+
+        $review = null;
+        if ($rideId) {
+            $review = $reviewsCol->findOne([
+                'rideId' => $rideId,
+                'passengerId' => $h['passengerId'],
+                'driverId' => $driverId
+            ]);
+        }
+
 
         $history[] = [
             'historyId'       => $h['historyId'] ?? '',
