@@ -34,6 +34,8 @@ document.addEventListener("DOMContentLoaded", () => {
             .then(data => {
                 scheduleList.innerHTML = "";
                 rightPanel.innerHTML = "";
+                // show placeholder until user clicks a schedule card
+                rightPanel.innerHTML = '<div class="right-placeholder">Your scheduled carpool will appear here :)</div>';
 
                 const rides = Array.isArray(data.rides) ? data.rides : [];
 
@@ -201,9 +203,12 @@ rightPanel.appendChild(div);
                     .querySelectorAll(".content-window")
                     .forEach(w => w.classList.remove("active"));
 
-                document
-                    .getElementById(target)
-                    ?.classList.add("active");
+                const targetEl = document.getElementById(target);
+                if (targetEl) targetEl.classList.add("active");
+
+                // remove placeholder when a schedule is selected
+                const placeholder = rightPanel.querySelector('.right-placeholder');
+                if (placeholder) placeholder.remove();
             });
         });
     }

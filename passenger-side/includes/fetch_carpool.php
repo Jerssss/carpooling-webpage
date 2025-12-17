@@ -40,7 +40,11 @@ if (($_SESSION['role'] ?? '') !== 'passenger') {
                     }
                 }
             }
-            if (!$hasPassenger && isset($u['role']) && strtolower((string)$u['role']) === 'passenger') {
+            if (
+                !$hasPassenger &&
+                isset($u['role']) &&
+                strtolower((string)$u['role']) === 'passenger'
+            ) {
                 $hasPassenger = true;
             }
         }
@@ -107,7 +111,7 @@ foreach ($allSeatsCursor as $r) {
     $seat = $r['availableSeats'] ?? 0;
     if (!in_array($seat, $allSeats)) $allSeats[] = $seat;
 }
-sort($allSeats); // sort ascending
+sort($allSeats);
 
 // ----------------------------
 // Aggregation pipeline
@@ -120,7 +124,6 @@ $pipeline = [
         'as' => 'driverInfo'
     ]],
     ['$unwind' => '$driverInfo'],
-
     ['$addFields' => [
         'isBooked' => [
             '$in' => [
@@ -131,8 +134,16 @@ $pipeline = [
     ]]
 ];
 
+// ----------------------------
+// MATCH FILTERS
+// ----------------------------
 $match = [];
-$match['driverId'] = ['$ne' => $_SESSION['user_id']]; // exclude own rides
+
+// exclude own rides
+$match['driverId'] = ['$ne' => $_SESSION['user_id']];
+
+// ✅ EXCLUDE INACTIVE RIDES
+$match['status'] = ['$ne' => 'inactive'];
 
 if ($search) {
     $match['$or'] = [
@@ -151,9 +162,7 @@ if ($roleFilter) {
     $match['driverInfo.occupation'] = strtolower($roleFilter);
 }
 
-if (!empty($match)) {
-    $pipeline[] = ['$match' => $match];
-}
+$pipeline[] = ['$match' => $match];
 
 // ----------------------------
 // Execute query
@@ -167,19 +176,15 @@ $carpools = [];
 foreach ($results as $ride) {
     $destType = computeDestType($ride['stationedAt'], $ride['destination']);
 
-    // Apply dest_type filter
     if ($destTypeFilter && $destType !== $destTypeFilter) continue;
-
-    // Apply date filter
     if ($dateFilter && ($ride['date'] ?? '') !== $dateFilter) continue;
 
-    $photo = normalize_asset_path($ride['driverInfo']['picture'] ?? null, '../images/profile_pics/default-pic.png');
-   
-    $rideId = $ride['rideId'];
+    $photo = normalize_asset_path(
+        $ride['driverInfo']['picture'] ?? null,
+        '../images/profile_pics/default-pic.png'
+    );
 
-    // Check if user has booked this ride
     $isBooked = $ride['isBooked'] ?? false;
-
 
     $carpools[] = [
         'rideId' => $ride['rideId'],
@@ -205,5 +210,5 @@ foreach ($results as $ride) {
 // ----------------------------
 echo json_encode([
     'carpools' => $carpools,
-    'seatOptions' => $allSeats // always all possible seats
+    'seatOptions' => $allSeats
 ]);
