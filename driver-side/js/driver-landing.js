@@ -135,7 +135,17 @@ document.addEventListener("DOMContentLoaded", () => {
         button.className = "complete-ride-btn";
         button.textContent = "Mark as Done";
 
+
+        if (!ride.passengers || ride.passengers.length === 0) {
+            button.disabled = true;
+            button.classList.add("disabled");
+            button.title = "Cannot complete ride without passengers";
+        }
+
         button.addEventListener("click", () => {
+
+            if (button.disabled) return;
+
             if (!confirm("Mark this ride as completed?")) return;
 
             fetch(completeRideEndpoint, {
@@ -161,9 +171,10 @@ document.addEventListener("DOMContentLoaded", () => {
             });
         });
 
-        wrap.appendChild(button);
-        div.appendChild(wrap);
-        rightPanel.appendChild(div);
+wrap.appendChild(button);
+div.appendChild(wrap);
+rightPanel.appendChild(div);
+
     }
 
     // ---- LEFT PANEL CLICK ----
