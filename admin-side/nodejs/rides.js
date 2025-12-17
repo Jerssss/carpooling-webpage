@@ -160,7 +160,6 @@ async function populateRideModal(ride, driver, vehicle) {
     document.getElementById("detailDestination").textContent = ride.destination || 'N/A';
     document.getElementById("detailAvailableSeats").textContent =
         `${ride.availableSeats} / ${ride.availableSeats + (ride.bookedSeats || 0)} total`;
-    document.getElementById("detailPurpose").textContent = ride.for || 'N/A';
     document.getElementById("detailPrice").textContent = `₱${ride.price || 0}`;
 
     await populatePassengersList(ride);

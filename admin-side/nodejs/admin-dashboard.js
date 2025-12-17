@@ -24,6 +24,9 @@ window.reportsModule = reportsModule;
 window.ridesModule = ridesModule;
 window.uiHelpers = uiHelpers;
 
+// Expose specific functions for inline onclick handlers
+window.updateVehicle = vehicleModule.updateVehicle; 
+
 console.log("admin-dashboard.js loaded");
 
 /**

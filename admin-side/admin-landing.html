@@ -144,7 +144,7 @@
                                 <button class="modal-action-btn btn-revoke" id="revokeBtn">
                                     Revoke Verification
                                 </button>
-                                <button class="modal-action-btn btn-cancel" id="closeUserModalBtn">
+                                <button class="modal-action-btn btn-cancel" id="closeUserModalBtn" onclick="window.uiHelpers.closeUserModal()">
                                     Cancel
                                 </button>
                             </div>
@@ -178,7 +178,7 @@
                             <button class="btn btn-reject" id="rejectVehicleBtn" onclick="updateVehicle(false)">
                                 Reject
                             </button>
-                            <button class="btn btn-cancel" id="closeVehiclesModalBtn">
+                            <button class="btn btn-cancel" id="closeVehiclesModalBtn" onclick="window.uiHelpers.closeVehicleModal()">
                                 Cancel
                             </button>
                         </div>
@@ -202,10 +202,11 @@
                         <!-- Content will be loaded dynamically -->
                         </div>
                         <div class="modal-footer">
-                            <button class="btn btn-resolve" id="resolveBtn" onclick="markAsResolved()">
+                            <button class="btn btn-resolve" id="resolveBtn" onclick="window.reportsModule.markAsResolved()">
                                 Mark as Resolved
                             </button>
-                            <button class="btn btn-close-modal" id="closeReportsModalBtn">Close</button>
+                            <button class="btn btn-close-modal" id="closeReportsModalBtn" onclick="window.uiHelpers.closeReportModal()">
+                                Close</button>
                         </div>
                     </div>
                 </div>
@@ -262,8 +263,6 @@
                                 <span class="detail-value highlight" id="detailDestination">-</span>
                                 <span class="detail-label">Available Seats:</span>
                                 <span class="detail-value" id="detailAvailableSeats">-</span>
-                                <span class="detail-label">Purpose:</span>
-                                <span class="detail-value" id="detailPurpose">-</span>
                                 <span class="detail-label">Price per Seat:</span>
                                 <span class="detail-value price" id="detailPrice">-</span>
                             </div>
@@ -279,7 +278,7 @@
                         </div>
                         <!-- Modal Footer -->
                          <div class="ride-modal-footer">
-                            <button class="close-modal-btn" id="closeRidesModalBtn">Close</button>
+                            <button class="close-modal-btn" id="closeRidesModalBtn" onclick="window.uiHelpers.closeRideModal()">Close</button>
                         </div>
                     </div>
                 </div>
