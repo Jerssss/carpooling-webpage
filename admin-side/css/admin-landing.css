@@ -36,6 +36,34 @@ body {
     margin-bottom: 25px;
 }
 
+/* Logout Button */
+.logout-btn {
+    width: 100%;
+    padding: 8px 0;
+    border-radius: 5px;
+    background: #f68d0ef3;
+    color: white;
+    font-size: 14px;
+    font-weight: 600;
+    font-family: "Poppins", sans-serif;
+    cursor: pointer;
+    transition: all 0.25s ease;
+}
+
+/* Hover */
+.logout-btn:hover {
+    background: #FFC800;
+    color: white;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 16px rgba(255, 200, 0, 0.35);
+}
+
+/* Active (click) */
+.logout-btn:active {
+    transform: translateY(0);
+    box-shadow: 0 3px 8px rgba(255, 200, 0, 0.25);
+}
+
 
 .sidebar-label {
     font-size: 14px;
