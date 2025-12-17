@@ -138,7 +138,7 @@ document.addEventListener("DOMContentLoaded", () => {
             <button class="view-btn"
                     data-rideid="${carpool.rideId}"
                     data-booked="${carpool.isBooked}">
-                        ${carpool.isBooked ? 'Booked. See History' : 'View'}
+                        ${carpool.isBooked ? 'See History' : 'View'}
             </button>
          </div>
       `;
