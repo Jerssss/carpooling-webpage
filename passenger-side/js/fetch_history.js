@@ -121,7 +121,13 @@ document.addEventListener("DOMContentLoaded", () => {
                 </div>
             ` : ''}
         `;
-
+        if (ride.status === 'cancelled') {
+            card.classList.add('cancelled');
+            const badge = document.createElement('div');
+            badge.className = 'cancelled-badge';
+            badge.textContent = 'Cancelled';
+            card.appendChild(badge);
+        }
         return card;
     }
 });
@@ -139,29 +145,33 @@ document.addEventListener('click', async (e) => {
         return;
     }
 
-    if (!confirm('Are you sure you want to cancel this booking?')) return;
-
-    try {
-        const res = await fetch(`${BASE}/passenger-side/includes/cancel_booking.php`, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            credentials: 'include',
-            body: JSON.stringify({ bookingId, rideId })
-        });
-
-        const data = await res.json();
-
-        if (!res.ok) {
-            alert(data.error || 'Failed to cancel booking');
-            return;
+    const modal = document.getElementById('cancelModal');
+    modal.classList.add('open');
+    
+    document.getElementById('cancelNoBtn').onclick = () => {
+        modal.classList.remove('open');
+    };
+    
+    document.getElementById('cancelYesBtn').onclick = async () => {
+        modal.classList.remove('open');
+        
+        try {
+            const res = await fetch(`${BASE}/passenger-side/includes/cancel_booking.php`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                credentials: 'include',
+                body: JSON.stringify({ bookingId, rideId })
+            });
+            
+            const data = await res.json();
+            if (!res.ok) throw new Error(data.error || 'Failed');
+            
+            location.reload();
+        
+        } catch (err) {
+            alert('Server error');
         }
-
-        alert('Booking cancelled successfully');
-        location.reload();
-    } catch (err) {
-        console.error(err);
-        alert('Server error');
-    }
+    };
 });
 
 /* RATING */
