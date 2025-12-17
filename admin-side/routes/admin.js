@@ -11,8 +11,11 @@ router.post("/login", async (req, res) => {
         const db = req.app.locals.db;
         const users = db.collection("users");
 
-        const user = await users.findOne({ email: email, role: "admin" });
-        if (!user) return res.status(401).json({ message: "Admin not found" });
+        const user = await users.findOne({ email });
+
+        if (!user || !user.roles?.includes("admin")) {
+            return res.status(401).json({ message: "Admin not found" });
+        }
 
         const passwordMatch = await bcrypt.compare(password, user.password);
         if (!passwordMatch) return res.status(401).json({ message: "Invalid password" });
