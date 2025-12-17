@@ -65,16 +65,20 @@ try {
             ];
         }
 
-        // ✅ Always include ride (even with 0 passengers)
+        
         $schedule[] = [
-            'rideId'     => $ride['rideId'],
-            'date'       => $ride['date'],
-            'time'       => $ride['departureTime'],
-            'from'       => $ride['stationedAt'],
-            'to'         => $ride['destination'],
-            'historyIds' => array_column($passengers, 'historyId'),
-            'passengers' => $passengers
+            'rideId'        => $ride['rideId'],
+            'date'          => $ride['date'],
+            'time'          => $ride['departureTime'],
+            'from'          => $ride['stationedAt'],
+            'to'            => $ride['destination'],
+            'availableSeats'=> $ride['availableSeats'] ?? 0, // max seats
+            'bookedSeats'   => $ride['bookedSeats'] ?? count($passengers),
+            'price'         => $ride['price'] ?? 0,
+            'historyIds'    => array_column($passengers, 'historyId'),
+            'passengers'    => $passengers
         ];
+
     }
 
     echo json_encode([

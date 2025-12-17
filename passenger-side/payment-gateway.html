@@ -90,17 +90,12 @@
         </div>
 
         <div class="detail-group">
-          <label for="idNumber">ID Number</label>
-          <input type="text" id="idNumber" name="idNumber" readonly>
-        </div>
-
-        <div class="detail-group">
           <label for="email">Email</label>
           <input type="email" id="email" name="email" readonly>
         </div>
 
         <div class="detail-group">
-          <label for="pickupTime">Pickup / Meetup Time</label>
+          <label for="pickupTime">Pickup Time</label>
           <input type="text" id="pickupTime" name="pickupTime" readonly>
         </div>
 
@@ -114,13 +109,11 @@
           <form class="payment-form" id="paymentForm">
             <h3>Transaction Details</h3>
 
-            <label>Pickup Type</label>
-            <select id="pickupType" name="pickupType" required>
-              <option value="pickup">Pickup</option>
-              <option value="meetup">Meetup</option>
-            </select>
+            <label>Type</label>
+            <input type="hidden" id="pickupType" name="pickupType" value="pickup">
+            <div class="static-field">Pickup</div>
 
-            <label>Pickup/Meetup Location</label>
+            <label>Pickup Location</label>
             <div class="input-icon-wrap">
               <input type="text" id="pickupLocation" name="pickupLocation" placeholder="Enter Location" required
                 autocomplete="off">
@@ -152,13 +145,11 @@
           <form class="payment-form" id="cashForm">
             <h3>Transaction Details</h3>
 
-            <label>Pickup Type</label>
-            <select id="cashPickupType" name="pickupType" required>
-              <option value="pickup">Pickup</option>
-              <option value="meetup">Meetup</option>
-            </select>
+            <label>Type</label>
+            <input type="hidden" id="cashPickupType" name="pickupType" value="pickup">
+            <div class="static-field">Pickup</div>
 
-            <label>Pickup/Meetup Location</label>
+            <label>Pickup Location</label>
             <div class="input-icon-wrap">
               <input type="text" id="cashPickupLocation" name="pickupLocation" placeholder="Enter Location" required
                 autocomplete="off">
@@ -184,7 +175,7 @@
 
         <div id="cash-image" class="hidden">
           <img src="../images/cash.png" alt="Cash" class="qr-code">
-          <p class="gcash-label">Please prepare the exact fare upon meetup.</p>
+          <p class="gcash-label">Please prepare the exact fare upon pickup.</p>
         </div>
       </div>
     </div>
@@ -213,7 +204,7 @@
   <div id="pickupMapModal" class="map-modal" aria-hidden="true">
     <div class="map-card" role="dialog" aria-modal="true" aria-labelledby="pickupMapTitle">
       <div class="map-header">
-        <h3 id="pickupMapTitle">Select Pickup / Meetup Location</h3>
+        <h3 id="pickupMapTitle">Select Pickup Location</h3>
         <button type="button" class="btn secondary" id="closePickupMap">Close</button>
       </div>
       <div class="map-body">

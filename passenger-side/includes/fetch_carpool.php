@@ -130,13 +130,36 @@ sort($allSeats); // sort ascending
 // Aggregation pipeline
 // ----------------------------
 $pipeline = [
+    
     ['$lookup' => [
         'from' => 'users',
         'localField' => 'driverId',
         'foreignField' => 'userID',
         'as' => 'driverInfo'
     ]],
-    ['$unwind' => '$driverInfo']
+    ['$unwind' => '$driverInfo'],
+
+    ['$lookup' => [
+        'from' => 'history',
+        'let' => ['rideId' => '$rideId', 'driverId' => '$driverId'],
+        'pipeline' => [
+            ['$match' => [
+                '$expr' => [
+                    '$and' => [
+                        ['$eq' => ['$rideId', '$$rideId']],
+                        ['$eq' => ['$driverId', '$$driverId']],
+                        ['$eq' => ['$status', 'completed']]
+                    ]
+                ]
+            ]]
+        ],
+        'as' => 'completedHistory'
+    ]],
+
+    ['$match' => [
+        'completedHistory' => ['$size' => 0],
+        'driverId' => ['$ne' => $_SESSION['user_id']] // exclude own rides
+    ]]
 ];
 
 $match = [];

@@ -44,7 +44,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
   // === DB-linked user info fields (outside the form) ===
   const fullNameEl = document.getElementById("fullName");
-  const idNumberEl = document.getElementById("idNumber");
   const emailEl = document.getElementById("email");
   const pickupTimeEl = document.getElementById("pickupTime");
 
@@ -70,7 +69,6 @@ document.addEventListener("DOMContentLoaded", () => {
       if (data.success && data.user) {
         const u = data.user;
         fullNameEl.value = u.name || "";
-        idNumberEl.value = u.idNo || "";
         emailEl.value = u.email || "";
         pickupTimeEl.value = data.departureTime || "";
       }
@@ -87,7 +85,6 @@ document.addEventListener("DOMContentLoaded", () => {
       // Add outside fields
       formData.append("name", fullNameEl.value);
       formData.append("email", emailEl.value);
-      formData.append("idNumber", idNumberEl.value);
       formData.append("pickupTime", pickupTimeEl.value);
       formData.append("rideId", rideId);
       formData.append("amount", 50);
@@ -135,7 +132,6 @@ document.addEventListener("DOMContentLoaded", () => {
       // Add outside fields
       formData.append("name", fullNameEl.value);
       formData.append("email", emailEl.value);
-      formData.append("idNumber", idNumberEl.value);
       formData.append("pickupTime", pickupTimeEl.value);
       formData.append("rideId", rideId);
       formData.append("amount", 50);
