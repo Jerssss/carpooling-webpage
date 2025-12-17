@@ -178,7 +178,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
   function updateFilterSummary() {
     const filters = [];
-    if (searchInput.value.trim()) filters.push(`Search: "${searchInput.value.trim()}"`);
     if (destFilter.value) filters.push(`${destFilter.options[destFilter.selectedIndex].text}`);
     if (seatFilter.value) filters.push(`Seats: ${seatFilter.value}`);
     if (roleFilter.value) filters.push(`Role: ${roleFilter.options[roleFilter.selectedIndex].text}`);
