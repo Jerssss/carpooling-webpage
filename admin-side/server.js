@@ -6,7 +6,7 @@ require("dotenv").config({ path: ".env" });
 
 const app = express();
 app.use(express.json());
-const allowedOrigins = ['http://localhost', 'http://localhost:8888'];
+const allowedOrigins = ['http://localhost', 'http://localhost:8080', 'http://localhost:3000'];
 
 app.use(cors({
   origin: function(origin, callback) {
@@ -31,11 +31,17 @@ app.use(session({
 }));
 
 // MongoDB setup
-const client = new MongoClient(process.env.MONGO_URI);
+const client = new MongoClient(process.env.MONGO_URL);
 const dbName = "carpooling_data";
 (async () => {
-    await client.connect();
-    console.log("NodeJS connected to MongoDB");
+    try {
+        await client.connect();
+        console.log("NodeJS connected to MongoDB");
+        app.locals.db = client.db(dbName); // set db AFTER connection
+    } catch (err) {
+        console.error("MongoDB connection failed:", err);
+        process.exit(1);
+    }
 })();
 app.locals.db = client.db(dbName);
 
@@ -57,4 +63,7 @@ app.use("/api/admin/rides", rideRoutes);
 app.use("/api/admin/payments", paymentRoutes);
 app.use("/api/admin/reports", reportRoutes);
 
-app.listen(4000, () => console.log("Admin NodeJS backend running at port 4000"));
+const PORT = process.env.PORT || 4000;
+app.listen(PORT, "0.0.0.0", () => {
+  console.log(`Admin NodeJS backend running at port ${PORT}`);
+});

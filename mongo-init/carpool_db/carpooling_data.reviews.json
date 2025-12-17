@@ -1,0 +1,12 @@
+[{
+  "_id": {
+    "$oid": "6942bc0ba9632d43c8011ad3"
+  },
+  "reviewId": "REV0000001",
+  "rideId": "R148828",
+  "driverId": "U693e8987a7d47",
+  "passengerId": "U693e89d4ea9cd",
+  "ratingValue": 2,
+  "rating": "2.0",
+  "createdAt": "2025-12-17T14:19:55+00:00"
+}]

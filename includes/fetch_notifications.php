@@ -83,7 +83,11 @@ try {
             if ($ts instanceof MongoDB\BSON\UTCDateTime) {
                 $tsIso = $ts->toDateTime()->format(DATE_ATOM);
             } elseif (is_array($ts) && isset($ts['$date'])) {
-                $dt = new DateTime(is_array($ts['$date']) ? ($ts['$date']['$numberLong'] ?? '') : $ts['$date']);
+                $dt = new DateTime(
+                    is_array($ts['$date'])
+                        ? ($ts['$date']['$numberLong'] ?? '')
+                        : $ts['$date']
+                );
                 $tsIso = $dt->format(DATE_ATOM);
             } elseif (is_string($ts)) {
                 $tsIso = (new DateTime($ts))->format(DATE_ATOM);
@@ -113,5 +117,9 @@ try {
     echo json_encode(['success' => true, 'notifications' => $results]);
 } catch (Throwable $e) {
     http_response_code(500);
-    echo json_encode(['success' => false, 'error' => 'Server error', 'details' => $e->getMessage()]);
+    echo json_encode([
+        'success' => false,
+        'error' => 'Server error'
+        // 'details' => $e->getMessage(), // DEBUG (commented for Docker safety)
+    ]);
 }

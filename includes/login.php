@@ -1,12 +1,12 @@
 <?php
-require __DIR__ . '/../vendor/autoload.php';
-require_once __DIR__ . '/../includes/cookies.php';
+require_once __DIR__ . '/db_connect.php';
+require_once __DIR__ . '/cookies.php';
 
 session_start();
 
 try {
-    $client = new MongoDB\Client("mongodb://localhost:27017");
-    $usersCollection = $client->carpooling_data->users;
+    // Use centralized DB connection
+    $usersCollection = $db->users;
 
     if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 

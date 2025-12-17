@@ -20,7 +20,7 @@ if (!isset($_SESSION['user_id']) && isset($_COOKIE['user_id'])) {
 }
 
 // Optional timeout (30 minutes) — applies only after restoration
-$timeout = 60 * 60 * 1000;
+$timeout = 60 * 60;
 if (isset($_SESSION['login_time']) && (time() - $_SESSION['login_time'] > $timeout)) {
     session_unset();
     session_destroy();

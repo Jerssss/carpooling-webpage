@@ -1,31 +1,28 @@
 <?php
-// Clear session and auth cookies, then redirect or return JSON
+// Start session at the very top
 if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
 
-// Unset all session variables and destroy session
+// Unset all session variables
 $_SESSION = [];
+
+// Destroy session cookies if any
 if (ini_get("session.use_cookies")) {
     $params = session_get_cookie_params();
     setcookie(session_name(), '', time() - 42000, $params["path"], $params["domain"], $params["secure"], $params["httponly"]);
 }
+
+// Destroy the session
 session_destroy();
 
-// Expire app cookies
+// Expire app-specific cookies
 $expire = time() - 3600;
-// Primary auth cookies
 setcookie('user_id', '', $expire, '/');
 setcookie('user_role', '', $expire, '/');
-// Legacy/fallback cookie keys
 setcookie('role', '', $expire, '/');
 
-// Respond with JSON (or change to header redirect if preferred)
+// Send JSON response only (Docker-safe)
 header('Content-Type: application/json; charset=utf-8');
 echo json_encode(['success' => true]);
-?><?php
-session_start();
-session_unset();
-session_destroy();
-header("Location: /9467_it312-teamarc_midtermproject/login.html?message=Logged%20out%20successfully");
 exit();

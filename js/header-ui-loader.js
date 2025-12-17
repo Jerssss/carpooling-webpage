@@ -106,14 +106,25 @@
         }
       });
       candidates.forEach((el) => {
-        if (el.tagName === 'A') {
-          el.setAttribute('href', `${BASE}/includes/logout.php`);
-        } else if (el.tagName === 'BUTTON') {
-          el.setAttribute('data-href', `${BASE}/includes/logout.php`);
-          el.addEventListener('click', () => {
-            window.location.href = `${BASE}/includes/logout.php`;
-          }, { once: true });
-        }
+        // Remove direct href
+        if (el.tagName === 'A') el.removeAttribute('href');
+
+        el.addEventListener('click', async (e) => {
+          e.preventDefault();
+          try {
+            const res = await fetch(`${BASE}/includes/logout.php`, {
+              method: 'POST',
+              credentials: 'include'
+            });
+            const data = await res.json();
+            if (data.success) {
+              // Redirect after successful logout
+              window.location.href = `${BASE}/login.html?message=Logged out successfully`;
+            }
+          } catch (err) {
+            console.error('Logout failed:', err);
+          }
+        }, { once: true });
       });
     } catch (_) { /* ignore wiring issues */ }
   });

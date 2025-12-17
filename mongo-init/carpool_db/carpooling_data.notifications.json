@@ -1,0 +1,84 @@
+[{
+  "_id": {
+    "$oid": "693eac67c5d331acdc06a7aa"
+  },
+  "rideId": "R148828",
+  "driverId": "U693e8987a7d47",
+  "passengerId": null,
+  "carId": "C693e89883a558",
+  "type": "carpool_created",
+  "audience": "driver",
+  "message": "Carpool created: 9HMR+J6W, Bougainvillea, Baguio, Benguet, Philippines → SLU Maryheights Campus, Baguio, Benguet, Philippines at 8:40 AM - 9:00 AM",
+  "timestamp": {
+    "$date": "2025-12-14T12:24:07.454Z"
+  },
+  "isRead": false
+},
+{
+  "_id": {
+    "$oid": "694179bfc5d331acdc06a7ac"
+  },
+  "rideId": "R52107",
+  "driverId": "U693e97605e8e9",
+  "passengerId": null,
+  "carId": "C693e9760b5c5a",
+  "type": "carpool_created",
+  "audience": "driver",
+  "message": "Carpool created: 16 Lopez Jaena St, Baguio, Benguet, Philippines → SLU Maryheights Campus, Baguio, Benguet, Philippines at 12:30 PM - 1:00 PM",
+  "timestamp": {
+    "$date": "2025-12-16T15:24:47.230Z"
+  },
+  "isRead": false
+},
+{
+  "_id": {
+    "$oid": "69417e18c5d331acdc06a7ae"
+  },
+  "rideId": "R129126",
+  "driverId": "U693e8987a7d47",
+  "passengerId": null,
+  "carId": "C693e89883a558",
+  "type": "carpool_created",
+  "audience": "driver",
+  "message": "Carpool created: SLU Maryheights Campus, Baguio, Benguet, Philippines → 023 Asin Rd, Baguio, Benguet, Philippines at 9:30 AM - 9:50 AM",
+  "timestamp": {
+    "$date": "2025-12-16T15:43:20.757Z"
+  },
+  "isRead": false
+},
+{
+  "_id": {
+    "$oid": "6942bb9da9632d43c8011ad1"
+  },
+  "bookingId": "B0000001",
+  "rideId": "R148828",
+  "driverId": "U693e8987a7d47",
+  "passengerId": "U693e89d4ea9cd",
+  "carId": "C693e89883a558",
+  "paymentId": "P6942bb9d68aa5",
+  "type": "booking",
+  "audience": "passenger",
+  "message": "Booking successful for Juan Test to SLU Maryheights Campus, Baguio, Benguet, Philippines at 8:40 AM - 9:00 AM",
+  "timestamp": {
+    "$date": "2025-12-17T14:18:05.446Z"
+  },
+  "isRead": false
+},
+{
+  "_id": {
+    "$oid": "6942bb9da9632d43c8011ad2"
+  },
+  "bookingId": "B0000001",
+  "rideId": "R148828",
+  "driverId": "U693e8987a7d47",
+  "passengerId": "U693e89d4ea9cd",
+  "carId": "C693e89883a558",
+  "paymentId": "P6942bb9d68aa5",
+  "type": "booking",
+  "audience": "driver",
+  "message": "New booking from Dos Test to SLU Maryheights Campus, Baguio, Benguet, Philippines at 8:40 AM - 9:00 AM",
+  "timestamp": {
+    "$date": "2025-12-17T14:18:05.446Z"
+  },
+  "isRead": false
+}]

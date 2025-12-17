@@ -1,0 +1,195 @@
+[{
+  "_id": {
+    "$oid": "692716bcb3af9b539273f351"
+  },
+  "userID": "A0001",
+  "name": "Admin One",
+  "email": "admin1@slu.edu.ph",
+  "phoneNo": "09171234567",
+  "occupation": "staff",
+  "rating": null,
+  "isVerified": true,
+  "picture": "storage/uploads/profile/default-user.png",
+  "password": "$2b$10$u1RpyG00NNyku7t9kso4AuJghl2n30BtDNGo/XNciwUBKP1vt7vhS",
+  "createdAt": {
+    "$date": "2025-11-27T04:12:49.528Z"
+  },
+  "roles": [
+    "admin"
+  ]
+},
+{
+  "_id": {
+    "$oid": "692716bcb3af9b539273f352"
+  },
+  "userID": "A0002",
+  "name": "Admin Two",
+  "email": "admin2@slu.edu.ph",
+  "phoneNo": "09171234568",
+  "occupation": "staff",
+  "rating": null,
+  "isVerified": true,
+  "picture": "storage/uploads/profile/default-user.png",
+  "password": "$2b$10$7m0fZD8VVhLTFJdHhxClWuSWoD8/volInSCN7uDckEiGZ2FozWIpO",
+  "createdAt": {
+    "$date": "2025-11-27T04:12:49.528Z"
+  },
+  "roles": [
+    "admin"
+  ]
+},
+{
+  "_id": {
+    "$oid": "693e76e2c5d331acdc06a797"
+  },
+  "userID": "U693e76e25cc5c",
+  "name": "Mark Tags Corpuz",
+  "email": "mtcorpuz@slu.edu.ph",
+  "phoneNo": "+639171112233",
+  "occupation": "faculty",
+  "roles": [
+    "driver"
+  ],
+  "picture": "storage/uploads/profile/profile_693e29d6c1ccf.png",
+  "password": "$2y$12$TIHBtSzmPfCjNTCougAAz.IsjQYMWDBJ2BufnIKTRPe3VNSV3DrN.",
+  "isVerified": false,
+  "createdAt": {
+    "$date": "2025-12-14T08:35:46.728Z"
+  },
+  "driverDocs": {
+    "licenseImage": "storage/uploads/license/license_693e76e259cda.png",
+    "vehicleRegImage": "storage/uploads/veh_reg/vehreg_693e76e25b1b7.jpg"
+  }
+},
+{
+  "_id": {
+    "$oid": "693e7a59c5d331acdc06a79b"
+  },
+  "userID": "U693e7a58b8b33",
+  "name": "Nicole Jean Ramirez",
+  "email": "2218345@slu.edu.ph",
+  "phoneNo": "09871234567",
+  "occupation": "student",
+  "roles": [
+    "driver"
+  ],
+  "picture": "storage/uploads/profile/profile_693e7a58b7b3b.png",
+  "password": "$2y$12$X8TZ7ca6AWmP3y6VXYt30eX/kjis0HWx5iaOx4UjEDaNdux14FNLC",
+  "isVerified": false,
+  "createdAt": {
+    "$date": "2025-12-14T08:50:33.117Z"
+  },
+  "driverDocs": {
+    "licenseImage": "storage/uploads/license/license_693e7a58b8196.jpg",
+    "vehicleRegImage": "storage/uploads/veh_reg/vehreg_693e7a58b8509.jpg"
+  }
+},
+{
+  "_id": {
+    "$oid": "693e7b64c5d331acdc06a79d"
+  },
+  "userID": "U693e7b646830c",
+  "name": "Sophia Louise Bautista",
+  "email": "2238459@slu.edu.ph",
+  "phoneNo": "09161239876",
+  "occupation": "student",
+  "roles": [
+    "passenger"
+  ],
+  "picture": "storage/uploads/profile/profile_693e7b6468044.png",
+  "password": "$2y$12$qFlfZynEpP2ciqyqxdd/iuKeF4M.Fv1zRW8rXKAVvdqic/Xf/Qb.W",
+  "isVerified": false,
+  "createdAt": {
+    "$date": "2025-12-14T08:55:00.798Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "693e7ca9c5d331acdc06a79e"
+  },
+  "userID": "U693e7ca9817a8",
+  "name": "Carlos Miguel Fernandez",
+  "email": "2236712@slu.edu.ph",
+  "phoneNo": "+639991234567",
+  "occupation": "student",
+  "roles": [
+    "passenger",
+    "driver"
+  ],
+  "picture": "storage/uploads/profile/profile_693e7ca980ec7.jpg",
+  "password": "$2y$12$48G.1RnD6JUYNsgjnN1qKOLgPTTRvHr7wVm/rDavDJy.CypUcyC.u",
+  "isVerified": false,
+  "createdAt": {
+    "$date": "2025-12-14T09:00:25.988Z"
+  },
+  "driverDocs": {
+    "licenseImage": "storage/uploads/license/license_693e7ca981285.png",
+    "vehicleRegImage": "storage/uploads/veh_reg/vehreg_693e7ca981426.jpg"
+  }
+},
+{
+  "_id": {
+    "$oid": "693e8988c5d331acdc06a7a0"
+  },
+  "userID": "U693e8987a7d47",
+  "name": "Juan Test",
+  "email": "1@slu.edu.ph",
+  "phoneNo": "09176767676",
+  "occupation": "faculty",
+  "roles": [
+    "driver"
+  ],
+  "picture": "storage/uploads/profile/profile_693e8987a4695.png",
+  "password": "$2y$12$PCtkhVrp1ce0MNIQ.lUieOETfU5hl1hPEloxW3tfK.bNRiBn8lWhO",
+  "isVerified": false,
+  "createdAt": {
+    "$date": "2025-12-14T09:55:20.175Z"
+  },
+  "driverDocs": {
+    "licenseImage": "storage/uploads/license/license_693e8987a5d2c.png",
+    "vehicleRegImage": "storage/uploads/veh_reg/vehreg_693e8987a6a97.jpg"
+  }
+},
+{
+  "_id": {
+    "$oid": "693e89d5c5d331acdc06a7a2"
+  },
+  "userID": "U693e89d4ea9cd",
+  "name": "Dos Test",
+  "email": "2@slu.edu.ph",
+  "phoneNo": "09176543219",
+  "occupation": "staff",
+  "roles": [
+    "passenger"
+  ],
+  "picture": "storage/uploads/profile/profile_693e89d4e9fca.png",
+  "password": "$2y$12$oDaiXPZ1rvYBt18U6cnumOpUi6n04f1WkRAZmVBMs3F6gvXCVW6iK",
+  "isVerified": false,
+  "createdAt": {
+    "$date": "2025-12-14T09:56:37.317Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "693e9760c5d331acdc06a7a3"
+  },
+  "userID": "U693e97605e8e9",
+  "name": "Third Test",
+  "email": "3@slu.edu.ph",
+  "phoneNo": "09182736450",
+  "occupation": "faculty",
+  "roles": [
+    "passenger",
+    "driver"
+  ],
+  "picture": "storage/uploads/profile/profile_693e97605c881.png",
+  "password": "$2y$12$Y6Y1ngb2lTSNFcLqKW4YQ.mf6ukaWkgQR4X8kxRX7qsj1YpCHpp6K",
+  "isVerified": false,
+  "createdAt": {
+    "$date": "2025-12-14T10:54:24.711Z"
+  },
+  "driverDocs": {
+    "licenseImage": "storage/uploads/license/license_693e97605d232.png",
+    "vehicleRegImage": "storage/uploads/veh_reg/vehreg_693e97605dc10.jpg"
+  }
+}]

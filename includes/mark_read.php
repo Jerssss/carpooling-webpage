@@ -1,9 +1,6 @@
 <?php
 // includes/mark_read.php
-set_include_path(__DIR__ . '/../');
-ob_start();
-require 'db_connect.php';
-ob_end_clean();
+require_once __DIR__ . '/db_connect.php';
 
 header('Content-Type: application/json; charset=utf-8');
 
@@ -18,8 +15,9 @@ try {
     $oid = new MongoDB\BSON\ObjectId($notifId);
     $res = $collection->updateOne(['_id' => $oid], ['$set' => ['isRead' => true]]);
     echo json_encode(['success' => true, 'modified' => $res->getModifiedCount()]);
-} catch (Exception $e) {
-    echo json_encode(['error' => $e->getMessage()]);
+} catch (Throwable $e) {
+    // Docker-safe: return JSON without extra debug output
+    echo json_encode(['error' => 'Server error', 'details' => $e->getMessage()]);
 }
 exit;
 ?>

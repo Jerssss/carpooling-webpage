@@ -1,0 +1,19 @@
+FROM php:8.2-apache
+
+# Install system dependencies and MongoDB extension
+RUN apt-get update \
+ && apt-get install -y --no-install-recommends unzip git \
+ && pecl install mongodb \
+ && docker-php-ext-enable mongodb
+
+# Set working directory to match your JS URLs
+WORKDIR /var/www/html/9467_it312-teamarc_midtermproject
+
+# Copy project into that subfolder
+COPY . /var/www/html/9467_it312-teamarc_midtermproject
+
+# Fix permissions
+RUN chown -R www-data:www-data /var/www/html \
+ && chmod -R 755 /var/www/html
+
+EXPOSE 80
