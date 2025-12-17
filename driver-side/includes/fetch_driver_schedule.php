@@ -18,16 +18,17 @@ $historyCol  = $db->history;
 try {
     $driverId = $_SESSION['user_id'];
 
-    // Fetch all rides for this driver where status = 'available'
+    // Fetch all available rides for this driver
     $rideDocs = $ridesCol->find([
         'driverId' => $driverId,
-        'status' => 'available'
+        'status'   => 'available'
     ])->toArray();
 
     $schedule = [];
 
     foreach ($rideDocs as $ride) {
-        // Fetch all pending history records for this ride & driver
+
+        // Fetch pending passenger bookings for this ride
         $historyDocs = $historyCol->find([
             'rideId'   => $ride['rideId'],
             'driverId' => $driverId,
@@ -44,7 +45,7 @@ try {
             if (!$user) continue;
 
             $passengers[] = [
-                'historyId'      => $history['historyId'], // needed for completion
+                'historyId'      => $history['historyId'],
                 'userId'         => $user['userID'],
                 'name'           => $user['name'],
                 'phone'          => $user['phoneNo'],
@@ -54,15 +55,13 @@ try {
             ];
         }
 
-        if (count($passengers) === 0) continue;
-
         $schedule[] = [
             'rideId'     => $ride['rideId'],
             'date'       => $ride['date'],
             'time'       => $ride['departureTime'],
             'from'       => $ride['stationedAt'],
             'to'         => $ride['destination'],
-            'historyIds' => array_column($passengers, 'historyId'), // all passenger historyIds
+            'historyIds' => array_column($passengers, 'historyId'),
             'passengers' => $passengers
         ];
     }
