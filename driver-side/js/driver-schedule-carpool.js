@@ -187,6 +187,17 @@
     // Ensure values are set by marker (supports AdvancedMarkerElement)
     const p = getMarkerLatLng();
     if (p) {
+      // Benguet bounds enforcement before applying
+      try {
+        const bbounds = (window.CarmaMapsHelpers && CarmaMapsHelpers.getBaguioBenguetBounds) ? CarmaMapsHelpers.getBaguioBenguetBounds() : null;
+        if (bbounds && window.google && google.maps) {
+          const within = bbounds.contains(new google.maps.LatLng(p.lat, p.lng));
+          if (!within) {
+            showMapsError('Please select a location within Benguet.');
+            return;
+          }
+        }
+      } catch (_) {}
       if (pickerContext === 'destination') {
         destLatEl.value = p.lat;
         destLngEl.value = p.lng;

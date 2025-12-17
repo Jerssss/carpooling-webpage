@@ -8,6 +8,7 @@
   const API_KEY = 'ENV_API_KEY';
   const MAP_ID = window.GMAPS_MAP_ID || 'ENV_MAP_ID_KEY';
   if (!window.GMAPS_MAP_ID) window.GMAPS_MAP_ID = MAP_ID;
+  const BOUNDS = { latMin: 16.2000, latMax: 16.6000, lngMin: 120.5000, lngMax: 121.0000 };
 
   // Form inputs and buttons for both tabs (GCash and Cash)
   const gcashInput = document.getElementById('pickupLocation');
@@ -52,14 +53,16 @@
     if (!window.google || !google.maps || !google.maps.places) return;
     if (gcashInput && !autocompleteGcash) {
       autocompleteGcash = new google.maps.places.Autocomplete(gcashInput, {
-        fields: ['place_id', 'geometry', 'name', 'formatted_address'],
-        types: ['geocode']
+        fields: ['place_id', 'geometry', 'name', 'formatted_address', 'address_components'],
+        types: ['geocode'],
+        componentRestrictions: { country: 'ph' }
       });
     }
     if (cashInput && !autocompleteCash) {
       autocompleteCash = new google.maps.places.Autocomplete(cashInput, {
-        fields: ['place_id', 'geometry', 'name', 'formatted_address'],
-        types: ['geocode']
+        fields: ['place_id', 'geometry', 'name', 'formatted_address', 'address_components'],
+        types: ['geocode'],
+        componentRestrictions: { country: 'ph' }
       });
     }
     // Bias autocomplete results using bounds
@@ -68,11 +71,11 @@
       new google.maps.LatLng(16.6000, 121.0000)
     );
     if (autocompleteGcash) {
-      autocompleteGcash.setBounds(bounds); autocompleteGcash.setOptions({ strictBounds: false });
+      autocompleteGcash.setBounds(bounds); autocompleteGcash.setOptions({ strictBounds: true });
       autocompleteGcash.addListener('place_changed', () => handlePlace(autocompleteGcash, gcashLatEl, gcashLngEl, gcashInput));
     }
     if (autocompleteCash) {
-      autocompleteCash.setBounds(bounds); autocompleteCash.setOptions({ strictBounds: false });
+      autocompleteCash.setBounds(bounds); autocompleteCash.setOptions({ strictBounds: true });
       autocompleteCash.addListener('place_changed', () => handlePlace(autocompleteCash, cashLatEl, cashLngEl, cashInput));
     }
   }
@@ -85,13 +88,15 @@
     const loc = place.geometry.location;
     const lat = loc.lat();
     const lng = loc.lng();
-    latEl.value = lat; lngEl.value = lng;
-    // Basic bounds check
-    const within = (lat >= 16.2000 && lat <= 16.6000 && lng >= 120.5000 && lng <= 121.0000);
-    if (!within) {
-      alert('Select a location within Baguio/Benguet.');
+    const within = (lat >= BOUNDS.latMin && lat <= BOUNDS.latMax && lng >= BOUNDS.lngMin && lng <= BOUNDS.lngMax);
+    const comps = place.address_components || [];
+    const inBenguet = comps.some(c => (c.long_name === 'Benguet' || c.short_name === 'Benguet'));
+    if (!within || !inBenguet) {
+      alert('Please select a pickup location within Benguet.');
       input.value = ''; latEl.value = ''; lngEl.value = '';
+      return;
     }
+    latEl.value = lat; lngEl.value = lng;
   }
 
   // Open the modal, ensure Maps are loaded, and focus the primary action
@@ -131,8 +136,17 @@
     marker.addListener('dragend', () => {
       const p = getMarkerLatLng();
       if (!p) return;
-      if (pickerContext === 'gcash') { gcashLatEl.value = p.lat; gcashLngEl.value = p.lng; reverseGeocode(p.lat, p.lng, gcashInput); }
-      else { cashLatEl.value = p.lat; cashLngEl.value = p.lng; reverseGeocode(p.lat, p.lng, cashInput); }
+      const within = (p.lat >= BOUNDS.latMin && p.lat <= BOUNDS.latMax && p.lng >= BOUNDS.lngMin && p.lng <= BOUNDS.lngMax);
+      if (!within) {
+        showWarn('Please keep the pin within Benguet.');
+        marker.position = initialCenter;
+        map.setCenter(initialCenter);
+        if (pickerContext === 'gcash') { gcashLatEl.value = ''; gcashLngEl.value = ''; gcashInput.value = ''; }
+        else { cashLatEl.value = ''; cashLngEl.value = ''; cashInput.value = ''; }
+        return;
+      }
+      if (pickerContext === 'gcash') { gcashLatEl.value = p.lat; gcashLngEl.value = p.lng; reverseGeocode(p.lat, p.lng, gcashInput, true); }
+      else { cashLatEl.value = p.lat; cashLngEl.value = p.lng; reverseGeocode(p.lat, p.lng, cashInput, true); }
     });
     // Geocode typed value if no coords yet
     const typedValue = pickerContext === 'gcash' ? (gcashInput && gcashInput.value) : (cashInput && cashInput.value);
@@ -150,11 +164,23 @@
   }
 
   // Convert lat/lng to human-readable address and write to the corresponding input
-  function reverseGeocode(lat, lng, targetInput) {
+  function reverseGeocode(lat, lng, targetInput, enforceBenguet) {
     if (!geocoder) return;
     geocoder.geocode({ location: { lat, lng } }, (results, status) => {
       if (status === 'OK' && results && results.length) {
-        targetInput.value = results[0].formatted_address || targetInput.value;
+        const r = results[0];
+        const comps = r.address_components || [];
+        const inBenguet = comps.some(c => (c.long_name === 'Benguet' || c.short_name === 'Benguet'));
+        if (enforceBenguet && !inBenguet) {
+          showWarn('Selected location is outside Benguet.');
+          targetInput.value = '';
+          marker.position = initialCenter;
+          map.setCenter(initialCenter);
+          if (pickerContext === 'gcash') { gcashLatEl.value = ''; gcashLngEl.value = ''; }
+          else { cashLatEl.value = ''; cashLngEl.value = ''; }
+          return;
+        }
+        targetInput.value = r.formatted_address || targetInput.value;
       }
     });
   }
@@ -183,6 +209,8 @@
     // On confirm, copy pin coords into hidden fields, normalize address, notify, and close
     const p = getMarkerLatLng();
     if (!p) { showWarn('Move the pin to choose a location.'); return; }
+    const within = (p.lat >= BOUNDS.latMin && p.lat <= BOUNDS.latMax && p.lng >= BOUNDS.lngMin && p.lng <= BOUNDS.lngMax);
+    if (!within) { showWarn('Please select a pickup location within Benguet.'); return; }
     if (pickerContext === 'gcash') { gcashLatEl.value = p.lat; gcashLngEl.value = p.lng; reverseGeocode(p.lat, p.lng, gcashInput); }
     else { cashLatEl.value = p.lat; cashLngEl.value = p.lng; reverseGeocode(p.lat, p.lng, cashInput); }
     showToast('Pickup location selected');
