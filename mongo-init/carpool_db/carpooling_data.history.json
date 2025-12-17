@@ -1,0 +1,21 @@
+[{
+  "_id": {
+    "$oid": "6942bb9da9632d43c8011ad0"
+  },
+  "historyId": "H6942bb9d6c3c1",
+  "bookingId": "B0000001",
+  "rideId": "R148828",
+  "carId": "C693e89883a558",
+  "driverId": "U693e8987a7d47",
+  "driverName": "Juan Test",
+  "passengerId": "U693e89d4ea9cd",
+  "pickupLocation": "9HXV+4V8, Balsigan Rd, Baguio, 2600 Benguet, Philippines",
+  "dropoffLocation": "SLU Maryheights Campus, Baguio, Benguet, Philippines",
+  "date": "2025-12-22",
+  "time": "8:40 AM - 9:00 AM",
+  "fare": 50,
+  "status": "completed",
+  "createdAt": {
+    "$date": "2025-12-17T14:18:05.443Z"
+  }
+}]

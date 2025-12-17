@@ -1,9 +1,5 @@
 <?php
-require __DIR__ . '/../vendor/autoload.php';
-use MongoDB\Client;
-
-$client = new Client("mongodb://localhost:27017/");
-$db = $client->carpooling_data;
+require_once __DIR__ . '/db_connect.php';
 
 // For now, fixed user
 $userID = "U0004";

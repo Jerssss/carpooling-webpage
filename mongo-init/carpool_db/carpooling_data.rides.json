@@ -1,0 +1,71 @@
+[{
+  "_id": {
+    "$oid": "693eac67c5d331acdc06a7a9"
+  },
+  "rideId": "R148828",
+  "carId": "C693e89883a558",
+  "driverId": "U693e8987a7d47",
+  "date": "2025-12-22",
+  "departureTime": "8:40 AM - 9:00 AM",
+  "stationedAt": "9HMR+J6W, Bougainvillea, Baguio, Benguet, Philippines",
+  "destination": "SLU Maryheights Campus, Baguio, Benguet, Philippines",
+  "availableSeats": 4,
+  "bookedSeats": 1,
+  "status": "inactive",
+  "passengers": [
+    {
+      "userId": "U693e89d4ea9cd",
+      "bookingTime": {
+        "$date": "2025-12-17T14:18:04.825Z"
+      },
+      "seatNumber": 1
+    }
+  ],
+  "price": 50,
+  "destinationLocation": {
+    "lat": 16.3852254,
+    "lng": 120.593293
+  }
+},
+{
+  "_id": {
+    "$oid": "694179bfc5d331acdc06a7ab"
+  },
+  "rideId": "R52107",
+  "carId": "C693e9760b5c5a",
+  "driverId": "U693e97605e8e9",
+  "date": "2025-12-17",
+  "departureTime": "12:30 PM - 1:00 PM",
+  "stationedAt": "16 Lopez Jaena St, Baguio, Benguet, Philippines",
+  "destination": "SLU Maryheights Campus, Baguio, Benguet, Philippines",
+  "availableSeats": 1,
+  "bookedSeats": 0,
+  "status": "available",
+  "passengers": [],
+  "price": 60,
+  "destinationLocation": {
+    "lat": 16.3852254,
+    "lng": 120.593293
+  }
+},
+{
+  "_id": {
+    "$oid": "69417e18c5d331acdc06a7ad"
+  },
+  "rideId": "R129126",
+  "carId": "C693e89883a558",
+  "driverId": "U693e8987a7d47",
+  "date": "2025-12-20",
+  "departureTime": "9:30 AM - 9:50 AM",
+  "stationedAt": "SLU Maryheights Campus, Baguio, Benguet, Philippines",
+  "destination": "023 Asin Rd, Baguio, Benguet, Philippines",
+  "availableSeats": 4,
+  "bookedSeats": 0,
+  "status": "available",
+  "passengers": [],
+  "price": 55,
+  "destinationLocation": {
+    "lat": 16.409008879315504,
+    "lng": 120.57857954284299
+  }
+}]

@@ -34,11 +34,11 @@
   function initAutocomplete(destinationInput, startInput, destLatEl, destLngEl, startLatEl, startLngEl) {
     if (!window.google || !google.maps || !google.maps.places) return { autocompleteDest: null, autocompleteStart: null };
     const autocompleteDest = new google.maps.places.Autocomplete(destinationInput, {
-      fields: ['place_id', 'geometry', 'name', 'formatted_address'],
+      fields: ['place_id', 'geometry', 'name', 'formatted_address', 'address_components'],
       types: ['geocode']
     });
     const autocompleteStart = new google.maps.places.Autocomplete(startInput, {
-      fields: ['place_id', 'geometry', 'name', 'formatted_address'],
+      fields: ['place_id', 'geometry', 'name', 'formatted_address', 'address_components'],
       types: ['geocode']
     });
     try { if (autocompleteDest.setComponentRestrictions) { autocompleteDest.setComponentRestrictions({ country: ['ph'] }); } } catch(e) {}
@@ -47,25 +47,33 @@
       new google.maps.LatLng(16.2000, 120.5000),
       new google.maps.LatLng(16.6000, 121.0000)
     );
-    autocompleteDest.setBounds(bounds); autocompleteDest.setOptions({ strictBounds: false });
-    autocompleteStart.setBounds(bounds); autocompleteStart.setOptions({ strictBounds: false });
+    autocompleteDest.setBounds(bounds); autocompleteDest.setOptions({ strictBounds: true });
+    autocompleteStart.setBounds(bounds); autocompleteStart.setOptions({ strictBounds: true });
 
     autocompleteDest.addListener('place_changed', () => {
       const place = autocompleteDest.getPlace();
       if (!place || !place.geometry || !place.geometry.location) return;
       const loc = place.geometry.location; const lat = loc.lat(); const lng = loc.lng();
-      destLatEl.value = lat; destLngEl.value = lng;
       const within = bounds.contains(new google.maps.LatLng(lat, lng));
-      if (!within) { alert('Please select a destination within Baguio/Benguet.'); destinationInput.value=''; destLatEl.value=''; destLngEl.value=''; }
+      const comps = place.address_components || [];
+      const inBenguet = comps.some(c => (c.long_name === 'Benguet' || c.short_name === 'Benguet'));
+      if (!within || !inBenguet) {
+        alert('Please select a destination within Benguet.'); destinationInput.value=''; destLatEl.value=''; destLngEl.value=''; return;
+      }
+      destLatEl.value = lat; destLngEl.value = lng;
     });
 
     autocompleteStart.addListener('place_changed', () => {
       const place = autocompleteStart.getPlace();
       if (!place || !place.geometry || !place.geometry.location) return;
       const loc = place.geometry.location; const lat = loc.lat(); const lng = loc.lng();
-      startLatEl.value = lat; startLngEl.value = lng;
       const within = bounds.contains(new google.maps.LatLng(lat, lng));
-      if (!within) { alert('Please select a starting location within Baguio/Benguet.'); startInput.value=''; startLatEl.value=''; startLngEl.value=''; }
+      const comps = place.address_components || [];
+      const inBenguet = comps.some(c => (c.long_name === 'Benguet' || c.short_name === 'Benguet'));
+      if (!within || !inBenguet) {
+        alert('Please select a starting location within Benguet.'); startInput.value=''; startLatEl.value=''; startLngEl.value=''; return;
+      }
+      startLatEl.value = lat; startLngEl.value = lng;
     });
 
     return { autocompleteDest, autocompleteStart };
@@ -109,8 +117,33 @@
     marker.addListener('dragend', function(){
       const p = getMarkerLatLng && getMarkerLatLng(marker);
       if (!p) return;
-      if (pickerContext === 'destination') { destLatEl.value = p.lat; destLngEl.value = p.lng; reverseGeocode && reverseGeocode(p.lat, p.lng, 'destination'); }
-      else { startLatEl.value = p.lat; startLngEl.value = p.lng; reverseGeocode && reverseGeocode(p.lat, p.lng, 'start'); }
+      const bbounds = (window.CarmaMapsHelpers && CarmaMapsHelpers.getBaguioBenguetBounds) ? CarmaMapsHelpers.getBaguioBenguetBounds() : null;
+      const within = bbounds ? bbounds.contains(new google.maps.LatLng(p.lat, p.lng)) : true;
+      if (!within) {
+        alert('Please keep the pin within Benguet.');
+        if (marker.position !== undefined) { marker.position = initialCenter; } else if (marker.setPosition) { marker.setPosition(initialCenter); }
+        map.setCenter(initialCenter);
+        if (pickerContext === 'destination') { destLatEl.value=''; destLngEl.value=''; destinationInput.value=''; }
+        else { startLatEl.value=''; startLngEl.value=''; startInput.value=''; }
+        return;
+      }
+      // Reverse geocode and ensure address is in Benguet
+      geocoder.geocode({ location: { lat: p.lat, lng: p.lng } }, (results, status) => {
+        if (status === 'OK' && results && results.length) {
+          const comps = results[0].address_components || [];
+          const inBenguet = comps.some(c => (c.long_name === 'Benguet' || c.short_name === 'Benguet'));
+          if (!inBenguet) {
+            alert('Selected location is outside Benguet.');
+            if (pickerContext === 'destination') { destLatEl.value=''; destLngEl.value=''; destinationInput.value=''; }
+            else { startLatEl.value=''; startLngEl.value=''; startInput.value=''; }
+            if (marker.position !== undefined) { marker.position = initialCenter; } else if (marker.setPosition) { marker.setPosition(initialCenter); }
+            map.setCenter(initialCenter);
+            return;
+          }
+          if (pickerContext === 'destination') { destLatEl.value = p.lat; destLngEl.value = p.lng; destinationInput.value = results[0].formatted_address || destinationInput.value; }
+          else { startLatEl.value = p.lat; startLngEl.value = p.lng; startInput.value = results[0].formatted_address || startInput.value; }
+        }
+      });
     });
 
     const typedValue = pickerContext === 'destination' ? (destinationInput && destinationInput.value) : (startInput && startInput.value);

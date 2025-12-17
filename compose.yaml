@@ -1,0 +1,41 @@
+version: '3.8'
+
+services:
+  node-admin:
+    build:
+      context: .
+      dockerfile: Dockerfile.nodejs
+    container_name: node-admin
+    ports:
+      - "4000:4000"
+    environment:
+      - MONGO_URL=mongodb://mongo-db:27017/carpooling_data
+    depends_on:
+      - mongo-db
+    restart: always
+
+  apache-php:
+    build:
+      context: .
+      dockerfile: Dockerfile.apache
+    container_name: apache-php
+    ports:
+      - "8080:80"
+    environment:
+      - MONGODB_URI=mongodb://mongo-db:27017/carpooling_data
+    depends_on:
+      - mongo-db
+    restart: always
+
+  mongo-db:
+    image: mongo:6.0
+    container_name: mongo-db
+    ports:
+      - "27017:27017"
+    volumes:
+      - ./mongo-init:/docker-entrypoint-initdb.d:ro
+      - mongo_data:/data/db
+    restart: unless-stopped
+
+volumes:
+  mongo_data:

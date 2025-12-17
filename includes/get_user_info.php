@@ -4,6 +4,10 @@ require_once __DIR__ . '/session.php';
 
 header('Content-Type: application/json');
 
+// Docker-safe: prevent PHP notices/warnings from breaking JSON
+error_reporting(E_ALL);
+ini_set('display_errors', 0);
+
 // Collections
 $usersCollection = $db->users;
 $ridesCollection = $db->rides;

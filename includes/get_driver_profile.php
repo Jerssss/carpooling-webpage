@@ -55,6 +55,10 @@ try {
     echo json_encode(['success' => true, 'profile' => $profile]);
 } catch (Throwable $e) {
     http_response_code(500);
-    echo json_encode(['success' => false, 'message' => 'Server error', 'error' => $e->getMessage()]);
+    echo json_encode([
+        'success' => false,
+        'message' => 'Server error'
+        // 'error' => $e->getMessage() // DEBUG (commented for Docker safety)
+    ]);
 }
 ?>

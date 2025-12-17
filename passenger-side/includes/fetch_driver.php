@@ -74,10 +74,10 @@ try {
         "bookings" => $driverBookings
     ];
 
-    header("Content-Type: application/json");
     echo json_encode($driverProfile);
 
-} catch (Exception $e) {
-    echo json_encode(["error" => $e->getMessage()]);
+} catch (Throwable $e) {
+    // Docker-safe error
+    echo json_encode(["error" => "Server error"]);
 }
 ?>

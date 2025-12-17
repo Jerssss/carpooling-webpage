@@ -47,8 +47,9 @@ if (($_SESSION['role'] ?? '') !== 'passenger') {
             exit;
         }
     } catch (Throwable $e) {
+        error_log('Role check failed: ' . $e->getMessage());
         http_response_code(500);
-        echo json_encode(['error' => 'Role check failed']);
+        echo json_encode(['error' => 'Server error']);
         exit;
     }
 }
@@ -170,9 +171,10 @@ try {
         'upcoming' => $upcoming,
         'finished' => $finished
     ]);
-    
-} catch (Exception $e) {
+
+} catch (Throwable $e) {
     error_log('Fetch history error: ' . $e->getMessage());
-    echo json_encode(['error' => $e->getMessage()]);
+    http_response_code(500);
+    echo json_encode(['error' => 'Server error']);
 }
 ?>

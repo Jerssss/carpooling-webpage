@@ -1,0 +1,21 @@
+[{
+  "_id": {
+    "$oid": "6942bb9ca9632d43c8011ace"
+  },
+  "bookingId": "B0000001",
+  "passengerId": "U693e89d4ea9cd",
+  "driverId": "U693e8987a7d47",
+  "rideId": "R148828",
+  "seatNumber": 1,
+  "status": "pending",
+  "paymentStatus": "pending",
+  "pickupLocation": "9HXV+4V8, Balsigan Rd, Baguio, 2600 Benguet, Philippines",
+  "pickupType": "pickup",
+  "timestamp": {
+    "$date": "2025-12-17T14:18:04.802Z"
+  },
+  "pickupLocationCoords": {
+    "lat": 16.39796960367897,
+    "lng": 120.59485558734707
+  }
+}]

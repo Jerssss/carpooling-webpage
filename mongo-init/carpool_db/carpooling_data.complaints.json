@@ -1,0 +1,17 @@
+[
+  {
+    "_id": { "$oid": "6942d5afda67bd16d30226d7" },
+    "complaintId": "COM0000001",
+    "rideId": "R464790",
+    "driverId": "U693e7ca9817a8",
+    "passengerId": "U693e7b646830c",
+    "complaintMessage": "He does not care about his passenger's safety and keeps overtaking",
+    "status": "pending",
+    "createdAt": { 
+      "$date": "2025-12-17T16:09:19.283Z" 
+    },
+    "updatedAt": { 
+      "$date": "2025-12-17T16:09:19.283Z" 
+    }
+  }
+]

@@ -1,0 +1,85 @@
+[{
+  "_id": {
+    "$oid": "693e76e2c5d331acdc06a798"
+  },
+  "carId": "C693e76e2bb673",
+  "ownerId": "U693e76e25cc5c",
+  "carMake": "Nissan",
+  "carModel": "Almera",
+  "year": 2006,
+  "plateNo": "6767 TAG",
+  "cap": 4,
+  "isVerified": false,
+  "carPhoto": "storage/uploads/car/car_693e76e25c283.png",
+  "createdAt": {
+    "$date": "2025-12-14T08:35:46.767Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "693e7a59c5d331acdc06a79c"
+  },
+  "carId": "C693e7a592338c",
+  "ownerId": "U693e7a58b8b33",
+  "carMake": "Suzuki",
+  "carModel": "Jimny",
+  "year": 2023,
+  "plateNo": "YAB 8273",
+  "cap": 4,
+  "isVerified": false,
+  "carPhoto": "storage/uploads/car/car_693e7a58b88ac.jpg",
+  "createdAt": {
+    "$date": "2025-12-14T08:50:33.144Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "693e7caac5d331acdc06a79f"
+  },
+  "carId": "C693e7caa0400e",
+  "ownerId": "U693e7ca9817a8",
+  "carMake": "Toyota",
+  "carModel": "Vios",
+  "year": 2025,
+  "plateNo": "CCC 3762",
+  "cap": 4,
+  "isVerified": false,
+  "carPhoto": "storage/uploads/car/car_693e7ca9815b5.png",
+  "createdAt": {
+    "$date": "2025-12-14T09:00:26.016Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "693e8988c5d331acdc06a7a1"
+  },
+  "carId": "C693e89883a558",
+  "ownerId": "U693e8987a7d47",
+  "carMake": "Suzuki",
+  "carModel": "Jimny",
+  "year": 2022,
+  "plateNo": "ABC 123",
+  "cap": 4,
+  "isVerified": false,
+  "carPhoto": "storage/uploads/car/car_693e8987a6fc0.jpg",
+  "createdAt": {
+    "$date": "2025-12-14T09:55:20.238Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "693e9760c5d331acdc06a7a4"
+  },
+  "carId": "C693e9760b5c5a",
+  "ownerId": "U693e97605e8e9",
+  "carMake": "Toyota",
+  "carModel": "Vios",
+  "year": 2019,
+  "plateNo": "TRI 9876",
+  "cap": 4,
+  "isVerified": false,
+  "carPhoto": "storage/uploads/car/car_693e97605e3a3.png",
+  "createdAt": {
+    "$date": "2025-12-14T10:54:24.744Z"
+  }
+}]
