@@ -75,6 +75,23 @@ document.addEventListener("DOMContentLoaded", () => {
     })
     .catch((err) => console.error("Error loading user info:", err));
 
+    let ridePrice = null;
+
+    fetch(`${BASE}/passenger-side/includes/view_carpool.php?rideId=${rideId}`)
+      .then(res => res.json())
+      .then(data => {
+          ridePrice = data.price ?? 0;
+          const priceEl = document.getElementById('ridePrice');
+          if (priceEl) priceEl.textContent = `₱ ${ridePrice}`;
+
+          // Only now enable cash/GCash forms
+          paymentForm.querySelector('button[type="submit"]').disabled = false;
+          cashForm.querySelector('button[type="submit"]').disabled = false;
+          console.log("Submitting cash booking with rideId:", rideId, "amount:", ridePrice);
+      })
+      .catch(err => console.error('Error fetching ride price:', err));
+
+
   // === GCash Payment Form ===
   const paymentForm = document.getElementById("paymentForm");
   if (paymentForm) {
@@ -87,7 +104,7 @@ document.addEventListener("DOMContentLoaded", () => {
       formData.append("email", emailEl.value);
       formData.append("pickupTime", pickupTimeEl.value);
       formData.append("rideId", rideId);
-      formData.append("amount", 50);
+      formData.append("amount", ridePrice);
       formData.append("method", "GCash");
       // Include coords if chosen via map
       const lat = document.getElementById('gcash-pickup-lat')?.value;
@@ -134,7 +151,7 @@ document.addEventListener("DOMContentLoaded", () => {
       formData.append("email", emailEl.value);
       formData.append("pickupTime", pickupTimeEl.value);
       formData.append("rideId", rideId);
-      formData.append("amount", 50);
+      formData.append("amount", ridePrice);
       formData.append("method", "Cash");
       const cashLat = document.getElementById('cash-pickup-lat')?.value;
       const cashLng = document.getElementById('cash-pickup-lng')?.value;

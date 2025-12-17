@@ -61,6 +61,8 @@ try {
     if (!$rideDoc) {
         throw new Exception('Ride not found');
     }
+
+    $price = (float)($rideDoc['price'] ?? 0);
     
     // Get driver info for notifications
     $driverId = $rideDoc['driverId'] ?? '';
@@ -248,7 +250,7 @@ try {
         'rideId' => $rideId,
         'userId' => $userId,
         'method' => $method,
-        'amount' => (float)($_POST['amount'] ?? 0),
+        'amount' => $price,
         'status' => 'pending', // pending/verified/failed
         'timestamp' => new UTCDateTime()
     ];
