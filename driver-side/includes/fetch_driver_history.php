@@ -45,6 +45,8 @@ if (!$isDriver) {
 $historyCol = $db->history;
 $usersCol   = $db->users;
 $reviewsCol = $db->reviews;
+$vehiclesCol = $db->vehicles; // vehicles collection (for resolving car make/model/photo)
+
 
 try {
     $driverId = trim($_SESSION['user_id']); // Remove any extra whitespace using trim
@@ -103,8 +105,43 @@ try {
             'passengerPicture'=> $passengerPicture,
             'rating'          => $review['rating'] ?? 'No rating',
             'comment'         => $review['comment'] ?? 'No comment',
-            'car'             => $h['carId'] ?? 'Unknown'
+            // Resolve vehicle details when possible so UI can show make/model/plate and a photo
+            'carId'           => $h['carId'] ?? '',
+            'carMake'         => '',
+            'carModel'        => '',
+            'plateNo'         => '',
+            'car'             => ($h['carId'] ?? 'Unknown'),
+            // Attempt to include a car photo if available in the ride document or vehicles collection
+            'carPhoto'        => $h['carPhoto'] ?? ($h['vehicleInfo']['carPhoto'] ?? ($h['vehiclePhoto'] ?? ''))
         ];
+
+        // Try to enrich with vehicle collection data (separate lookup to avoid breaking existing structure)
+        if (!empty($h['carId']) && isset($vehiclesCol)) {
+            try {
+                $veh = $vehiclesCol->findOne(['carId' => $h['carId']]);
+                if ($veh) {
+                    // Prefer vehicle collection fields when available
+                    $history[count($history)-1]['carMake'] = $veh['carMake'] ?? $history[count($history)-1]['carMake'];
+                    $history[count($history)-1]['carModel'] = $veh['carModel'] ?? $history[count($history)-1]['carModel'];
+                    $history[count($history)-1]['plateNo']  = $veh['plateNo'] ?? $history[count($history)-1]['plateNo'];
+
+                    // Build a friendly car description
+                    $friendly = trim(($history[count($history)-1]['carMake'] . ' ' . $history[count($history)-1]['carModel']));
+                    if (!empty($history[count($history)-1]['plateNo'])) {
+                        $friendly .= ($friendly ? ' — ' : '') . $history[count($history)-1]['plateNo'];
+                    }
+                    $history[count($history)-1]['car'] = $friendly ?: ($h['carId'] ?? 'Unknown');
+
+                    // Prefer vehicle photo if no carPhoto was set on the ride
+                    if (empty($history[count($history)-1]['carPhoto'])) {
+                        $history[count($history)-1]['carPhoto'] = $veh['carPhoto'] ?? '';
+                    }
+                }
+            } catch (Throwable $e) {
+                // Non-fatal: keep original values and continue
+                error_log('Vehicle lookup failed for carId: ' . ($h['carId'] ?? '')); 
+            }
+        }
     }
 
     echo json_encode([

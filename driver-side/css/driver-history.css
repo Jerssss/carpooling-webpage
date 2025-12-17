@@ -4,12 +4,6 @@ html, body {
     overflow-x: hidden;
 }
 
-body {
-    background: #F3EBE9;
-    font-family: 'Poppins', Arial, sans-serif;
-}
-
-/* ===== MAIN CONTAINER ===== */
 .driver-container {
     display: flex;
     gap: 25px;
@@ -17,7 +11,6 @@ body {
     min-height: calc(100vh - 250px);
 }
 
-/* ===== LEFT PANEL ===== */
 .left-panel {
     width: 35%;
     padding: 20px;
@@ -28,7 +21,6 @@ body {
     margin-bottom: 20px;
 }
 
-/* ===== HISTORY CARDS (LEFT) ===== */
 .history-list {
     display: flex;
     flex-direction: column;
@@ -37,32 +29,102 @@ body {
 
 .history-card {
     background: #fff;
-    padding: 18px;
-    border-radius: 14px;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    padding: 14px 16px;
+    border-radius: 12px;
+    box-shadow: 0 6px 18px rgba(0,0,0,0.06);
     cursor: pointer;
-    transition: 0.2s;
+    transition: transform 0.18s ease, box-shadow 0.18s ease;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
 }
 
 .history-card:hover {
-    transform: translateX(4px);
+    transform: translateX(6px);
+    box-shadow: 0 10px 30px rgba(0,0,0,0.08);
 }
 
 .history-card.selected {
     border: 2px solid #ffc400;
+    background: linear-gradient(90deg, #fffef6 0%, #fff 100%);
+    box-shadow: 0 12px 30px rgba(0,0,0,0.08);
+    transform: translateX(6px);
+}
+
+.card-left {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.avatar-sm {
+    width: 48px;
+    height: 48px;
+    border-radius: 8px;
+    background: #f0f0f0;
+    object-fit: cover;
+    flex-shrink: 0;
+}
+
+.card-info {
+    display: flex;
+    flex-direction: column;
+    min-width: 0; /* allow flex children to shrink without overflowing */
 }
 
 .history-date {
     font-weight: 700;
-    font-size: 16px;
+    font-size: 15px;
+    white-space: nowrap; /* keep full date on one line */
+    overflow: visible;
 }
 
 .history-route {
     font-size: 13px;
-    opacity: 0.7;
+    opacity: 0.8;
+    white-space: normal; /* allow route to wrap if needed */
 }
 
-/* ===== RIGHT PANEL ===== */
+.card-meta {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.history-desc {
+    background: #fff3d6;
+    color: #7a4b00;
+    padding: 6px 10px;
+    border-radius: 12px;
+    font-weight: 600;
+    font-size: 13px;
+}
+
+.history-rating {
+    color: #ffb400;
+    font-weight: 700;
+}
+
+/* RIGHT PANEL CONTENT WINDOWS */
+.content-window { display: none; }
+.content-window.active { display: block; }
+
+.right-placeholder {
+    color: #666;
+    text-align: center;
+    margin-top: 70px;
+    font-size: 20px;
+}
+
+.profile-img-small {
+    width: 72px;
+    height: 72px;
+    border-radius: 10px;
+    object-fit: cover;
+    margin: 10px 0;
+}
+
+/* Right panel */
 .right-panel {
     width: 65%;
     background: #fff;
@@ -70,6 +132,142 @@ body {
     padding: 25px 30px;
     box-shadow: 0 6px 18px rgba(0,0,0,0.12);
 }
+
+/* Ride Card inside right panel */
+.ride-card { display: flex; flex-direction: column; gap: 12px; }
+
+.ride-header {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.route-title {
+    font-size: 16px;
+    color: #666;
+    margin-bottom: 0;
+}
+
+.ride-meta {
+    display: grid;
+    grid-template-columns: 1fr 240px;
+    gap: 24px;
+    align-items: start;
+}
+
+.passenger-list {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.passenger-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.passenger-name {
+    font-weight: 600;
+}
+
+.details {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    align-items: flex-end;
+}
+
+/* New header-style details */
+.details-header {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 20px;
+  padding: 12px 0 18px;
+  border-bottom: 1px solid #f0f0f0;
+  margin-bottom: 16px;
+}
+
+.detail-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+.detail-item .detail-icon {
+  width: 28px;
+  height: 28px;
+  margin-bottom: 8px;
+  object-fit: contain;
+  opacity: 0.95;
+}
+.detail-item .detail-car-photo {
+  width: 48px;
+  height: 32px;
+  border-radius: 6px;
+  object-fit: cover;
+  margin-bottom: 8px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+}
+.detail-item .label {
+  color: #666;
+  font-size: 13px;
+  margin-bottom: 6px;
+}
+.detail-item .value {
+  font-weight: 700;
+  font-size: 18px;
+}
+
+.passengers-section {
+  margin-bottom: 12px;
+}
+
+.passenger-heading {
+  margin: 6px 0 10px;
+  font-size: 16px;
+  color: #333;
+}
+
+.passenger-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.passenger-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.passenger-name {
+    font-weight: 600;
+}
+
+.detail-row {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+    gap: 12px;
+}
+
+.detail-label { color: #666; }
+.detail-value { font-weight: 700; }
+
+.feedback-block p { margin: 6px 0; }
+.feedback-icon { width: 18px; height: 18px; margin-right: 8px; vertical-align: middle; opacity: 0.95; }
+
+@media (max-width: 900px) {
+    .ride-meta {
+        grid-template-columns: 1fr;
+    }
+
+    .details { align-items: flex-start; }
+    .details-header { grid-template-columns: 1fr; }
+}
+
 
 /* Ride Card inside right panel */
 .ride-card h1 {

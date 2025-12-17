@@ -69,7 +69,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 <p><strong>To:</strong> ${ride.destination}</p>
                 <p><strong>Plate Number:</strong> ${ride.plateNo}</p>
                 <p><strong>Car Model:</strong> ${ride.carMake} ${ride.carModel}</p>
-                <p><strong>Driver's Rating:</strong> ${
+                <p><img src="../images/star-gray.png" alt="Rating" style="width:20px;vertical-align:middle;margin-right:8px"> ${
                     ride.driverRating === 'N/A'
                         ? 'No ratings yet'
                         : ride.driverRating + ' ⭐'

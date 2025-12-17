@@ -9,7 +9,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const historyEndpoint = `includes/fetch_driver_history.php`;
 
     historyList.innerHTML = "";
-    rightPanel.innerHTML = "<h2>Select a completed ride to view details and feedback</h2>";
+    rightPanel.innerHTML = '<div class="right-placeholder">Select a completed ride to view details and feedback</div>';
 
     console.log("Fetching from:", historyEndpoint);
 
@@ -55,25 +55,38 @@ document.addEventListener("DOMContentLoaded", () => {
 
             historyList.innerHTML = ""; // Clear loading message
 
-            historyEntries.forEach(entry => {
-                const dateKey = entry.date.replace(/\D/g, "");
+                        historyEntries.forEach((entry, idx) => {
+                                const dateKey = entry.date.replace(/\D/g, "");
 
-                // LEFT PANEL card
-                const card = document.createElement("div");
-                card.className = "history-card";
-                card.dataset.target = `day-${dateKey}`;
-                card.innerHTML = `
-                    <p class="date">${entry.date}</p>
-                    <p class="route">${entry.from} → ${entry.to}</p>
-                    <p class="desc">Completed ride</p>
-                `;
-                historyList.appendChild(card);
+                                // LEFT PANEL card (improved layout)
+                                const card = document.createElement("div");
+                                card.className = "history-card";
+                                card.dataset.target = `day-${dateKey}`;
+                                card.innerHTML = `
+                                        <div class="card-left">
+                                            <img src="../images/car.png" class="avatar-sm" alt="Car"/>
+                                            <div class="card-info">
+                                                <div class="history-date">${entry.date}</div>
+                                                <div class="history-route">${entry.from} → ${entry.to}</div>
+                                            </div>
+                                        </div>
+                                        <div class="card-meta">
+                                            <div class="history-desc">Completed</div>
+                                            ${ (entry.rating && !isNaN(Number(entry.rating))) ? '<div class="history-rating">★ ' + entry.rating + '</div>' : '' }
+                                        </div>
+                                `;
+                                historyList.appendChild(card);
 
-                // RIGHT PANEL content
-                createHistoryWindow(entry, dateKey);
-            });
+                                // RIGHT PANEL content
+                                createHistoryWindow(entry, dateKey);
+                                // Auto-select first entry for better UX
+                                if (idx === 0) {
+                                        // highlight the first card after it's appended
+                                        setTimeout(() => { card.classList.add('selected'); const target = document.getElementById(card.dataset.target); if (target) { target.classList.add('active'); const placeholder = rightPanel.querySelector('.right-placeholder'); if (placeholder) placeholder.remove(); } }, 50);
+                                }
+                        });
 
-            assignClicks();
+                        assignClicks();
         })
         .catch(err => console.error("Error loading history:", err));
 
@@ -82,18 +95,41 @@ document.addEventListener("DOMContentLoaded", () => {
         div.classList.add("content-window");
         div.id = `day-${dateKey}`;
 
+        // Support single or multiple passengers
+        const passengers = Array.isArray(entry.passengerName) ? entry.passengerName : [entry.passengerName || 'Unknown passenger'];
+        const pictures = Array.isArray(entry.passengerPicture) ? entry.passengerPicture : [entry.passengerPicture || 'images/profile_pics/default-pic.png'];
+
+        const passengerItems = passengers.map((pName, i) => {
+            const pic = pictures[i] ? `../${pictures[i]}` : '../images/profile_pics/default-pic.png';
+            return `<div class="passenger-item"><img src="${pic}" class="profile-img-small" alt="Passenger"/><div class="passenger-name">${pName}</div></div>`;
+        }).join('');
+
         div.innerHTML = `
-            <h1>${entry.date}</h1>
-            <p><strong>Passenger:</strong> ${entry.passengerName}</p>
-            <img src="../${entry.passengerPicture}" class="profile-img-small" />
-            <p><strong>From:</strong> ${entry.from}</p>
-            <p><strong>To:</strong> ${entry.to}</p>
-            <p><strong>Fare:</strong> ₱${entry.fare}</p>
-            <p><strong>Car:</strong> ${entry.car}</p>
-            <p><strong>Time:</strong> ${entry.time}</p>
-            <h3>Feedback</h3>
-            <p><strong>Rating:</strong> ${entry.rating}</p>
-            <p><strong>Comment:</strong> ${entry.comment}</p>
+            <div class="ride-card">
+              <div class="ride-header">
+                <h1>${entry.date}</h1>
+                <div class="route-title">${entry.from} → ${entry.to}</div>
+              </div>
+
+              <div class="details-header">
+                <div class="detail-item detail-fare"><img src="../images/fare.png" class="detail-icon" alt="Fare"><div class="label">Fare</div><div class="value">₱${entry.fare}</div></div>
+                <div class="detail-item detail-car">${ entry.carPhoto ? `<img src="../${entry.carPhoto}" class="detail-car-photo" alt="Car">` : `<img src="../images/car.png" class="detail-icon" alt="Car">` }<div class="label">Car</div><div class="value">${entry.car}</div></div>
+                <div class="detail-item detail-time"><img src="../images/clock-icon.png" class="detail-icon" alt="Time"><div class="label">Time</div><div class="value">${entry.time}</div></div>
+              </div>
+
+              <div class="passengers-section">
+                <h3 class="passenger-heading">Passenger${(passengers && passengers.length>1)? 's' : ''}</h3>
+                <div class="passenger-list">
+                  ${passengerItems}
+                </div>
+              </div>
+
+              <h3>Feedback</h3>
+              <div class="feedback-block">
+                <p><img src="../images/star-gray.png" alt="Rating" class="feedback-icon"> ${ (entry.rating && !isNaN(Number(entry.rating))) ? entry.rating : '—' }</p>
+                <p><img src="../images/chat.png" alt="Comment" class="feedback-icon"> ${entry.comment || 'No comment'}</p>
+              </div>
+            </div>
         `;
 
         rightPanel.appendChild(div);
@@ -105,6 +141,10 @@ document.addEventListener("DOMContentLoaded", () => {
 
         cards.forEach(card => {
             card.addEventListener("click", () => {
+                // remove placeholder if present
+                const placeholder = rightPanel.querySelector('.right-placeholder');
+                if (placeholder) placeholder.remove();
+
                 windows.forEach(w => w.classList.remove("active"));
                 const targetWindow = document.getElementById(card.dataset.target);
                 if (targetWindow) targetWindow.classList.add("active");
