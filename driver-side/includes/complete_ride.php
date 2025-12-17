@@ -25,29 +25,56 @@ try {
     }
 
     $historyCol = $db->history;
+    $ridesCol   = $db->rides; 
 
-    // Fetch any unmatched IDs to check ownership
-    $foundCount = $historyCol->countDocuments([
+    // Fetch matching history records for this driver
+    $historyDocs = $historyCol->find([
         'historyId' => ['$in' => $historyIds],
         'driverId'  => $driverId
-    ]);
+    ])->toArray();
 
-    if ($foundCount === 0) {
+    if (count($historyDocs) === 0) {
         http_response_code(404);
         echo json_encode(['error' => 'No matching history records found for this driver']);
         exit;
     }
 
-    // Update all matching history records to completed
-    $updateResult = $historyCol->updateMany(
-        ['historyId' => ['$in' => $historyIds], 'driverId' => $driverId],
-        ['$set' => ['status' => 'completed']]
+    // Extract rideIds from history
+    $rideIds = [];
+    foreach ($historyDocs as $h) {
+        if (!empty($h['rideId'])) {
+            $rideIds[] = $h['rideId'];
+        }
+    }
+
+    $historyUpdate = $historyCol->updateMany(
+        [
+            'historyId' => ['$in' => $historyIds],
+            'driverId'  => $driverId
+        ],
+        [
+            '$set' => ['status' => 'completed']
+        ]
     );
+
+    $ridesUpdate = null;
+    if (!empty($rideIds)) {
+        $ridesUpdate = $ridesCol->updateMany(
+            [
+                'rideId'   => ['$in' => $rideIds],
+                'driverId' => $driverId
+            ],
+            [
+                '$set' => ['status' => 'inactive']
+            ]
+        );
+    }
 
     echo json_encode([
         'ok' => true,
-        'updatedCount' => $updateResult->getModifiedCount(),
-        'message' => 'Ride marked as completed'
+        'updatedHistoryCount' => $historyUpdate->getModifiedCount(),
+        'updatedRideCount'    => $ridesUpdate ? $ridesUpdate->getModifiedCount() : 0,
+        'message' => 'Ride marked as completed and set to inactive'
     ]);
 
 } catch (Throwable $e) {
