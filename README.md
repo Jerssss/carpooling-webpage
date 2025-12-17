@@ -69,17 +69,21 @@ N/A
 ## Installation
 Since we made use of MongoDB NoSQL, which isn't a built in feature of PHP, there is a specific setup that needs to be followed in order for the web application to be tested on one's end.
 
+NOTE: THIS IS APPLIED TO WHEN WAMP IS THE ONE USED AS THE SIMULATED SERVER ENVIRONMENT
+
 Software that must be installed:
 1. MongoDB Compass
 2. WAMP Server
 3. Composer (Download link: https://getcomposer.org/download/)
 4. MongoDB PHP Driver (Download link : https://pecl.php.net/package/mongodb)
+5. Node JS 
 
 MongoDB Compass Database Setup
 1. Ensure that the connection string used the default port (Connection String : mongodb://localhost:27017/)
 2. Within the connection, there must be a database named as : carpooling_data
 3. Within the carpooling_data database, the following collections must be named:
     - bookings
+    - complaints
     - history
     - notifications
     - payments
@@ -87,7 +91,7 @@ MongoDB Compass Database Setup
     - rides
     - users
     - vehicles
-    (In the submission bin, we have included the json files to be exported in the said collections)
+    (In the submission bin, we have included the json/collections files to be exported in the said collections)
 
 WAMP Setup
 1. This project must be placed in the www folder of the WAMP64 directory
@@ -201,6 +205,33 @@ JUST TO BE SAFE, also repeat this process in the Apache folder
     - If Composer can’t find PHP, add `wamp64/bin/php/<your-php-version>` to your PATH (User and System)
 
 
+# NODE JS SETUP
+Node JS is used as the server side scripting language of the admin module. Hence in order to run the admin module, you need to
+setup the Node JS and use express along with it.
+
+Installation steps:
+1. If not yet installed, download NodeJS for your PC
+Link: https://nodejs.org/
+
+2. After installing, verify if it is downloaded
+node -v
+npm -v
+
+3. Within this visual studio code folder, open a terminal and initialize Node JS
+    npm init -y
+        - This will create the package.json file
+
+4. Install Express and MongoDB driver
+    npm install express mongodb dotenv cors
+        - This will install express, mongodb, dotenv, and cors
+
+5. In the repository, a server.js file has already been created, but you still need to create a .env file. Create the .env file within the admin-side module. Inside it, paste this code:
+
+MONGO_URI=mongodb://localhost:27017
+
+6. If all has been setup properly, the NodeJS server must be ran to test the functionality of the admin module
+
+
 Actually Testing the Project
 - Once all the previous setups are done, open wamp server and connect to MongoDB
 - Just to be safe, be sure that there is a vendor folder in the project. If none, open the terminal and write "composer install"
@@ -208,23 +239,85 @@ Actually Testing the Project
 ## Usage
 - This project cannot be run directly in visual studio code, and needs to be run by searching the URL in your browser.
 If the previous steps have been completed, search this:
-http://localhost/9467_it312-teamarc_midtermproject/index.html
+http://localhost/9467_it312-teamarc_midtermproject/login.html
 
-- Bugs may occur. In the case of events where the "View" button disappears, reload the page or open a new browser window and search the URL again
-- In the case where no data suddenly loads, keep reloading the page
-- If no data really loads, test the php file to see if data is actually being retrieved from the database:
-http://localhost/9467_it312-teamarc_midtermproject/includes/fetch_carpool.php
-    - If an error is shown instead of the JSON file, review the previous setup steps again
+Test credentials:
+PASSENGER
+email: 2238459@slu.edu.ph
+password: 123
+
+DRIVER
+email: mtcorpuz@slu.edu.ph
+password: 123
+
+BOTH
+email: 2236712@slu.edu.ph
+password: 123
+
+OR you can test the register module, and use the admin to approve the registration for the profile
+
+# Admin testing
+Admin testing
+1. Open terminal
+2. Enter these commands
+    cd admin-side
+    node server.js
+3. You should now be able to test the admin. Make use of these test credentials:
+    email: admin1@slu.edu.ph
+    password: admin123
+
+Localhost testing: http://localhost/9467_it312-teamarc_midtermproject/login.html
 
 
-## Support
-N/A
+Now, in the WAMP environment, it is possible to allow other PCs to connect to the WAMP server. If you want to use a different machine for testing, follow these steps
 
-## Roadmap
-N/A
+# Allowing multiple client connections through WAMP
+1. Allow Apache to Accept External Connections
+    Open and run WAMP
+    Click on the WAMP icon in the taskbar
+    Click on Apache
+    Click on httpd.conf
+    Look for Listen 80. Ensure that it is not commented out
 
-## Contributing
-N/A
+    Look for the <Directory> block. Look specifically for:
+    <Directory "c:/wamp/www/">
+        AllowOverride All
+        Require local
+    </Directory>
+
+    Change Require local to Require all granted
+
+2. EDIT HTTPD-VHOSTS.CONF FILE
+    Also edit the httpd-vhosts.conf file. This is what it should look like:
+
+    # Virtual Hosts
+    <VirtualHost _default_:80>
+    ServerName localhost
+    ServerAlias localhost
+    DocumentRoot "${INSTALL_DIR}/www"
+    <Directory "${INSTALL_DIR}/www/">
+    Options +Indexes +Includes +FollowSymLinks +MultiViews
+    AllowOverride All
+    Require all granted
+    </Directory>
+    </VirtualHost>
+
+3. Allow Apache Through Windows Firewall
+    Open Windows Defender Firewall
+    Click Allow an app or feature through Windows Defender Firewall
+    Click Change settings, then Allow another app
+    Find and add: httpd.exe and wampmanager.exe (browse these files in your wamp folder)
+    Private network must be checked for both
+
+4. Restart WAMP
+
+5. Test the connection in another PC 
+Use this URL format
+http://192.x.xx.xxx/9467_it312-teamarc_midtermproject/login.html
+
+Change the ip address based on the server PC’s ipconfig IPV4 address
+
+
 
 ## Authors and acknowledgment
 - Adame, Noelle Lorraine
