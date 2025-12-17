@@ -5,8 +5,7 @@
 CARMA - A Carpooling Web Application for SLU Maryheights Students
 
 ## Description
-Current web application features include the following: Displaying the list of available car pools (Retrieved from the MongoDB database using PHP), Viewing a car pool and reading its pertinent information (Also retrieved from MongoDB using PHP), Booking a car pool, getting redirected to a payment section and injecting the transaction details into the MongoDB database.
-Tech Stack includes: vanilla HTML and CSS, JavaScript, PHP (VERSION 8.4.0), MongoDB Compass, WAMP server, and DOM API
+A working carpool booking system with three modules: admin, passenger, and driver. Its core features include a robust booking system integrated with Google maps API
 
 ## Badges
 N/A
