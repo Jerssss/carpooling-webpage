@@ -264,6 +264,13 @@ http://192.x.xx.xxx/9467_it312-teamarc_midtermproject/login.html
 
 Change the ip address based on the server PC’s ipconfig IPV4 address
 
+# DOCKERS
+We have also utilized dockers for this project to ensure that the project runs smoothly no matter which terminal you test this on
+In the terminal, simply use the command:
+
+docker compose up -d --build
+
+Note: the filepath of the docker files are in the root folder so no need to worry about using the CD commands!!
 
 
 ## Authors and acknowledgment
