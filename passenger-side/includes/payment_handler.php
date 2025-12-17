@@ -13,50 +13,23 @@ if (!isset($_SESSION['user_id']) || $_SESSION['role'] !== 'passenger') {
 use MongoDB\BSON\UTCDateTime;
 
 // ----------------------------
-// OVERLAPPING BOOKING VALIDATION
+// Time overlap helpers
 // ----------------------------
+function parseTimeRange($timeRange) {
+    if (!is_string($timeRange) || strpos($timeRange, '-') === false) return null;
 
-// Parse current ride time
-$currentDate = $rideDoc['date'] ?? '';
-$currentTimeRange = $rideDoc['departureTime'] ?? '';
+    [$start, $end] = array_map('trim', explode('-', $timeRange));
 
-$currentParsed = parseTimeRange($currentTimeRange);
-if (!$currentParsed) {
-    throw new Exception('Invalid ride time format');
+    $startTs = strtotime($start);
+    $endTs   = strtotime($end);
+
+    if ($startTs === false || $endTs === false) return null;
+
+    return [$startTs, $endTs];
 }
 
-[$currentStart, $currentEnd] = $currentParsed;
-
-// Get passenger's active bookings
-$activeBookings = $bookingsCollection->find([
-    'passengerId' => $userId,
-    'status' => ['$in' => ['pending', 'accepted']]
-]);
-
-foreach ($activeBookings as $booking) {
-    $otherRide = $ridesCollection->findOne([
-        'rideId' => $booking['rideId']
-    ]);
-
-    if (!$otherRide) continue;
-
-    // Only compare rides on the same date
-    if (($otherRide['date'] ?? '') !== $currentDate) {
-        continue;
-    }
-
-    $otherTimeRange = $otherRide['departureTime'] ?? '';
-    $otherParsed = parseTimeRange($otherTimeRange);
-
-    if (!$otherParsed) continue;
-
-    [$otherStart, $otherEnd] = $otherParsed;
-
-    if (timeRangesOverlap($currentStart, $currentEnd, $otherStart, $otherEnd)) {
-        throw new Exception(
-            'You already have a booking that overlaps with this ride time'
-        );
-    }
+function timeRangesOverlap($startA, $endA, $startB, $endB) {
+    return ($startA < $endB) && ($startB < $endA);
 }
 
 header('Content-Type: application/json');
@@ -327,12 +300,6 @@ foreach ($activeBookings as $booking) {
             ]
         ]
     );
-    
-    if ($updateResult->getModifiedCount() === 0) {
-        // Rollback booking insertion
-        $bookingsCollection->deleteOne(['bookingId' => $bookingId]);
-        throw new Exception('Ride is already fully booked');
-    }
 
     if ($updateResult->getModifiedCount() === 0) {
         error_log("Warning: Failed to update ride {$rideId} with passenger {$userId}");
