@@ -8,6 +8,8 @@ use MongoDB\Client;
 try {
     $mongoClient = new Client(getenv('MONGODB_URI') ?: 'mongodb://localhost:27017/');
     $db = $mongoClient->carpooling_data;
+
+    $users = $db->users;
     // Ping to validate connection; suppress output to keep JSON endpoints clean.
     $db->command(['ping' => 1]);
 } catch (Throwable $e) {
