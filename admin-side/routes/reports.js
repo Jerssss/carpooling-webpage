@@ -26,8 +26,8 @@ router.get("/", adminOnly, async (req, res) => {
             driverName: "$driver.name",
             driverEmail: "$driver.email",
             rideDate: "$ride.date",
-            rideOrigin: "$ride.pickupLocation",
-            rideDestination: "$ride.dropoffLocation"
+            rideOrigin: "$ride.stationedAt",
+            rideDestination: "$ride.destination"
         }}
     ]).toArray();
     res.json(reports);
@@ -66,8 +66,8 @@ router.get("/:id", adminOnly, async (req, res) => {
             driverPhone: "$driver.phoneNo",
             driverIDNumber: "$driver.userID",
             rideDate: "$ride.date",
-            rideOrigin: "$ride.pickupLocation",
-            rideDestination: "$ride.dropoffLocation",
+            rideOrigin: "$ride.stationedAt",
+            rideDestination: "$ride.destination",
             carId: "$vehicle.carId",
             carMake: "$vehicle.carMake",
             carModel: "$vehicle.carModel",
