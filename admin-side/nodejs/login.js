@@ -25,6 +25,8 @@ document.addEventListener("DOMContentLoaded", () => {
             showFeedback("Incorrect password.");
         } else if (error === "server_error") {
             showFeedback("Server error. Please try again later.");
+        } else if (error === "user_not_verified"){
+            showFeedback("User not yet verified! Please wait for admin approval...");
         } else {
             showFeedback("Login failed. Please try again.");
         }

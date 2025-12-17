@@ -18,18 +18,21 @@ try {
         // Find user by email AND check if selected role exists in roles array
         $user = $usersCollection->findOne([
             'email' => $email,
-            'roles' => ['$in' => [$role]] // search the roles array using $in operator
+            'roles' => ['$in' => [$role]]
         ]);
-
+        
         if (!$user) {
-          header("Location: ../login.html?error=user_not_found");
-          exit;
+            header("Location: ../login.html?error=user_not_found");
+            exit;
         }
-        var_dump($user);
-        echo "Password hash from DB: " . $user->password . "\n";
-        echo "Password typed: " . $password . "\n";
-
-
+        
+        // VERIFIED CHECK — FROM DB ONLY
+        if (empty($user->isVerified) || $user->isVerified !== true) {
+            header("Location: ../login.html?error=user_not_verified");
+            exit;
+        }
+        
+        // PASSWORD CHECK
         if (!password_verify($password, $user->password)) {
             header("Location: ../login.html?error=incorrect_password");
             exit;
