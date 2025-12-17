@@ -163,17 +163,47 @@ function setupNotificationToggle() {
 
         bell.addEventListener('click', (e) => {
             e.stopPropagation();
-            const dropdown = document.getElementById('notificationsDropdown');
-            if (!dropdown) return;
-            dropdown.classList.toggle('show');
+            const container = document.getElementById('notificationsContainer');
+            if (!container) return;
+            let dropdown = document.getElementById('notificationsDropdown');
+            if (!dropdown) {
+                // Fallback build if not injected yet
+                dropdown = document.createElement('div');
+                dropdown.className = 'notifications-dropdown';
+                dropdown.id = 'notificationsDropdown';
+                dropdown.innerHTML = `
+                    <div class="notif-tabs">
+                        <span class="active" id="allTab">All</span>
+                        <span id="unreadTab">Unread</span>
+                    </div>
+                    <div class="notif-list" id="notifList">
+                        <div class="notif-item">
+                            <div class="notif-content">
+                                <p>Loading notifications...</p>
+                            </div>
+                        </div>
+                    </div>`;
+                container.appendChild(dropdown);
+                if (typeof window.initNotificationsUI === 'function') {
+                    window.initNotificationsUI();
+                } else {
+                    initializeNotificationTabs();
+                    loadNotifications('all');
+                }
+            }
+            const nowShow = !dropdown.classList.contains('show');
+            dropdown.classList.toggle('show', nowShow);
+            container.classList.toggle('open', nowShow);
         });
 
         document.addEventListener('click', (e) => {
             const dropdown = document.getElementById('notificationsDropdown');
-            if (!dropdown) return;
+            const container = document.getElementById('notificationsContainer');
+            if (!dropdown || !container) return;
             const inside = e.target.closest('.nav-bell');
             if (!inside && dropdown.classList.contains('show')) {
                 dropdown.classList.remove('show');
+                container.classList.remove('open');
             }
         });
     } catch (e) {
@@ -186,4 +216,43 @@ window.initNotificationsUI = function () {
     initializeNotificationTabs();
     setupNotificationToggle();
     loadNotifications(getActiveFilter());
+};
+
+// Back-compat for pages using inline onclick="toggleNotifications()"
+window.toggleNotifications = function() {
+    try {
+        // Ensure UI is wired
+        setupNotificationToggle();
+        const container = document.getElementById('notificationsContainer');
+        if (!container) return;
+        let dropdown = document.getElementById('notificationsDropdown');
+        if (!dropdown) {
+            // Fallback: create a minimal dropdown structure if injection failed
+            dropdown = document.createElement('div');
+            dropdown.className = 'notifications-dropdown';
+            dropdown.id = 'notificationsDropdown';
+            dropdown.innerHTML = `
+                <div class="notif-tabs">
+                    <span class="active" id="allTab">All</span>
+                    <span id="unreadTab">Unread</span>
+                </div>
+                <div class="notif-list" id="notifList">
+                    <div class="notif-item">
+                        <div class="notif-content">
+                            <p>Loading notifications...</p>
+                        </div>
+                    </div>
+                </div>`;
+            container.appendChild(dropdown);
+            if (typeof window.initNotificationsUI === 'function') {
+                window.initNotificationsUI();
+            } else {
+                initializeNotificationTabs();
+                loadNotifications('all');
+            }
+        }
+        const nowShow = !dropdown.classList.contains('show');
+        dropdown.classList.toggle('show', nowShow);
+        container.classList.toggle('open', nowShow);
+    } catch (_) { /* ignore */ }
 };

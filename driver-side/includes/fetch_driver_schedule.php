@@ -28,7 +28,7 @@ try {
 
     foreach ($rideDocs as $ride) {
 
-        // 🚫 SKIP RIDES ALREADY COMPLETED (BASED ON HISTORY)
+        // SKIP RIDES ALREADY COMPLETED (BASED ON HISTORY)
         $completedRide = $historyCol->findOne([
             'rideId'    => $ride['rideId'],
             'driverId'  => $driverId,

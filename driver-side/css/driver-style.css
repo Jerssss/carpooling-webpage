@@ -10,6 +10,17 @@
     --light-color: #fff;
 }
 
+/* Make full page height and keep footer at bottom */
+html {
+    height: 100%;
+}
+
+body {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
 /* ===== NAVIGATION BAR ===== */
 nav {
   background: #2C2C2C;
@@ -382,6 +393,7 @@ nav ul li a:hover::after {
   text-align: center;
   padding: 40px 0 20px;
   font-family: 'Poppins', sans-serif;
+  margin-top: auto; /* push footer to bottom in column flex layout */
 }
 
 .site-footer .social-icons {

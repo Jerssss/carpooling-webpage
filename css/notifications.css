@@ -38,6 +38,11 @@ nav img.bell-icon {
     pointer-events: none; /* prevent overlay from blocking nearby clicks */
 }
 
+/* Enable interactions only when explicitly opened */
+#notificationsContainer.open {
+    pointer-events: auto;
+}
+
 .notifications-dropdown {
     position: relative;
     width: 100%;
