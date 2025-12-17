@@ -121,6 +121,20 @@ document.addEventListener("DOMContentLoaded", () => {
                     </button>
                 `;
 
+                // Bind pin click to open the shared map modal
+                const locBtn = card.querySelector('.loc-icon-btn');
+                if (locBtn) {
+                    locBtn.addEventListener('click', () => {
+                        const address = p.pickupLocation || '';
+                        const label = p.name ? `Pickup: ${p.name}` : 'Pickup Location';
+                        if (window.showLocationOnMap) {
+                            window.showLocationOnMap(address, label);
+                        } else {
+                            alert('Map module is not available yet.');
+                        }
+                    });
+                }
+
                 passengerList.appendChild(card);
             });
         }
