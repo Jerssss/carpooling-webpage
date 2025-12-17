@@ -49,7 +49,7 @@ document.addEventListener("DOMContentLoaded", () => {
         console.log('Booking status:', data.carpools[0].bookingStatus);
       }
 
-      const carpools = data.carpools || [];
+      const carpools = (data.carpools || []).filter(c => Number(c.availableSeats) > 0);
       const seatOptions = data.seatOptions || [];
 
       updateSeatsDropdown(seatOptions);

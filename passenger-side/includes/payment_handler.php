@@ -180,13 +180,10 @@ try {
     // Determine seat number
     $currentPassengers = $rideDoc['passengers'] ?? [];
     $seatNumber = count($currentPassengers) + 1;
-
-    // Check if ride has available seats
-    $availableSeats = $rideDoc['availableSeats'] ?? 0;
-    $bookedSeats = $rideDoc['bookedSeats'] ?? 0;
-
-    // Avoid overbooking 
-    if ($bookedSeats >= $availableSeats) {
+    
+    // Prevent overbooking
+    $availableSeats = (int)($rideDoc['availableSeats'] ?? 0);
+    if ($availableSeats <= 0) {
         throw new Exception('No available seats for this ride');
     }
     
@@ -224,14 +221,26 @@ try {
         'seatNumber' => $seatNumber
     ];
 
-    // Update ride. Add passenger to array and increment bookedSeats
+    // Update ride. Add passenger to array, increment bookedSeats, and decrement availableSeats
     $updateResult = $ridesCollection->updateOne(
-        ['rideId' => $rideId],
+        [
+            'rideId' => $rideId,
+            'availableSeats' => ['$gt' => 0] // SAFETY: prevents race conditions
+        ],
         [
             '$push' => ['passengers' => $passengerEntry],
-            '$inc' => ['bookedSeats' => 1]
+            '$inc'  => [
+            'bookedSeats'    => 1,
+            'availableSeats' => -1
+            ]
         ]
     );
+    
+    if ($updateResult->getModifiedCount() === 0) {
+        // Rollback booking insertion
+        $bookingsCollection->deleteOne(['bookingId' => $bookingId]);
+        throw new Exception('Ride is already fully booked');
+    }
 
     if ($updateResult->getModifiedCount() === 0) {
         error_log("Warning: Failed to update ride {$rideId} with passenger {$userId}");

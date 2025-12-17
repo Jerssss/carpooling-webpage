@@ -1,7 +1,4 @@
 <?php
-// ----------------------------
-// fetch_carpool.php
-// ----------------------------
 
 header('Content-Type: application/json');
 error_reporting(E_ALL);
@@ -88,11 +85,11 @@ $ridesCollection = $db->rides;
 // ----------------------------
 // Filters from GET
 // ----------------------------
-$search         = $_GET['search'] ?? '';
-$seatFilter     = $_GET['seat'] ?? '';
-$roleFilter     = $_GET['role'] ?? '';
+$search = $_GET['search'] ?? '';
+$seatFilter = $_GET['seat'] ?? '';
+$roleFilter = $_GET['role'] ?? '';
 $destTypeFilter = $_GET['dest_type'] ?? '';
-$dateFilter     = $_GET['date'] ?? '';
+$dateFilter = $_GET['date'] ?? '';
 
 // Save search & seat to cookies
 if ($search) set_app_cookie('last_search', $search);
@@ -108,8 +105,10 @@ $allSeatsCursor = $ridesCollection->find(
 
 $allSeats = [];
 foreach ($allSeatsCursor as $r) {
-    $seat = $r['availableSeats'] ?? 0;
-    if (!in_array($seat, $allSeats)) $allSeats[] = $seat;
+    $seat = (int)($r['availableSeats'] ?? 0);
+    if ($seat > 0 && !in_array($seat, $allSeats)) {
+        $allSeats[] = $seat;
+    }
 }
 sort($allSeats);
 
@@ -145,6 +144,9 @@ $match['driverId'] = ['$ne' => $_SESSION['user_id']];
 // EXCLUDE INACTIVE RIDES
 $match['status'] = ['$ne' => 'inactive'];
 
+// EXCLUDE FULL RIDES
+$match['availableSeats'] = ['$gt' => 0];
+
 if ($search) {
     $match['$or'] = [
         ['driverInfo.name' => ['$regex' => $search, '$options' => 'i']],
@@ -155,7 +157,12 @@ if ($search) {
 
 if ($seatFilter) {
     $seat = (int)$seatFilter;
-    $match['availableSeats'] = $seat >= 3 ? ['$gte' => 3] : $seat;
+
+    if ($seat >= 3) {
+        $match['availableSeats']['$gte'] = 3;
+    } else {
+        $match['availableSeats']['$eq'] = $seat;
+    }
 }
 
 if ($roleFilter) {
