@@ -131,7 +131,27 @@ html, body {
     border-radius: 16px;
     padding: 25px 30px;
     box-shadow: 0 6px 18px rgba(0,0,0,0.12);
+    display: flex;
+    flex-direction: column; /* allow child content windows to flex */
+    max-height: calc(100vh - 220px); /* keep panel within viewport */
 }
+
+/* Make content windows scrollable when content is long */
+.content-window {
+    display: none;
+    flex: 1 1 auto;
+    overflow-y: auto;
+    padding-right: 8px; /* give space for scrollbar */
+    -webkit-overflow-scrolling: touch;
+}
+.content-window.active { display: block; }
+
+/* Thin, unobtrusive scrollbar */
+.content-window::-webkit-scrollbar { width: 10px; }
+.content-window::-webkit-scrollbar-track { background: transparent; }
+.content-window::-webkit-scrollbar-thumb { background: rgba(0,0,0,0.06); border-radius: 8px; }
+.content-window::-webkit-scrollbar-thumb:hover { background: rgba(0,0,0,0.10); }
+.content-window { scrollbar-width: thin; scrollbar-color: rgba(0,0,0,0.06) transparent; }
 
 /* Ride Card inside right panel */
 .ride-card { display: flex; flex-direction: column; gap: 12px; }
@@ -222,7 +242,15 @@ html, body {
 
 .passengers-section {
   margin-bottom: 12px;
+  max-height: 40vh; /* limit height so long passenger lists scroll */
+  overflow-y: auto;
+  padding-right: 6px;
 }
+
+/* Scrollbar for passengers section */
+.passengers-section::-webkit-scrollbar { width: 8px; }
+.passengers-section::-webkit-scrollbar-thumb { background: rgba(0,0,0,0.06); border-radius: 8px; }
+.passengers-section { scrollbar-width: thin; scrollbar-color: rgba(0,0,0,0.06) transparent; }
 
 .passenger-heading {
   margin: 6px 0 10px;
