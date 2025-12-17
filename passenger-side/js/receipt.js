@@ -3,6 +3,22 @@ function formatCurrency(amount) {
     return '₱' + parseFloat(amount).toFixed(2);
 }
 
+// Function to format ISO datetime into a friendly local string
+function formatDateTime(iso) {
+    if (!iso || iso === 'N/A') return iso || '';
+    const date = new Date(iso);
+    if (isNaN(date.getTime())) return iso; // fallback to raw string if invalid
+    try {
+        return new Intl.DateTimeFormat(undefined, {
+            year: 'numeric', month: 'short', day: '2-digit',
+            hour: '2-digit', minute: '2-digit',
+            hour12: true
+        }).format(date);
+    } catch (_) {
+        return date.toLocaleString();
+    }
+}
+
 // Function to fetch and populate receipt data
 async function loadReceipt(rideId) {
     try {
@@ -25,10 +41,15 @@ async function loadReceipt(rideId) {
 
         const data = result.data;
 
+        // Format times for display
+        const pickupTimeFmt = formatDateTime(data.pickupTime);
+        const bookingTimeFmt = formatDateTime(data.bookingTime);
+
         // Populate receipt fields using DOM manipulation
         updateReceiptField('method', data.method);
         updateReceiptField('rideId', data.rideId);
-        updateReceiptField('pickupTime', data.pickupTime);
+        updateReceiptField('pickupTime', pickupTimeFmt);
+        updateReceiptField('bookingTime', bookingTimeFmt);
         updateReceiptField('paymentId', data.paymentId);
         updateReceiptField('destination', data.destination);
         updateReceiptField('driverName', data.driverName);
@@ -40,11 +61,10 @@ async function loadReceipt(rideId) {
         setInputValue('fullName', data.name);
         setInputValue('idNumber', data.idNumber);
         setInputValue('email', data.email);
-        setInputValue('pickupTimeInput', data.pickupTime);
+        setInputValue('pickupTimeInput', pickupTimeFmt);
         setInputValue('pickupLocationInput', data.pickupLocation);
 
-        // Optional status indicator
-        addStatusBadge(data.status);
+        // Status badge removed per spec (no 'pending' display)
 
     } catch (error) {
         console.error('Error fetching receipt:', error);
@@ -63,7 +83,7 @@ function updateReceiptField(fieldName, value) {
         const fieldMap = {
             'payment type:': 'method',
             'carpool driver:': 'driverName',
-            'booking time:': 'pickupTime',
+            'booking time:': 'bookingTime',
             'transaction id:': 'paymentId',
             'destination:': 'destination',
             'discount:': 'discount',
@@ -87,20 +107,7 @@ function setInputValue(id, value) {
     if (el) el.value = value ?? '';
 }
 
-// Function to add status badge (optional enhancement)
-function addStatusBadge(status) {
-    const receiptBox = document.querySelector('.receipt-box');
-    let badge = document.querySelector('.status-badge');
-
-    if (!badge) {
-        badge = document.createElement('div');
-        badge.className = 'status-badge';
-        receiptBox.insertBefore(badge, receiptBox.firstChild.nextSibling);
-    }
-
-    badge.textContent = status;
-    badge.className = `status-badge status-${status.toLowerCase()}`;
-}
+// Status badge intentionally removed
 
 // Get payment ID from URL parameter
 function getPaymentIdFromURL() {

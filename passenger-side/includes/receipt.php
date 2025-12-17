@@ -55,10 +55,21 @@ try {
     $passenger = $db->users->findOne(['userID' => $_SESSION['user_id']]);
     $passenger = $passenger ? json_decode(json_encode($passenger), true) : null;
 
-    // Fetch booking info for pickup details
-    $booking = $db->bookings->findOne([
-        'bookingId' => $payment['bookingId'] ?? ''
-    ]);
+    // Fetch booking info for pickup details (prefer by bookingId, fallback by rideId+passengerId)
+    $booking = null;
+    if (!empty($payment['bookingId'])) {
+        $booking = $db->bookings->findOne(['bookingId' => $payment['bookingId']]);
+    }
+    if (!$booking) {
+        // Prefer newest by timestamp when available
+        $booking = $db->bookings->findOne(
+            [
+                'rideId' => $rideId,
+                'passengerId' => $_SESSION['user_id']
+            ],
+            [ 'sort' => ['timestamp' => -1, '_id' => -1] ]
+        );
+    }
     $booking = $booking ? json_decode(json_encode($booking), true) : null;
 
 
@@ -81,12 +92,65 @@ try {
     $discount = 0; // May discount ba tayo?
     $total = $subtotal - $discount;
 
+    // Helpers to normalize possible BSON/array date shapes to ISO 8601 string
+    $normalizeDate = function($val) {
+        // Native BSON type
+        if ($val instanceof \MongoDB\BSON\UTCDateTime) {
+            return $val->toDateTime()->setTimezone(new \DateTimeZone('UTC'))->format(DATE_ATOM);
+        }
+        // Already a PHP DateTime
+        if ($val instanceof \DateTimeInterface) {
+            return $val->setTimezone(new \DateTimeZone('UTC'))->format(DATE_ATOM);
+        }
+        // Extended JSON forms
+        if (is_array($val)) {
+            // Common: { "$date": "2025-12-17T09:04:59.620Z" }
+            if (isset($val['$date']) && is_string($val['$date'])) {
+                return $val['$date'];
+            }
+            // Canonical: { "$date": { "$numberLong": "1734426299620" } }
+            if (isset($val['$date']) && is_array($val['$date']) && isset($val['$date']['$numberLong'])) {
+                $ms = (int)$val['$date']['$numberLong'];
+                $sec = (int) floor($ms / 1000);
+                $dt = (new \DateTimeImmutable('@' . $sec))->setTimezone(new \DateTimeZone('UTC'));
+                return $dt->format(DATE_ATOM);
+            }
+            // Sometimes directly { "$numberLong": "..." }
+            if (isset($val['$numberLong'])) {
+                $ms = (int)$val['$numberLong'];
+                $sec = (int) floor($ms / 1000);
+                $dt = (new \DateTimeImmutable('@' . $sec))->setTimezone(new \DateTimeZone('UTC'));
+                return $dt->format(DATE_ATOM);
+            }
+            // Rare: { date: "..." }
+            if (isset($val['date']) && is_string($val['date'])) {
+                return $val['date'];
+            }
+        }
+        // Plain string
+        if (is_string($val)) {
+            return $val;
+        }
+        return null;
+    };
+
+    // pickupTime should come from rides.departureTime
+    $pickupTime = $ride ? ($ride['departureTime'] ?? null) : null;
+    $pickupTime = $normalizeDate($pickupTime) ?: 'N/A';
+
+    // bookingTime should come from bookings.timestamp
+    $bookingTime = 'N/A';
+    if ($booking) {
+        $bookingTime = $normalizeDate($booking['timestamp'] ?? null) ?: $bookingTime;
+    }
+
     // Prepare receipt data
     $driverName = $driver['name'] ?? 'N/A';
     $receiptData = [
         'method' => $payment['method'] ?? 'N/A',
         'rideId' => $rideId,
-        'pickupTime' => $booking['timestamp']['$date'] ?? 'N/A',
+        'pickupTime' => $pickupTime,
+        'bookingTime' => $bookingTime,
         'pickupType' => $payment['pickupType'] ?? 'N/A',
         'pickupLocation' => $booking['pickupLocation'] ?? 'N/A',
         'paymentId' => $payment['paymentId'] ?? 'N/A',
@@ -94,14 +158,14 @@ try {
         'driverName' => $driverName,
         // Passenger details for left panel
         'name' => $passenger['name'] ?? 'N/A',
-        'idNumber' => $passenger['userID'] ?? 'N/A', // or a different ID field if you have
+        'idNumber' => $passenger['userID'] ?? 'N/A',
         'email' => $passenger['email'] ?? 'N/A',
         'discount' => $discount,
         'subtotal' => $subtotal,
         'total' => $total,
         'status' => $payment['status'] ?? 'N/A',
         'gcashRefNumber' => $payment['gcashRefNumber'] ?? 'N/A',
-        'timestamp' => $payment['timestamp']['$date'] ?? null
+        'timestamp' => $normalizeDate($payment['timestamp'] ?? null)
     ];
 
     // Output JSON response
