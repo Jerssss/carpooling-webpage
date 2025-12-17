@@ -138,7 +138,7 @@ document.addEventListener("DOMContentLoaded", () => {
             <button class="view-btn"
                     data-rideid="${carpool.rideId}"
                     data-booked="${carpool.isBooked}">
-                        ${carpool.isBooked ? 'Booked. See History' : 'View'}
+                        ${carpool.isBooked ? 'See History' : 'View'}
             </button>
          </div>
       `;
@@ -177,14 +177,7 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   function updateFilterSummary() {
-    const filters = [];
-    if (searchInput.value.trim()) filters.push(`Search: "${searchInput.value.trim()}"`);
-    if (destFilter.value) filters.push(`${destFilter.options[destFilter.selectedIndex].text}`);
-    if (seatFilter.value) filters.push(`Seats: ${seatFilter.value}`);
-    if (roleFilter.value) filters.push(`Role: ${roleFilter.options[roleFilter.selectedIndex].text}`);
-    if (dateFilter.value) filters.push(`Date: ${dateFilter.value}`);
-
-    filterSummary.textContent = filters.length ? `Active filters: ${filters.join(' | ')}` : '';
+    filterSummary.textContent = '';
   }
 
   // Event listeners
