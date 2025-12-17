@@ -1,5 +1,6 @@
+const BASE = '/9467_it312-teamarc_midtermproject';
+
 document.addEventListener("DOMContentLoaded", () => {
-    const BASE = '/9467_it312-teamarc_midtermproject';
     const upcomingContainer = document.getElementById("upcomingRidesContainer");
     const finishedContainer = document.getElementById("finishedRidesContainer");
 
@@ -23,7 +24,6 @@ document.addEventListener("DOMContentLoaded", () => {
                 console.error("Failed to parse JSON:", text);
                 return;
             }
-
             renderRides(data);
         })
         .catch(error => {
@@ -36,35 +36,37 @@ document.addEventListener("DOMContentLoaded", () => {
         upcomingContainer.innerHTML = '';
         finishedContainer.innerHTML = '';
 
-        // Upcoming rides - no report button
-        if (data.upcoming && data.upcoming.length > 0) {
-            data.upcoming.forEach(ride => upcomingContainer.appendChild(createRideCard(ride, false)));
+        // Upcoming rides
+        if (data.upcoming?.length) {
+            data.upcoming.forEach(ride =>
+                upcomingContainer.appendChild(createRideCard(ride, false))
+            );
         } else {
             upcomingContainer.innerHTML = `<p>No upcoming rides.</p>`;
         }
 
-        // Finished rides - with report button
-        if (data.finished && data.finished.length > 0) {
-            data.finished.forEach(ride => finishedContainer.appendChild(createRideCard(ride, true)));
+        // Finished rides
+        if (data.finished?.length) {
+            data.finished.forEach(ride =>
+                finishedContainer.appendChild(createRideCard(ride, true))
+            );
         } else {
             finishedContainer.innerHTML = `<p>No finished rides.</p>`;
         }
     }
 
-    function createRideCard(ride, showReportButton = false) {
+    function createRideCard(ride, isFinished = false) {
         const card = document.createElement('div');
         card.classList.add('ride-card');
 
-        // Fix image paths
         const carIcon = "../images/car.png";
         const clockIcon = "../images/clock-icon.png";
-        const reportIcon = "../images/report.png"; 
+        const reportIcon = "../images/report.png";
+        const starIcon = "../images/star-gray.png";
 
-        // Get driver ID from ride data
         const driverId = ride.driverId || 'UNKNOWN';
         const rideId = ride.rideId || '';
         const driverName = ride.name || 'Unknown Driver';
-
         const bookingId = ride.bookingId || '';
 
         card.innerHTML = `
@@ -94,61 +96,103 @@ document.addEventListener("DOMContentLoaded", () => {
                     </div>
                 </div>
             </div>
-            
-            ${!showReportButton ? `
+
+            ${!isFinished ? `
                 <button class="cancel-btn"
-                data-bookingid="${bookingId}"
-                data-rideid="${rideId}">
-                Cancel Booking
+                    data-bookingid="${bookingId}"
+                    data-rideid="${rideId}">
+                    Cancel Booking
                 </button>
-                ` : ''}
-                
-                ${showReportButton ? `
-                    <button class="report-btn"
-                    onclick="openComplaintModal('${rideId}', '${driverId}', '${driverName}')">
-                    <img src="${reportIcon}" alt="Report" />
-                    <span>Report</span>
+            ` : ''}
+
+            ${isFinished ? `
+                <div class="card-actions">
+                    <button class="rate-btn"
+                        onclick="openRateModal('${rideId}', '${driverId}', '${driverName}')">
+                        <img src="${starIcon}" />
+                        <span>Rate</span>
                     </button>
-                    ` : ''}
-                `;
+
+                    <button class="report-btn"
+                        onclick="openComplaintModal('${rideId}', '${driverId}', '${driverName}')">
+                        <img src="${reportIcon}" />
+                        <span>Report</span>
+                    </button>
+                </div>
+            ` : ''}
+        `;
+
         return card;
     }
 });
 
+/* CANCEL BOOKING */
 document.addEventListener('click', async (e) => {
-  const btn = e.target.closest('.cancel-btn');
-  if (!btn) return;
+    const btn = e.target.closest('.cancel-btn');
+    if (!btn) return;
 
-  const bookingId = btn.dataset.bookingid;
-  const rideId = btn.dataset.rideid;
+    const bookingId = btn.dataset.bookingid;
+    const rideId = btn.dataset.rideid;
 
-  if (!bookingId || !rideId) {
-    alert('Invalid booking data.');
-    return;
-  }
-
-  if (!confirm('Are you sure you want to cancel this booking?')) return;
-
-  try {
-    const res = await fetch(`${BASE}/passenger-side/includes/cancel_booking.php`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      credentials: 'include',
-      body: JSON.stringify({ bookingId, rideId })
-    });
-
-    const data = await res.json();
-
-    if (!res.ok) {
-      alert(data.error || 'Failed to cancel booking');
-      return;
+    if (!bookingId || !rideId) {
+        alert('Invalid booking data.');
+        return;
     }
 
-    alert('Booking cancelled successfully');
-    location.reload();
+    if (!confirm('Are you sure you want to cancel this booking?')) return;
 
-  } catch (err) {
-    console.error(err);
-    alert('Server error');
-  }
+    try {
+        const res = await fetch(`${BASE}/passenger-side/includes/cancel_booking.php`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            credentials: 'include',
+            body: JSON.stringify({ bookingId, rideId })
+        });
+
+        const data = await res.json();
+
+        if (!res.ok) {
+            alert(data.error || 'Failed to cancel booking');
+            return;
+        }
+
+        alert('Booking cancelled successfully');
+        location.reload();
+    } catch (err) {
+        console.error(err);
+        alert('Server error');
+    }
+});
+
+/* RATING (LOCAL ONLY) */
+window.openRateModal = function (rideId, driverId, driverName) {
+    const modal = document.getElementById('rateModal');
+    if (!modal) return alert('Rate dialog not available');
+
+    document.getElementById('rateDriverName').textContent = driverName || 'Driver';
+    modal.dataset.rideId = rideId;
+    modal.classList.add('open');
+
+    modal.querySelectorAll('.star').forEach(s => s.classList.remove('selected'));
+};
+
+window.closeRateModal = function () {
+    document.getElementById('rateModal')?.classList.remove('open');
+};
+
+document.addEventListener('click', (e) => {
+    if (e.target.classList.contains('star')) {
+        const value = Number(e.target.dataset.value);
+        const stars = e.target.closest('.stars')?.querySelectorAll('.star') || [];
+        stars.forEach(s =>
+            s.classList.toggle('selected', Number(s.dataset.value) <= value)
+        );
+    }
+
+    if (e.target.id === 'saveRatingBtn') {
+        const modal = document.getElementById('rateModal');
+        const rating = modal.querySelectorAll('.star.selected').length;
+        closeRateModal();
+        alert(`Your rating of ${rating} star(s) was recorded (local only).`);
+    }
 });
