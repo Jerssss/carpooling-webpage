@@ -164,13 +164,14 @@ document.addEventListener('click', async (e) => {
     }
 });
 
-/* RATING (LOCAL ONLY) */
+/* RATING */
 window.openRateModal = function (rideId, driverId, driverName) {
     const modal = document.getElementById('rateModal');
     if (!modal) return alert('Rate dialog not available');
 
     document.getElementById('rateDriverName').textContent = driverName || 'Driver';
     modal.dataset.rideId = rideId;
+    modal.dataset.driverId = driverId || '';
     modal.classList.add('open');
 
     modal.querySelectorAll('.star').forEach(s => s.classList.remove('selected'));
@@ -192,7 +193,29 @@ document.addEventListener('click', (e) => {
     if (e.target.id === 'saveRatingBtn') {
         const modal = document.getElementById('rateModal');
         const rating = modal.querySelectorAll('.star.selected').length;
-        closeRateModal();
-        alert(`Your rating of ${rating} star(s) was recorded (local only).`);
+        if (!rating) { alert('Please select a rating.'); return; }
+
+        const rideId = modal.dataset.rideId || '';
+        const driverId = modal.dataset.driverId || '';
+        if (!rideId || !driverId) { alert('Missing ride or driver information.'); return; }
+
+        fetch(`${BASE}/passenger-side/includes/submit_review.php`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            credentials: 'include',
+            body: JSON.stringify({ rideId, driverId, rating })
+        })
+        .then(res => res.json().then(data => ({ ok: res.ok, data })))
+        .then(({ ok, data }) => {
+            if (!ok || data.error) {
+                throw new Error(data.error || 'Failed to save review');
+            }
+            closeRateModal();
+            alert(`Thanks! Your rating was saved. Current average: ${data.ratingAvg ?? 'N/A'}`);
+        })
+        .catch(err => {
+            console.error(err);
+            alert('Could not save your rating.');
+        });
     }
 });
