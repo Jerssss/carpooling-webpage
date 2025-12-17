@@ -22,23 +22,6 @@ if (!isset($_SESSION['user_id'])) {
 
 $userId = $_SESSION['user_id'];
 
-// Get user's bookings
-$bookingsCol = $db->bookings;
-$userBookings = $bookingsCol->find([
-    'passengerId' => $userId,
-    'status' => ['$in' => ['pending', 'accepted', 'completed']]
-])->toArray();
-
-// Create a map of rideId => bookingInfo
-$bookedRides = [];
-foreach ($userBookings as $booking) {
-    $bookedRides[$booking['rideId']] = [
-        'bookingId' => $booking['bookingId'],
-        'status' => $booking['status']
-    ];
-}
-
-
 // Allow only passengers
 if (($_SESSION['role'] ?? '') !== 'passenger') {
     try {
@@ -130,7 +113,6 @@ sort($allSeats); // sort ascending
 // Aggregation pipeline
 // ----------------------------
 $pipeline = [
-    
     ['$lookup' => [
         'from' => 'users',
         'localField' => 'driverId',
@@ -139,26 +121,13 @@ $pipeline = [
     ]],
     ['$unwind' => '$driverInfo'],
 
-    ['$lookup' => [
-        'from' => 'history',
-        'let' => ['rideId' => '$rideId', 'driverId' => '$driverId'],
-        'pipeline' => [
-            ['$match' => [
-                '$expr' => [
-                    '$and' => [
-                        ['$eq' => ['$rideId', '$$rideId']],
-                        ['$eq' => ['$driverId', '$$driverId']],
-                        ['$eq' => ['$status', 'completed']]
-                    ]
-                ]
-            ]]
-        ],
-        'as' => 'completedHistory'
-    ]],
-
-    ['$match' => [
-        'completedHistory' => ['$size' => 0],
-        'driverId' => ['$ne' => $_SESSION['user_id']] // exclude own rides
+    ['$addFields' => [
+        'isBooked' => [
+            '$in' => [
+                $userId,
+                '$passengers.userId'
+            ]
+        ]
     ]]
 ];
 
@@ -209,8 +178,8 @@ foreach ($results as $ride) {
     $rideId = $ride['rideId'];
 
     // Check if user has booked this ride
-    $isBooked = isset($bookedRides[$rideId]);
-    $bookingStatus = $isBooked ? $bookedRides[$rideId]['status'] : null;
+    $isBooked = $ride['isBooked'] ?? false;
+
 
     $carpools[] = [
         'rideId' => $ride['rideId'],
@@ -227,7 +196,7 @@ foreach ($results as $ride) {
         'leavingTime' => $ride['departureTime'],
         'photo' => $photo,
         'isBooked' => $isBooked,
-        'bookingStatus' => $bookingStatus
+        'bookingStatus' => $isBooked ? 'Already booked' : null
     ];
 }
 
