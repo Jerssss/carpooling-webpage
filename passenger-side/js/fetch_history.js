@@ -56,6 +56,14 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     function createRideCard(ride, isFinished = false) {
+        console.log('Ride status:', ride.status, ride);
+
+        // Stores the cancelled status. Will be used later on
+        const isCancelled =
+        Array.isArray(ride.status)
+        ? ride.status.includes('cancelled')
+        : ride.status === 'cancelled';
+
         const card = document.createElement('div');
         card.classList.add('ride-card');
 
@@ -121,12 +129,16 @@ document.addEventListener("DOMContentLoaded", () => {
                 </div>
             ` : ''}
         `;
-        if (ride.status === 'cancelled') {
+        
+        if (isCancelled) {
             card.classList.add('cancelled');
             const badge = document.createElement('div');
             badge.className = 'cancelled-badge';
             badge.textContent = 'Cancelled';
             card.appendChild(badge);
+            
+            // Remove rate / report buttons
+            card.querySelector('.card-actions')?.remove();
         }
         return card;
     }

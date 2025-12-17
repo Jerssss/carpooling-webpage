@@ -23,8 +23,10 @@ if (!$bookingId || !$rideId) {
 }
 
 $bookings = $db->bookings;
-$rides    = $db->rides;
-$history  = $db->history;
+$rides = $db->rides;
+$history = $db->history;
+$users = $db->users;
+$notifications = $db->notifications;
 
 /* Validate booking */
 $booking = $bookings->findOne([
@@ -39,6 +41,28 @@ if (!$booking) {
     echo json_encode(['error' => 'Booking not found or already cancelled']);
     exit;
 }
+
+$driverId    = $booking['driverId'] ?? null;
+$passengerId = $booking['passengerId'] ?? null;
+$carId       = $booking['carId'] ?? null;
+
+/* Fetch user names */
+$driver = $users->findOne(
+    ['userID' => $driverId],
+    ['projection' => ['name' => 1]]
+);
+
+$passenger = $users->findOne(
+    ['userID' => $passengerId],
+    ['projection' => ['name' => 1]]
+);
+
+$driverName    = $driver['name'] ?? 'Driver';
+$passengerName = $passenger['name'] ?? 'Passenger';
+
+$now = new MongoDB\BSON\UTCDateTime();
+$timeStr = date('h:i A');
+
 
 /* Update bookings */
 $bookings->updateOne(
@@ -65,3 +89,33 @@ $history->updateOne(
 );
 
 echo json_encode(['success' => true]);
+
+// Insert notification to driver
+$notifications->insertOne([
+    'bookingId'   => $bookingId,
+    'rideId'      => $rideId,
+    'driverId'    => $driverId,
+    'passengerId' => $passengerId,
+    'carId'       => $carId,
+    'type'        => 'cancelling',
+    'audience'    => 'driver',
+    'message'     => "Booking from {$passengerName} has been cancelled at {$timeStr}",
+    'timestamp'   => $now,
+    'isRead'      => false
+]);
+
+// Insert notification to passenger
+$notifications->insertOne([
+    'bookingId'   => $bookingId,
+    'rideId'      => $rideId,
+    'driverId'    => $driverId,
+    'passengerId' => $passengerId,
+    'carId'       => $carId,
+    'type'        => 'cancelling',
+    'audience'    => 'passenger',
+    'message'     => "Booking for {$driverName} has been cancelled",
+    'timestamp'   => $now,
+    'isRead'      => false
+]);
+
+
