@@ -9,6 +9,8 @@ document.addEventListener("DOMContentLoaded", () => {
         return;
     }
 
+    let originalData = { upcoming: [], finished: [] };
+
     fetch(`${BASE}/passenger-side/includes/fetch_history.php`, { credentials: 'include' })
         .then(response => {
             if (!response.ok) {
@@ -24,13 +26,57 @@ document.addEventListener("DOMContentLoaded", () => {
                 console.error("Failed to parse JSON:", text);
                 return;
             }
-            renderRides(data);
+            originalData = {
+                upcoming: Array.isArray(data.upcoming) ? data.upcoming : [],
+                finished: Array.isArray(data.finished) ? data.finished : []
+            };
+            renderRides(originalData);
+            initSearch(originalData);
         })
         .catch(error => {
             console.error("Error fetching ride history:", error);
             upcomingContainer.innerHTML = `<p class="error-msg">Failed to load upcoming rides.</p>`;
             finishedContainer.innerHTML = `<p class="error-msg">Failed to load finished rides.</p>`;
         });
+
+    function initSearch(dataset) {
+        const searchInput = document.querySelector('.ride-controls .search-bar input');
+        if (!searchInput) return;
+
+        const filterAndRender = () => {
+            const q = (searchInput.value || '').trim().toLowerCase();
+            if (!q) {
+                renderRides(dataset);
+                return;
+            }
+            const matchFn = (ride) => rideMatches(ride, q);
+            const filtered = {
+                upcoming: dataset.upcoming.filter(matchFn),
+                finished: dataset.finished.filter(matchFn)
+            };
+            renderRides(filtered);
+        };
+
+        searchInput.addEventListener('input', filterAndRender);
+    }
+
+    function rideMatches(ride, q) {
+        const safe = (v) => (v == null ? '' : String(v)).toLowerCase();
+        const priceStr = safe(ride.price);
+        const pricePeso = priceStr ? `₱${priceStr}` : '';
+
+        const fields = [
+            safe(ride.name),                         // driver name
+            safe(ride.departureTime),                // pickup/departure time
+            safe(ride.pickupLocation || ride.stationedAt), // pickup location
+            safe(ride.destination),                  // dropoff location
+            priceStr,                                // fare as plain number
+            pricePeso                                // fare with peso sign
+        ];
+
+        // Simple contains match across fields
+        return fields.some(f => f.includes(q));
+    }
 
     function renderRides(data) {
         upcomingContainer.innerHTML = '';

@@ -171,6 +171,39 @@ if ($roleFilter) {
 
 $pipeline[] = ['$match' => $match];
 
+// Exclude rides that have been marked completed in history
+// Joins the history collection and filters out any ride with a completed status
+$pipeline[] = ['$lookup' => [
+    'from' => 'history',
+    'let' => ['rid' => '$rideId'],
+    'pipeline' => [
+        ['$match' => [
+            '$expr' => ['$eq' => ['$rideId', '$$rid']]
+        ]],
+        ['$match' => [
+            'status' => [
+                '$regex' => '^completed$',
+                '$options' => 'i'
+            ]
+        ]],
+        ['$limit' => 1]
+    ],
+    'as' => 'completedHistory'
+]];
+
+$pipeline[] = ['$addFields' => [
+    'hasCompletedHistory' => [
+        '$gt' => [
+            ['$size' => '$completedHistory'],
+            0
+        ]
+    ]
+]];
+
+$pipeline[] = ['$match' => [
+    'hasCompletedHistory' => ['$ne' => true]
+]];
+
 // ----------------------------
 // Execute query
 // ----------------------------

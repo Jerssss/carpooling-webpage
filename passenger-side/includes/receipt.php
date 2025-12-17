@@ -14,9 +14,6 @@ if (!isset($_SESSION['user_id']) || $_SESSION['role'] !== 'passenger') {
 }
 
 try {
-    // Connect to MongoDB
-    // $db already available from db_connect.php
-
     // Get rideId from URL parameter
     $rideId = $_GET['rideId'] ?? null;
 
