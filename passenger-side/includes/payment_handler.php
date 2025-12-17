@@ -12,6 +12,53 @@ if (!isset($_SESSION['user_id']) || $_SESSION['role'] !== 'passenger') {
 
 use MongoDB\BSON\UTCDateTime;
 
+// ----------------------------
+// OVERLAPPING BOOKING VALIDATION
+// ----------------------------
+
+// Parse current ride time
+$currentDate = $rideDoc['date'] ?? '';
+$currentTimeRange = $rideDoc['departureTime'] ?? '';
+
+$currentParsed = parseTimeRange($currentTimeRange);
+if (!$currentParsed) {
+    throw new Exception('Invalid ride time format');
+}
+
+[$currentStart, $currentEnd] = $currentParsed;
+
+// Get passenger's active bookings
+$activeBookings = $bookingsCollection->find([
+    'passengerId' => $userId,
+    'status' => ['$in' => ['pending', 'accepted']]
+]);
+
+foreach ($activeBookings as $booking) {
+    $otherRide = $ridesCollection->findOne([
+        'rideId' => $booking['rideId']
+    ]);
+
+    if (!$otherRide) continue;
+
+    // Only compare rides on the same date
+    if (($otherRide['date'] ?? '') !== $currentDate) {
+        continue;
+    }
+
+    $otherTimeRange = $otherRide['departureTime'] ?? '';
+    $otherParsed = parseTimeRange($otherTimeRange);
+
+    if (!$otherParsed) continue;
+
+    [$otherStart, $otherEnd] = $otherParsed;
+
+    if (timeRangesOverlap($currentStart, $currentEnd, $otherStart, $otherEnd)) {
+        throw new Exception(
+            'You already have a booking that overlaps with this ride time'
+        );
+    }
+}
+
 header('Content-Type: application/json');
 
 $paymentsCollection = $db->payments;
@@ -61,6 +108,51 @@ try {
     if (!$rideDoc) {
         throw new Exception('Ride not found');
     }
+
+    // ----------------------------
+// OVERLAPPING BOOKING VALIDATION
+// ----------------------------
+$currentDate = $rideDoc['date'] ?? '';
+$currentTimeRange = $rideDoc['departureTime'] ?? '';
+
+$currentParsed = parseTimeRange($currentTimeRange);
+if (!$currentParsed) {
+    throw new Exception('Invalid ride time format');
+}
+
+[$currentStart, $currentEnd] = $currentParsed;
+
+// Get passenger's active bookings
+$activeBookings = $bookingsCollection->find([
+    'passengerId' => $userId,
+    'status' => ['$in' => ['pending', 'accepted']]
+]);
+
+foreach ($activeBookings as $booking) {
+    // Skip same ride (extra safety)
+    if (($booking['rideId'] ?? '') === $rideId) continue;
+
+    $otherRide = $ridesCollection->findOne([
+        'rideId' => $booking['rideId']
+    ]);
+
+    if (!$otherRide) continue;
+
+    // Only compare same date
+    if (($otherRide['date'] ?? '') !== $currentDate) continue;
+
+    $otherParsed = parseTimeRange($otherRide['departureTime'] ?? '');
+    if (!$otherParsed) continue;
+
+    [$otherStart, $otherEnd] = $otherParsed;
+
+    if (timeRangesOverlap($currentStart, $currentEnd, $otherStart, $otherEnd)) {
+        throw new Exception(
+            'You already have a booking that overlaps with this ride time'
+        );
+    }
+}
+
 
     $price = (float)($rideDoc['price'] ?? 0);
     
