@@ -23,29 +23,75 @@ try {
         echo json_encode(['success' => false, 'error' => 'User not found.']);
         exit;
     }
+
+    // Store roles in session if not already set
+    if (!isset($_SESSION['roles']) || $_SESSION['roles'] === null) {
+        if (isset($user['roles'])) {
+            $_SESSION['roles'] = $user['roles'];
+        } else {
+            $_SESSION['roles'] = [];
+        }
+    }
     
     // Check if user has passenger role
     $hasPassenger = false;
-    if (isset($user['roles']) && is_array($user['roles'])) {
-        foreach ($user['roles'] as $role) {
-            if (strtolower((string)$role) === 'passenger') {
+
+    if (isset($user['roles'])) {
+        // Convert MongoDB BSON Array to regular PHP array
+        $rolesArray = is_array($user['roles']) ? $user['roles'] : iterator_to_array($user['roles']);
+        
+        foreach ($rolesArray as $role) {
+            $roleStr = is_object($role) ? (string)$role : $role;
+            if (strtolower(trim($roleStr)) === 'passenger') {
                 $hasPassenger = true;
                 break;
             }
         }
     }
-    if (!$hasPassenger && isset($user['role']) && strtolower((string)$user['role']) === 'passenger') {
-        $hasPassenger = true;
+
+    // Fallback: check singular 'role' field (if exists)
+    if (!$hasPassenger && isset($user['role'])) {
+        $roleStr = is_object($user['role']) ? (string)$user['role'] : $user['role'];
+        if (strtolower(trim($roleStr)) === 'passenger') {
+            $hasPassenger = true;
+        }
     }
-    
+
+    // Fallback: check session roles
+    if (!$hasPassenger && isset($_SESSION['roles'])) {
+        $sessionRolesArray = is_array($_SESSION['roles']) ? $_SESSION['roles'] : iterator_to_array($_SESSION['roles']);
+        
+        foreach ($sessionRolesArray as $role) {
+            $roleStr = is_object($role) ? (string)$role : $role;
+            if (strtolower(trim($roleStr)) === 'passenger') {
+                $hasPassenger = true;
+                break;
+            }
+        }
+    }
+
     if (!$hasPassenger) {
+        // Debug information
         http_response_code(403);
-        echo json_encode(['success' => false, 'error' => 'Only passengers can submit complaints.']);
+        echo json_encode([
+            'success' => false, 
+            'error' => 'Only passengers can submit complaints.',
+            'debug' => [
+                'userId' => $userId,
+                'userRoles' => $user['roles'] ?? null,
+                'sessionRoles' => $_SESSION['roles'] ?? null,
+                'hasRoleField' => isset($user['role'])
+            ]
+        ]);
         exit;
     }
 } catch (Throwable $e) {
     http_response_code(500);
-    echo json_encode(['success' => false, 'error' => 'Failed to verify user.']);
+    echo json_encode([
+        'success' => false, 
+        'error' => 'Failed to verify user.',
+        'debug' => $e->getMessage()
+    ]);
     exit;
 }
 
@@ -104,7 +150,7 @@ try {
         $newNum = 1;
     }
     
-    $complaintId = 'COM' . str_pad($newNum, 4, '0', STR_PAD_LEFT);
+    $complaintId = 'COM' . str_pad($newNum, 7, '0', STR_PAD_LEFT);
     
     // Prepare complaint document
     $complaint = [

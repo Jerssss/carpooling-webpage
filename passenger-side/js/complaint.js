@@ -95,6 +95,12 @@ async function submitComplaint() {
     const loadingEl = document.querySelector('.complaint-loading');
     const formData = new FormData(document.getElementById('complaintForm'));
     
+    // Debug: Log form data
+    console.log('=== Submitting Complaint ===');
+    for (let [key, value] of formData.entries()) {
+        console.log(`${key}: ${value}`);
+    }
+
     // Disable submit button and show loading
     submitBtn.disabled = true;
     loadingEl.classList.add('active');
@@ -112,6 +118,17 @@ async function submitComplaint() {
         
         if (contentType && contentType.includes('application/json')) {
             result = await response.json();
+            console.log('=== Response JSON ===');
+            console.log(result);
+            // Show debug info if present
+            if (result.debug) {
+                console.log('=== DEBUG INFO ===');
+                console.log('User ID:', result.debug.userId);
+                console.log('User Roles:', result.debug.userRoles);
+                console.log('Session Roles:', result.debug.sessionRoles);
+                console.log('Has Role Field:', result.debug.hasRoleField);
+                console.log('==================');
+            }
         } else {
             const text = await response.text();
             console.error('Non-JSON response:', text);
