@@ -51,6 +51,16 @@ try {
         echo json_encode(['error' => 'Forbidden']);
         exit;
     }
+    // Fetch passenger info from users collection
+    $passenger = $db->users->findOne(['userID' => $_SESSION['user_id']]);
+    $passenger = $passenger ? json_decode(json_encode($passenger), true) : null;
+
+    // Fetch booking info for pickup details
+    $booking = $db->bookings->findOne([
+        'bookingId' => $payment['bookingId'] ?? ''
+    ]);
+    $booking = $booking ? json_decode(json_encode($booking), true) : null;
+
 
     // Convert BSON to PHP array
     $payment = json_decode(json_encode($payment), true);
@@ -76,16 +86,16 @@ try {
     $receiptData = [
         'method' => $payment['method'] ?? 'N/A',
         'rideId' => $rideId,
-        'pickupTime' => $payment['pickupTime'] ?? 'N/A',
+        'pickupTime' => $booking['timestamp']['$date'] ?? 'N/A',
         'pickupType' => $payment['pickupType'] ?? 'N/A',
-        'pickupLocation' => $payment['pickupLocation'] ?? 'N/A',
+        'pickupLocation' => $booking['pickupLocation'] ?? 'N/A',
         'paymentId' => $payment['paymentId'] ?? 'N/A',
         'destination' => $ride['destination'] ?? 'N/A',
         'driverName' => $driverName,
         // Passenger details for left panel
-        'name' => $payment['name'] ?? 'N/A',
-        'idNumber' => $payment['idNumber'] ?? 'N/A',
-        'email' => $payment['email'] ?? 'N/A',
+        'name' => $passenger['name'] ?? 'N/A',
+        'idNumber' => $passenger['userID'] ?? 'N/A', // or a different ID field if you have
+        'email' => $passenger['email'] ?? 'N/A',
         'discount' => $discount,
         'subtotal' => $subtotal,
         'total' => $total,
