@@ -140,6 +140,33 @@
           </div>
         </div>
       </div>
+
+      <!-- Rate Modal (local placeholder) -->
+      <div id="rateModal" class="rate-modal">
+        <div class="rate-modal-content">
+          <div class="rate-modal-header">
+            <h2>Rate Ride</h2>
+            <button class="complaint-close" onclick="closeRateModal()">&times;</button>
+          </div>
+          <div class="rate-modal-body">
+            <div class="complaint-info">
+              <p>Rate your driver</p>
+              <p class="driver-name" id="rateDriverName"></p>
+            </div>
+            <div class="stars" id="rateStars">
+              <span class="star" data-value="1">☆</span>
+              <span class="star" data-value="2">☆</span>
+              <span class="star" data-value="3">☆</span>
+              <span class="star" data-value="4">☆</span>
+              <span class="star" data-value="5">☆</span>
+            </div>
+          </div>
+          <div class="complaint-modal-footer">
+            <button class="btn primary" id="saveRatingBtn">Save</button>
+            <button class="btn secondary" onclick="closeRateModal()">Cancel</button>
+          </div>
+        </div>
+      </div>
     </section>
   </main>
 

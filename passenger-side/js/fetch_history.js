@@ -56,9 +56,10 @@ document.addEventListener("DOMContentLoaded", () => {
         card.classList.add('ride-card');
 
         // Fix image paths
-        const carIcon = "../images/car.png";
+            const carIcon = "../images/car.png";
         const clockIcon = "../images/clock-icon.png";
         const reportIcon = "../images/report.png"; 
+        const starIcon = "../images/star-gray.png";
 
         // Get driver ID from ride data
         const driverId = ride.driverId || 'UNKNOWN';
@@ -94,12 +95,58 @@ document.addEventListener("DOMContentLoaded", () => {
             </div>
             
             ${showReportButton ? `
-                <button class="report-btn" onclick="openComplaintModal('${rideId}', '${driverId}', '${driverName}')" title="Report this driver">
-                    <img src="${reportIcon}" alt="Report" />
-                    <span>Report</span>
-                </button>
+                <div class="card-actions">
+                  <button class="rate-btn" onclick="openRateModal('${rideId}', '${driverId}', '${driverName}')" title="Rate this ride">
+                    <img src="${starIcon}" alt="Rate" />
+                    <span>Rate</span>
+                  </button>
+
+                  <button class="report-btn" onclick="openComplaintModal('${rideId}', '${driverId}', '${driverName}')" title="Report this driver">
+                      <img src="${reportIcon}" alt="Report" />
+                      <span>Report</span>
+                  </button>
+                </div>
             ` : ''}
         `;
         return card;
     }
+
+    // ---- Rating modal (local-only placeholder) ----
+    window.openRateModal = function(rideId, driverId, driverName) {
+        const modal = document.getElementById('rateModal');
+        if (!modal) return alert('Rate dialog not available');
+        document.getElementById('rateDriverName').textContent = driverName || 'Driver';
+        modal.dataset.rideId = rideId || '';
+        modal.classList.add('open');
+        // reset stars
+        const stars = modal.querySelectorAll('.star');
+        stars.forEach(s => s.classList.remove('selected'));
+    }
+
+    window.closeRateModal = function() {
+        const modal = document.getElementById('rateModal');
+        if (!modal) return;
+        modal.classList.remove('open');
+    }
+
+    document.addEventListener('click', (e) => {
+        if (e.target.matches('.star')) {
+            const value = e.target.dataset.value;
+            const container = e.target.closest('.stars');
+            if (!container) return;
+            container.querySelectorAll('.star').forEach(s => {
+                s.classList.toggle('selected', Number(s.dataset.value) <= Number(value));
+            });
+        }
+
+        if (e.target && e.target.id === 'saveRatingBtn') {
+            // Local-only: pretend to save and close
+            const modal = document.getElementById('rateModal');
+            const rideId = modal?.dataset?.rideId || '';
+            const selected = modal.querySelectorAll('.star.selected').length || 0;
+            closeRateModal();
+            alert(`Your rating of ${selected} star(s) for ride ${rideId} was recorded (local).`);
+        }
+    });
+
 });
