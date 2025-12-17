@@ -53,17 +53,45 @@
       window.initNotificationsUI();
     }
 
-    // Also populate navbar user name consistently across pages
+    // Also populate navbar user name/photo consistently across pages
     try {
       const BASE = `${window.location.origin}/9467_it312-teamarc_midtermproject`;
-      const res = await fetch(`${BASE}/includes/get_user_info.php`, { credentials: 'include', cache: 'no-cache' });
-      if (res.ok) {
-        const data = await res.json();
-        console.debug('Navbar session user:', data.resolvedUserId, data.user?.name);
+      // Try multiple endpoints to get session user info (driver/passenger)
+      const endpoints = [
+        `${BASE}/driver-side/includes/get_session_user.php`,
+        `${BASE}/includes/get_user_info.php`
+      ];
+      let data = null;
+      for (const url of endpoints) {
+        try {
+          const r = await fetch(url, { credentials: 'include', cache: 'no-cache' });
+          if (r.ok) {
+            const j = await r.json();
+            if (j && (j.success || j.user || j.name)) { data = j; break; }
+          }
+        } catch (_) { /* try next */ }
+      }
+
+      if (data) {
+        const user = data.user || data; // support different shapes
+        const name = user.name || user.fullName || 'Unknown User';
+        const picture = user.picture || user.photo || 'images/profile_pics/default-pic.png';
+
+        const toAbs = (p) => {
+          if (!p || typeof p !== 'string') return `${BASE}/images/profile_pics/default-pic.png`;
+          const s = p.trim();
+          if (s.startsWith('http://') || s.startsWith('https://') || s.startsWith('//')) return s;
+          return `${BASE}/${s.replace(/^\/+/, '')}`;
+        };
+
         const nameEl = document.getElementById('userName');
-        if (nameEl && data && data.success && data.user) {
-          nameEl.textContent = data.user.name || 'Unknown User';
-        }
+        if (nameEl) nameEl.textContent = name;
+
+        const pics = document.querySelectorAll('.user-pic');
+        pics.forEach(img => {
+          try { img.src = toAbs(picture); } catch(_) { /* ignore */ }
+          if (!img.alt || img.alt.toLowerCase() === 'user') img.alt = name;
+        });
       }
     } catch (_) { /* ignore */ }
 
