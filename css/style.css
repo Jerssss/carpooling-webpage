@@ -26,6 +26,7 @@ main,
 .hero,
 .carpool-section,
 .profile-page,
+.driver-section,
 .payment-container,
 .receipt-container,
 .about,
@@ -33,7 +34,10 @@ main,
 .booked-rides {
   flex: 1;
 }
-
+/* Also ensure top-level sections expand to fill available height so footer stays at bottom when viewport is tall or zoomed out */
+body > section {
+  flex: 1;
+}
 /* ===== NAVIGATION BAR ===== */
 nav {
   background: #2C2C2C;

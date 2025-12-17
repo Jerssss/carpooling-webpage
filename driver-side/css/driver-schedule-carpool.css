@@ -1,3 +1,11 @@
+/* Global overflow fix */
+html, body {
+    width: 100%;
+    max-width: 100%;
+    box-sizing: border-box;
+    overflow-x: hidden; /* prevent horizontal scroll caused by long elements */
+}
+
 /* Map picker input icons: ensure clickable and visible */
 .input-icon-wrap {
     position: relative;
@@ -112,10 +120,33 @@ body {
     border-radius: 20px;
     box-shadow: 0 15px 40px rgba(0, 0, 0, 0.12);
     transition: all 0.3s ease;
+    box-sizing: border-box; /* ensure padding doesn't add to width */
+    overflow-x: hidden;
 }
 
 .form-container:hover {
     box-shadow: 0 20px 50px rgba(0, 0, 0, 0.15);
+}
+
+/* Ensure this page expands to fill available height so footer stays at the bottom when zoomed */
+body > .form-container {
+    flex: 1;
+    display: flex;
+    flex-direction: column; /* stack heading above form */
+    align-items: center; /* center heading and form horizontally */
+    justify-content: flex-start;
+    padding-top: 40px; /* small spacing from top */
+}
+
+/* Make form take full width within the container so inputs stay full-width */
+.form-container form {
+    width: 100%;
+}
+
+.form-container h1 {
+    text-align: center;
+    width: 100%;
+    margin-bottom: 20px;
 }
 
 .form-container h1 {

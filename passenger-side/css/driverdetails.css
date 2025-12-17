@@ -1,3 +1,11 @@
+/* Global overflow fix */
+html, body {
+  width: 100%;
+  max-width: 100%;
+  box-sizing: border-box;
+  overflow-x: hidden;
+}
+
 /* ========= PAGE BACKGROUND ========= */
 body {
   background-color: #f0f0f0; /* matches light backgrounds in index */
@@ -13,7 +21,8 @@ body {
   align-items: flex-start;
   padding: 80px 20px;
   background-color: #f8e396;
-  background: linear-gradient(90deg, #f0f0f0 0%, #f8e396 50%, #FFB300 100%)
+  background: linear-gradient(90deg, #f0f0f0 0%, #f8e396 50%, #FFB300 100%);
+  overflow-x: hidden; /* ensure background/content doesn't cause horizontal scroll */
 }
 
 .driver-container {
