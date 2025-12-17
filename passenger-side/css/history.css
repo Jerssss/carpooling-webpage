@@ -303,6 +303,151 @@ main {
   align-items: center;
 }
 
+
+/* Cancel Booking Button */
+.cancel-btn {
+    margin: 18px auto 0;
+    padding: 12px 22px;
+    display: block;
+
+    background: linear-gradient(135deg, #ff6b6b, #ff4d4d);
+    color: #fff;
+
+    border: none;
+    border-radius: 30px;
+
+    font-size: 14px;
+    font-weight: 700;
+    letter-spacing: 0.3px;
+
+    cursor: pointer;
+    box-shadow: 0 6px 15px rgba(255, 77, 77, 0.35);
+    transition: all 0.25s ease;
+}
+
+.cancel-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 22px rgba(255, 77, 77, 0.45);
+    background: linear-gradient(135deg, #ff4d4d, #e63939);
+}
+
+.cancel-btn:active {
+    transform: translateY(0);
+    box-shadow: 0 4px 10px rgba(255, 77, 77, 0.3);
+}
+
+/* Modal Overlay */
+.modal-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.45);
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.25s ease;
+    z-index: 999;
+}
+
+.modal-overlay.open {
+    opacity: 1;
+    pointer-events: auto;
+}
+
+/* Modal Box */
+.modal-box {
+    background: #fff;
+    padding: 28px 30px;
+    border-radius: 20px;
+    width: 340px;
+    text-align: center;
+    box-shadow: 0 15px 40px rgba(0,0,0,0.25);
+}
+
+.modal-box h3 {
+    margin-bottom: 10px;
+    color: #dc3545;
+}
+
+.modal-actions {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 22px;
+}
+
+.modal-actions button {
+    flex: 1;
+    margin: 0 6px;
+    padding: 10px;
+    border-radius: 20px;
+    border: none;
+    font-weight: 700;
+    cursor: pointer;
+}
+
+#cancelNoBtn {
+    background: #ccc;
+}
+
+#cancelYesBtn {
+    background: #dc3545;
+    color: white;
+}
+
+/* Cancelled Ride Card */
+.ride-card.cancelled {
+    position: relative;
+    opacity: 0.7;
+    border: 3px dashed #dc3545;
+    background: linear-gradient(135deg, #fff5f5 0%, #ffffff 100%);
+}
+
+/* Cancelled Badge */
+.cancelled-badge {
+    position: absolute;
+    top: 15px;
+    right: 15px;
+
+    background: linear-gradient(135deg, #dc3545, #b02a37);
+    color: #fff;
+
+    padding: 8px 18px;
+    border-radius: 20px;
+
+    font-size: 12px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.6px;
+
+    box-shadow: 0 4px 10px rgba(220, 53, 69, 0.35);
+    z-index: 10;
+}
+
+/* Big decorative X watermark */
+.ride-card.cancelled::before {
+    content: "✕";
+    position: absolute;
+    top: 50%;
+    left: 50%;
+
+    transform: translate(-50%, -50%);
+    font-size: 140px;
+    font-weight: bold;
+
+    color: rgba(220, 53, 69, 0.12);
+    z-index: 1;
+    pointer-events: none;
+}
+
+/* Disable action buttons visually */
+.ride-card.cancelled .rate-btn,
+.ride-card.cancelled .report-btn {
+    opacity: 0.6;
+}
+
 /* Rate Button */
 .rate-btn {
   background: rgba(255, 196, 0, 0.1);
