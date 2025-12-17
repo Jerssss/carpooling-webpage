@@ -1,6 +1,6 @@
 // pickup-map.js
 // Purpose: Integrate Google Maps + Places Autocomplete so passengers can pick
-// a precise pickup/meetup location using a modal map with a draggable pin.
+// a precise pickup location using a modal map with a draggable pin.
 
 // Wrap everything to avoid leaking variables globally
 (function () {

@@ -128,6 +128,20 @@ body {
   line-height: 22px;
 }
 
+/* Static field (hardcoded Pickup) */
+.payment-form .static-field {
+  box-sizing: border-box;
+  height: 44px;
+  padding: 10px 14px;
+  border: 1px solid #ccc;
+  border-radius: 10px;
+  background: #fff;
+  display: flex;
+  align-items: center;
+  color: #333;
+  font-weight: 500;
+}
+
 /* FIX: Ensure both GCash + Cash content align exactly the same */
 #gcash-content,
 #cash-content {

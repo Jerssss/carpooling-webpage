@@ -104,7 +104,7 @@ $rideDetails = [
     'bookedSeats' => $ride['bookedSeats'] ?? 0,
     'status' => ucfirst($ride['status']),
     'price' => $ride['price'], 
-    'meetupType' => $ride['for'] ?? 'pickup',
+    'pickupType' => $ride['for'] ?? 'pickup',
 ];
 
 header('Content-Type: application/json');
