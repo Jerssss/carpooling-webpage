@@ -20,6 +20,25 @@ if (!isset($_SESSION['user_id'])) {
     exit;
 }
 
+$userId = $_SESSION['user_id'];
+
+// Get user's bookings
+$bookingsCol = $db->bookings;
+$userBookings = $bookingsCol->find([
+    'passengerId' => $userId,
+    'status' => ['$in' => ['pending', 'accepted', 'completed']]
+])->toArray();
+
+// Create a map of rideId => bookingInfo
+$bookedRides = [];
+foreach ($userBookings as $booking) {
+    $bookedRides[$booking['rideId']] = [
+        'bookingId' => $booking['bookingId'],
+        'status' => $booking['status']
+    ];
+}
+
+
 // Allow only passengers
 if (($_SESSION['role'] ?? '') !== 'passenger') {
     try {
@@ -163,6 +182,12 @@ foreach ($results as $ride) {
     if ($dateFilter && ($ride['date'] ?? '') !== $dateFilter) continue;
 
     $photo = normalize_asset_path($ride['driverInfo']['picture'] ?? null, '../images/profile_pics/default-pic.png');
+   
+    $rideId = $ride['rideId'];
+
+    // Check if user has booked this ride
+    $isBooked = isset($bookedRides[$rideId]);
+    $bookingStatus = $isBooked ? $bookedRides[$rideId]['status'] : null;
 
     $carpools[] = [
         'rideId' => $ride['rideId'],
@@ -177,7 +202,9 @@ foreach ($results as $ride) {
         'dest_type' => $destType,
         'date' => $ride['date'] ?? '',
         'leavingTime' => $ride['departureTime'],
-        'photo' => $photo
+        'photo' => $photo,
+        'isBooked' => $isBooked,
+        'bookingStatus' => $bookingStatus
     ];
 }
 

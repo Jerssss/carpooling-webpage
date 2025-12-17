@@ -131,7 +131,20 @@ try {
         $screenshotPath = '../images/payments/' . $newFileName;
     }
     
-    // THIRD, CREATE THE ACTUAL BOOKING
+    // THIRD, CREATE THE ACTUAL BOOKING (Added duplicate check for validation)
+    // Generate booking ID
+
+    // Check if user already has a booking for this ride
+    $existingBooking = $bookingsCollection->findOne([
+        'passengerId' => $userId,
+        'rideId' => $rideId,
+        'status' => ['$in' => ['pending', 'accepted', 'completed']]
+    ]);
+    
+    if ($existingBooking) {
+        throw new Exception('You have already booked this ride');
+    }
+
     // Generate booking ID
     $lastBooking = $bookingsCollection->findOne(
         [],
@@ -187,6 +200,7 @@ try {
         'passengerId' => $userId,
         'driverId' => $driverId,
         'rideId' => $rideId,
+        'seatNumber' => $seatNumber,
         'status' => $bookingStatus,
         'paymentStatus' => $paymentStatus,
         'pickupLocation' => $pickupLocation,
