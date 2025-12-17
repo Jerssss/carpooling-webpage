@@ -177,13 +177,7 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   function updateFilterSummary() {
-    const filters = [];
-    if (destFilter.value) filters.push(`${destFilter.options[destFilter.selectedIndex].text}`);
-    if (seatFilter.value) filters.push(`Seats: ${seatFilter.value}`);
-    if (roleFilter.value) filters.push(`Role: ${roleFilter.options[roleFilter.selectedIndex].text}`);
-    if (dateFilter.value) filters.push(`Date: ${dateFilter.value}`);
-
-    filterSummary.textContent = filters.length ? `Active filters: ${filters.join(' | ')}` : '';
+    filterSummary.textContent = '';
   }
 
   // Event listeners
