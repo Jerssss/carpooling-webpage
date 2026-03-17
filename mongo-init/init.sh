@@ -11,3 +11,4 @@ mongoimport --db carpooling_data --collection payments       --file /docker-entr
 mongoimport --db carpooling_data --collection reviews        --file /docker-entrypoint-initdb.d/carpool_db/carpooling_data.reviews.json        --jsonArray
 
 echo "MongoDB import completed."
+
