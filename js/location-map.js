@@ -2,11 +2,6 @@
 // Purpose: Show a simple, reusable map modal with a single pin.
 // Called via window.showLocationOnMap(address, label) by other scripts.
 (function () {
-    // Configuration: Google Maps API key and vector Map ID (for Advanced Markers)
-    const API_KEY = 'ENV_API_KEY';
-    const MAP_ID = 'ENV_MAP_ID_KEY';
-    if (!window.GMAPS_MAP_ID) window.GMAPS_MAP_ID = MAP_ID;
-
     // Modal DOM references
     // Support both passenger-side and driver-side modal IDs
     const modal = document.getElementById('locationMapModal') || document.getElementById('locMapModal');
