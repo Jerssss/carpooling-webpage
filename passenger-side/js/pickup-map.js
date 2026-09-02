@@ -4,9 +4,6 @@
 
 // Wrap everything to avoid leaking variables globally
 (function () {
-  // Static config: API key and Map ID (Vector map) used by Advanced Markers
-  const API_KEY = 'ENV_API_KEY';
-  const MAP_ID = window.GMAPS_MAP_ID || 'ENV_MAP_ID_KEY';
   if (!window.GMAPS_MAP_ID) window.GMAPS_MAP_ID = MAP_ID;
   const BOUNDS = { latMin: 16.2000, latMax: 16.6000, lngMin: 120.5000, lngMax: 121.0000 };
 
